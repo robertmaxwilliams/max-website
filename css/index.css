@@ -1,0 +1,29 @@
+.logo {
+    height: 100px;
+}
+
+body {
+  width: 500px;
+  margin: 50px auto 100px auto;
+  background-color: lightblue;
+}
+
+a {
+  color: darkblue;
+}
+
+/*p, ul {
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px;
+}*/
+
+ul {
+  margin: 7px auto 10px auto;
+}
+canvas {
+  background: #eee;
+  display: block;
+  margin: 0 auto;
+}
