@@ -9,45 +9,10 @@
       
 (in-package :website)
 
-;; some utilties
-(defmacro alias (to fn)
-    `(setf (fdefinition ',to) #',fn))
-(defmacro m-alias (to fn)
-  `(setf (macro-function ',to) (macro-function ',fn)))
-(defmacro second-value (body) ;; unhygenic, consider let over gensym
-  `(multiple-value-bind (x y) ,body y))
-(defun unused (&rest stuff)
-  nil)
-;; os independent line break or something, this is probably garbage
-(defparameter nl (format nil "~%"))
-;; credit to http://sodaware.sdf.org/notes/cl-read-file-into-string/
-;; for this little tool
-(defun file-get-lines (filename)
-  (with-open-file (stream filename)
-    (loop for line = (read-line stream nil)
-          while line
-          collect line)))
-(defun join-lines (lines)
-  (format nil "~{~A~^~%~}" lines))
-(defun file-get-contents (filename)
-    (join-lines (file-get-lines filename)))
-(defun stream-get-lines (stream)
-    (loop for line = (read-line stream nil)
-          while line
-          collect line))
-(defun stream-get-contents (stream)
-    (join-lines (stream-get-lines stream)))
-;; takes a stream, returns first n lines consed. Does not check for eof.
-(defun take-n-lines (stream n) 
-  (cond ((zerop n) nil)
-	(t (cons (read-line stream) (take-n-lines stream (1- n))))))
-
-(m-alias db destructuring-bind)
-
-(hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8080
-				  :document-root #p"/Users/max/Repos/website/"))
-
-
+(defun start-server ()
+  (make-instance 'hunchentoot:easy-acceptor :port 8080
+		  :document-root #p"/Users/max/Repos/website/")
+  (hunchentoot:start))
 (setq *dispatch-table*
       (list
        ;;(create-regex-dispatcher "^/index" 'controller-index)
@@ -113,6 +78,7 @@
 (defun bare-url-p (url) ;; check if the request uri is just /blog
   (< (length (str:split "/" url)) 3))
 
+;; see blog.lsp for associated code
 (defun controller-blog ()
   (if (bare-url-p (request-uri*))
       (blog-links-page)
@@ -120,53 +86,6 @@
 	(standard-page (:title (str title))
 	  (:h1 (str title))
 	  (str (blog-page pathname))))))
-
-;;what is this doing here;; eg 2018-1-9-Adversarial-Examples
-
-;; returns list of (pathname title)
-(defun blog-pathname-title (uri)
-  (let* ((blog-name (car (last (str:split "/" uri))))
-	(pathname (pathname (concatenate 'string *blog-dir* blog-name ".md"))))
-    (list pathname 
-	  (car (blog-title-and-preview pathname)))))
-
-(defun blog-page (pathname)
-  (with-open-file (stream pathname)
-    (progn
-      (unused (take-n-lines stream 4))
-      (second-value (markdown (stream-get-contents stream) :stream nil)))))
-
-; takes in filepath, returns (title preview)
-(defun blog-title-and-preview (pathname) ;; 
-  (with-open-file (stream pathname) 
-    (db (dashes1 layout-line title-line dashes2) (take-n-lines stream 4)
-      (if (and (string-equal dashes1 "---")
-	       (string-equal layout-line "layout: post")
-	       (string-equal dashes2 "---"))
-	  (list (str:trim (cadr (str:split ":" title-line))) (generate-preview stream))
-	  '("badbadbad")))))
-
-; returns lists of (pathname name title preview)
-(defun blog-files ()
-  (remove-if #'null (mapcar #'(lambda (pathname)
-				(let ((namestring (file-namestring pathname)))
-				  (if (str:ends-with-p ".md" namestring)
-				      (append (list namestring (str:substring 0 -3 namestring))
-					    (blog-title-and-preview pathname)))))
-			    (uiop:directory-files *blog-dir*))))
-
-;; takes in markdown string and converts to html preview
-(defun generate-preview (stream)
-  (str:concat (str:trim (str:substring 0 200 (second-value (markdown (str:join " " (take-n-lines stream 5)) :stream nil)))) "..."))
-
-(defun blog-links-page ()
-  (standard-page (:title "Blog index")
-    (:h3 "Blog posts:")
-    (loop for pathname-name-title-preview in (blog-files)
-       do (db (pathname name title preview) pathname-name-title-preview
-	    (unused pathname)
-	    (htm (:h3 (:p (:a :href (str (str:join "" (list "/blog/" name))) (str title))))
-		 (:p (str preview)))))))
 
 ;; This pipe dream made real, with macros! Now that's neat.
 ;; Pipe dream code is also called "wish code"
