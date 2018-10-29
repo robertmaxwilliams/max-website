@@ -1,12 +1,27 @@
 (in-package :max-website)
 
 
-(defun start-website ()
+;; call when *document-root* changes
+(defun set-global-config ()
+  (defparameter *blog-dir* 
+    (merge-pathnames #p"blog/" *document-root*))
+  (defparameter *images-dir* 
+    (merge-pathnames #p"images/" *document-root*))
+  (defparameter *css-dir* 
+    (merge-pathnames #p"css/" *document-root*))
+  (defparameter *favicon-file*
+    (merge-pathnames #p"favicon.ico" *document-root*)))
+
+;; default value, set to reduce number of warnings.
+;; should be set on call to start-website
+(defparameter *document-root* #p"/Users/max/Repos/website/")
+(set-global-config)
+
+(defun start-website (document-root)
+  (defparameter *document-root* (pathname document-root))
+  (set-global-config)
   (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8080
                                     :document-root *document-root*)))
-
-
-;;(db (a b) (3 2) (+ a b))
 
 (setq *dispatch-table*
       (list

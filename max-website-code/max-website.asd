@@ -10,9 +10,7 @@
   :depends-on ("hunchentoot" "cl-who" "cl-markdown" "asdf" "parenscript" "iterate"
                   "str" "uiop")
   :components ((:file "package")
-               (:file "config")
                (:file "utilities")
                (:file "blog")
-               (:file "max-website"))
-  )
+               (:file "max-website")))
 
