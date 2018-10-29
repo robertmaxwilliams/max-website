@@ -1,3 +1,5 @@
+run these to get up and going with quicklisp:
+
 curl -O https://beta.quicklisp.org/quicklisp.lisp
 
 (quicklisp-quickstart:install)
