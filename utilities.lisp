@@ -1,6 +1,7 @@
+(in-package :max-website)
 
 ;; some utilties. Most everyone depends on this file,
-;; and it depends on NOTHING
+;; and it depends on nothing local
 (defmacro alias (to fn)
     `(setf (fdefinition ',to) #',fn))
 (defmacro m-alias (to fn)

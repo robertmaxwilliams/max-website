@@ -1,6 +1,4 @@
-
-
-;;what is this doing here;; eg 2018-1-9-Adversarial-Examples
+(in-package :max-website)
 
 ;; returns list of (pathname title)
 (defun blog-pathname-title (uri)

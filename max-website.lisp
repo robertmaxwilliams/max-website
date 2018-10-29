@@ -1,61 +1,21 @@
-(ql:quickload '(:hunchentoot :cl-who :cl-markdown :asdf :parenscript))
-(ql:quickload :iterate)
-(ql:quickload "str")
-(ql:quickload "uiop")
+(in-package :max-website)
 
 
-(defpackage :website
-  (:use :cl :cl-who :cl-markdown :hunchentoot :parenscript))
-      
-(in-package :website)
+(defun start-website ()
+  (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8080
+                                    :document-root *document-root*)))
 
-;; some utilties
-(defmacro alias (to fn)
-    `(setf (fdefinition ',to) #',fn))
-(defmacro m-alias (to fn)
-  `(setf (macro-function ',to) (macro-function ',fn)))
-(defmacro second-value (body) ;; unhygenic, consider let over gensym
-  `(multiple-value-bind (x y) ,body y))
-(defun unused (&rest stuff)
-  nil)
-;; os independent line break or something, this is probably garbage
-(defparameter nl (format nil "~%"))
-;; credit to http://sodaware.sdf.org/notes/cl-read-file-into-string/
-;; for this little tool
-(defun file-get-lines (filename)
-  (with-open-file (stream filename)
-    (loop for line = (read-line stream nil)
-          while line
-          collect line)))
-(defun join-lines (lines)
-  (format nil "~{~A~^~%~}" lines))
-(defun file-get-contents (filename)
-    (join-lines (file-get-lines filename)))
-(defun stream-get-lines (stream)
-    (loop for line = (read-line stream nil)
-          while line
-          collect line))
-(defun stream-get-contents (stream)
-    (join-lines (stream-get-lines stream)))
-;; takes a stream, returns first n lines consed. Does not check for eof.
-(defun take-n-lines (stream n) 
-  (cond ((zerop n) nil)
-	(t (cons (read-line stream) (take-n-lines stream (1- n))))))
 
-(m-alias db destructuring-bind)
-
-(hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8080
-				  :document-root #p"/Users/max/Repos/website/"))
-
+;;(db (a b) (3 2) (+ a b))
 
 (setq *dispatch-table*
       (list
        ;;(create-regex-dispatcher "^/index" 'controller-index)
        (create-prefix-dispatcher "/blog" 'controller-blog)
        (create-prefix-dispatcher "/fun" 'controller-fun)
-       (create-folder-dispatcher-and-handler "/images/" #p"/Users/max/Repos/website/images/")
-       (create-folder-dispatcher-and-handler "/css/" #p"/Users/max/Repos/website/css/")
-       (create-static-file-dispatcher-and-handler "/favicon.ico" "/Users/max/Repos/website/favicon.ico")
+       (create-folder-dispatcher-and-handler "/images/" *images-dir*)
+       (create-folder-dispatcher-and-handler "/css/" *css-dir*)
+       (create-static-file-dispatcher-and-handler "/favicon.ico" *favicon-file*)
        (create-regex-dispatcher "^/$" 'controller-index) ;; order matters?? TF I don't udnerstand thita
        (create-regex-dispatcher "^/*" 'controller-404)
        (create-regex-dispatcher "^/hello" 'controller-hello)))
@@ -97,8 +57,6 @@
    (:p "So I like collected data stuff")
    (:h2 "MAST-ML")
    (:p "Some sort of stuff with UWc")))
-		;;;;(cl-who:str "<h1> AH
-(create-regex-dispatcher "^/hello" 'controller-hello)))
 
 (defun controller-hello ()
   "Hello there")
@@ -109,7 +67,6 @@
 (defun controller-fun ()
   "fun stuff")
 
-(defparameter *blog-dir* "/Users/max/Repos/website/blog/")
 (defun bare-url-p (url) ;; check if the request uri is just /blog
   (< (length (str:split "/" url)) 3))
 
@@ -126,9 +83,9 @@
 ;; returns list of (pathname title)
 (defun blog-pathname-title (uri)
   (let* ((blog-name (car (last (str:split "/" uri))))
-	(pathname (pathname (concatenate 'string *blog-dir* blog-name ".md"))))
-    (list pathname 
-	  (car (blog-title-and-preview pathname)))))
+	(file-pathname (merge-pathnames (pathname (str:concat blog-name ".md")) *blog-dir*)))
+    (list file-pathname 
+	  (car (blog-title-and-preview file-pathname)))))
 
 (defun blog-page (pathname)
   (with-open-file (stream pathname)
@@ -163,17 +120,17 @@
   (standard-page (:title "Blog index")
     (:h3 "Blog posts:")
     (loop for pathname-name-title-preview in (blog-files)
-       do (db (pathname name title preview) pathname-name-title-preview
-	    (unused pathname)
+       do (db (garbage name title preview) pathname-name-title-preview
+	    (unused garbage)
 	    (htm (:h3 (:p (:a :href (str (str:join "" (list "/blog/" name))) (str title))))
 		 (:p (str preview)))))))
 
 ;; This pipe dream made real, with macros! Now that's neat.
 ;; Pipe dream code is also called "wish code"
 ;; This macro is similar to define-easy-handler but auto-names the URL
-(defmacro define-url-fn ((name) &body body)
-  `(progn
-     (defun ,name ()
-       ,@body)
-     (push (create-prefix-dispatcher ,(format nil "/~(~a~).htm" name) ',name)
-	   *dispatch-table*)))
+;;(defmacro define-url-fn ((name) &body body)
+;;  `(progn
+;;     (defun ,name ()
+;;       ,@body)
+;;     (push (create-prefix-dispatcher ,(format nil "/~(~a~).htm" name) ',name)
+;;	   *dispatch-table*)))
