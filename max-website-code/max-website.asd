@@ -2,7 +2,8 @@
 
 (defsystem max-website
   :name "maxs-website"
-  :version "0.0.0"
+  :serial nil
+  :version "0.0.1"
   :maintainer "Max"
   :author "Max"
   :licence "The Bible"
@@ -11,6 +12,6 @@
                   "str" "uiop")
   :components ((:file "package")
                (:file "utilities")
-               (:file "blog")
-               (:file "max-website")))
+               (:file "max-website")
+               (:file "blog")))
 
