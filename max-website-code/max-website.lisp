@@ -46,7 +46,10 @@
 	     (:title ,title)
 	     (:link :type "text/css"
 		    :rel "stylesheet"
-		    :href "/css/index.css"))
+		    :href "/css/index.css")
+	     (:link :rel "shortcut icon"
+                :href "/favicon.ico?"))
+
 
 	    (:body
 	     (:div :id "header"
