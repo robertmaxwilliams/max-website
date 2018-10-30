@@ -54,7 +54,13 @@
 		    :href "/css/index.css")
 	     (:link :rel "shortcut icon"
                 :href "/favicon.ico?"))
-
+	    ;; org properties so messaging/social app previews are better
+	    (:meta :property "og:site_name" :content "Max Williams website dot website")
+	    (:meta :property "og:title" :content "Max Williams")
+	    (:meta :property "og:description" :content "A website the takes the fun out of living...")
+	    (:meta :property "og:image" :content "/images/site-home.png")
+	    (:meta :property "og:url" :content "http://maxwilliams.us/")
+	    (:meta :property "og:type" :content "blog")
 
 	    (:body
 	     (:div :id "header"
