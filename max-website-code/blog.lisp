@@ -54,17 +54,6 @@
           ))) 
     "..."))
 
-(defun blog-links-page ()
-  (standard-page (:title "Blog index")
-    (:h3 "Blog posts:")
-    (loop for pathname-name-title-preview in (blog-files)
-       do (db (pathname name title preview) pathname-name-title-preview
-	    (unused pathname)
-	    
-	    (htm (:h3 :class "nobottommargins" (:a :href (str:join "" (list "/blog/" name))
-			  (str title)))
-		 (str (str:join "-" (blog-name-date-extractor name)))
-		 (:p (str preview)))))))
 
 
 ;;(ql:quickload :max-website)
@@ -72,6 +61,10 @@
 
 (defun blog-name-date-extractor (namestring)
   (mapcar #'parse-integer (subseq (str:split "-" namestring) 0 3)))
+
+(defun generate-preview (stream)
+  "takes in markdown string and converts to html preview"
+  (str:concat (str:trim (str:substring 0 200 (second-value (markdown (str:join " " (take-n-lines stream 5)) :stream nil)))) "..."))
 
 (defun less-than-int-list (a b)
   (cond ((null a) nil) ;; for when different length

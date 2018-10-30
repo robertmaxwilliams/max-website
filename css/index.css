@@ -32,3 +32,20 @@ canvas {
     margin-bottom: 0;
     padding-bottom: 0; 
 }
+
+.nomargins {
+    margin: 0;
+    padding: 0;
+}
+
+/* https://stackoverflow.com/questions/2906582/how-to-create-an-html-button-that-acts-like-a-link */
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+    padding: 2px;
+    display: inline;
+}

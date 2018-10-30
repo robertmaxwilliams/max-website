@@ -12,6 +12,10 @@
                   "str" "uiop")
   :components ((:file "package")
                (:file "utilities")
+               (:file "page-templates")
+               (:file "blog")
                (:file "max-website")
-               (:file "blog")))
+               (:file "pascals-triangle")
+               (:file "url-funs")))
+
 

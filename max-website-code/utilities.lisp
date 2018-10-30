@@ -43,3 +43,31 @@
 
 ;; because I use it all the time
 (m-alias db destructuring-bind)
+
+(defun zero-if-nil (x)
+  (if x x 0))
+
+(defun default-value (default x)
+  (if x x default))
+
+
+(defun list-to-2d-array (lsls)
+  "Takes in a jagged 2d list and converts to array left justified, 
+padded with zeros"
+  (let ((empty-array
+	 (make-array (list (length lsls)
+			   (loop for ls in lsls maximize (length ls)))
+		     :initial-element 0)))
+    (loop for ls in lsls
+       for i from 0
+	 do (loop for x in ls
+	       for j from 0
+	       do (setf (aref empty-array i j) x)))
+    empty-array))
+;; (list-to-2d-array '((0 1) (2 3 4 5)))
+;; (with-output-to-string (s) (2d-table-from-list s '((1 2) (3 4 6))))
+
+;; TODO make tests? Nah.
+
+(defun bare-url-p (url) ;; check if the request uri is just /blog
+  (< (length (str:split "/" url)) 3))
