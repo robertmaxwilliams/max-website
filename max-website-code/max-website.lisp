@@ -10,30 +10,35 @@
   (defparameter *css-dir* 
     (merge-pathnames #p"css/" *document-root*))
   (defparameter *favicon-file*
-    (merge-pathnames #p"favicon.ico" *document-root*)))
+    (merge-pathnames #p"favicon.ico" *document-root*))
+  (format t "Dirs: ~A~% ~A~% ~A~% ~A~%" *blog-dir* *images-dir* *css-dir* *favicon-file*))
+
 
 ;; default value, set to reduce number of warnings.
 ;; should be set on call to start-website
-(defparameter *document-root* #p"/Users/max/Repos/website/")
+;; followed by a call to set dispatch table
+(defparameter *document-root* #p"/maybe/i/should/have/been/a/baker/")
 (set-global-config)
 
 (defun start-website (document-root)
   (defparameter *document-root* (pathname document-root))
   (set-global-config)
+  (set-dispatch-table) ;; this cost me hours of frustation to realize
   (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8080
                                     :document-root *document-root*)))
 
-(setq *dispatch-table*
-      (list
-       ;;(create-regex-dispatcher "^/index" 'controller-index)
-       (create-prefix-dispatcher "/blog" 'controller-blog)
-       (create-prefix-dispatcher "/fun" 'controller-fun)
-       (create-folder-dispatcher-and-handler "/images/" *images-dir*)
-       (create-folder-dispatcher-and-handler "/css/" *css-dir*)
-       (create-static-file-dispatcher-and-handler "/favicon.ico" *favicon-file*)
-       (create-regex-dispatcher "^/$" 'controller-index) ;; order matters?? TF I don't udnerstand thita
-       (create-regex-dispatcher "^/*" 'controller-404)
-       (create-regex-dispatcher "^/hello" 'controller-hello)))
+(defun set-dispatch-table ()
+  (setq *dispatch-table*
+	(list
+	  ;;(create-regex-dispatcher "^/index" 'controller-index)
+	  (create-prefix-dispatcher "/blog" 'controller-blog)
+	  (create-prefix-dispatcher "/fun" 'controller-fun)
+	  (create-folder-dispatcher-and-handler "/images/" *images-dir*)
+	  (create-folder-dispatcher-and-handler "/css/" *css-dir*)
+	  (create-static-file-dispatcher-and-handler "/favicon.ico" *favicon-file*)
+	  (create-regex-dispatcher "^/$" 'controller-index) ;; order matters?? TF I don't udnerstand thita
+	  (create-regex-dispatcher "^/*" 'controller-404)
+	  (create-regex-dispatcher "^/hello" 'controller-hello))))
 
 (defmacro standard-page ((&key title) &body body)
   `(with-html-output-to-string (*standard-output* nil :prologue t :indent t)
