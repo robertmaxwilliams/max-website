@@ -21,3 +21,7 @@
   "dies so the run script does a git pull and runs the server again"
   (cl-user::exit) ;; todo why do I have to use cl-user?
   "this should not be seen because the server was supposed to exit")
+
+(define-url-fn (dont-run-this)
+  "just kidding please run it"
+  "hi")
