@@ -1,4 +1,8 @@
 #!/bin/bash
 touch *
 touch max-website-code/*
-sbcl --load runner.lisp
+while true
+do
+    git -C ./ pull
+    sbcl --load runner.lisp
+done

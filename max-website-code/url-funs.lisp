@@ -16,3 +16,8 @@
        do (htm (:a :class "button" :href (format nil "/fun/pascal?n=~A" n) (str (format nil "n=~a" n)))))
 
     (2d-table-from-list html-stream (n-iterations-pascal-triangle (parse-integer (default-value "5" (parameter "n")))))))
+
+(define-url-fn (update-server)
+  "dies so the run script does a git pull and runs the server again"
+  (cl-user::exit) ;; todo why do I have to use cl-user?
+  "this should not be seen because the server was supposed to exit")
