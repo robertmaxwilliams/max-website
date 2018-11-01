@@ -61,6 +61,7 @@ recompiles *dispatch-table*."
 	 :alt "Max Williams"
 	 :class "logo"
 	 :style "center;")
+   (markdown #p"bio.md" :stream html-stream)
    (:h1 "Current Stuff")
    (:p "Mostly wasting time and procrastintaing")
    (:h1 "Previous stuff")
@@ -88,14 +89,10 @@ recompiles *dispatch-table*."
     (:h2 "Some fun examples of what is has to:")
     (describe-fun-index html-stream)))
 
-
 ;; here as example code
 (defun checkbox (stream name checked &optional value)
     (with-html-output (stream)
       (:input :type "checkbox" :name name :checked checked :value value)))
-
-
-
 
 (defun controller-blog ()
   (standard-page (:title "Blog index")
