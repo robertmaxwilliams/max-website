@@ -5,32 +5,13 @@
 ;;
 (in-package :max-website)
 
-
-;; call when *document-root* changes
-(defun set-global-config ()
-  (defparameter *blog-dir* 
-    (merge-pathnames #p"blog/" *document-root*))
-  (defparameter *images-dir* 
-    (merge-pathnames #p"images/" *document-root*))
-  (defparameter *css-dir* 
-    (merge-pathnames #p"css/" *document-root*))
-  (defparameter *favicon-file*
-    (merge-pathnames #p"favicon.ico" *document-root*))
-  (format t "Dirs: ~A~% ~A~% ~A~% ~A~%" *blog-dir* *images-dir* *css-dir* *favicon-file*))
-
-
-;; default value, set to reduce number of warnings.
-;; should be set on call to start-website
-;; followed by a call to set dispatch table
-(defparameter *document-root* #p"/maybe/i/should/have/been/a/baker/")
-(set-global-config)
-(defparameter *fun-dispatch-table* nil) ;; ex:  (create-prefix-dispatcher "/fun/hello" 'controller-hello)
-(defparameter *fun-index* nil) ;; ex: ("hello" "this is a docstring")
-
-(defun start-website (document-root)
+(defun start-website (document-root is-testing)
+  (print *fun-index*)
   (defparameter *document-root* (pathname document-root))
+  (defparameter *testing* is-testing)
   (set-global-config)
   (set-dispatch-table) ;; this cost me hours of frustation to realize
+  (print *fun-index*)
   (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 8080
                                     :document-root *document-root*)))
 
@@ -51,8 +32,9 @@ calls to define-url-fn"
 	  (create-static-file-dispatcher-and-handler "/favicon.ico" *favicon-file*)
 	  (create-regex-dispatcher "^/$" 'controller-index) ;; order matters?? TF I don't udnerstand thita
 	  (create-regex-dispatcher "^/*" 'controller-404)
-	  (create-regex-dispatcher "^/hello" 'controller-hello)))))
-
+	  (create-regex-dispatcher "^/hello" 'controller-hello))
+	 (if (not *testing*) ;; optionally included Let's Encrypt challenge dir on real server
+	   (create-folder-dispatcher-and-handler "/.well-known/" "/home/public/.well-known/")))))
 
 (defun remove-alist-duplicate-string-keys (alist)
   (delete-duplicates alist :test #'string-equal :key #'car :from-end t))

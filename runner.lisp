@@ -8,9 +8,14 @@
 
 ;; if the TESTING magic file is in pwd, then set to my laptop's dir. Otherwise set to 
 ;; server's dir. Not the best way but it works.
+  
 (if (probe-file "TESTING")
-  (defparameter *max-website-dir* "/Users/max/Repos/website/")
-  (defparameter *max-website-dir* "/home/public/max-website/"))
+  (progn 
+    (defparameter *max-website-dir* "/Users/max/Repos/website/")
+    (defparameter *testing* t))
+  (progn
+    (defparameter *max-website-dir* "/home/public/max-website/")
+    (defparameter *testing* nil)))
 
 ;;(ql:register-local-projects)
 (pushnew (truename *max-website-dir*) ql:*local-project-directories*)
@@ -20,4 +25,5 @@
 ;;(ql:uninstall :max-website)
 (ql:quickload :max-website)
 
-(max-website:start-website *max-website-dir*)
+(max-website:start-website *max-website-dir* *testing*)
+

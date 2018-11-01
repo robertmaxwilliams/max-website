@@ -11,6 +11,7 @@
   :depends-on ("hunchentoot" "cl-who" "cl-markdown" "asdf" "parenscript" "iterate"
                   "str" "uiop")
   :components ((:file "package")
+               (:file "globals")
                (:file "utilities")
                (:file "page-templates")
                (:file "blog")
