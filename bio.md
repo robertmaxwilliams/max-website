@@ -25,10 +25,32 @@ adversarial input will discover how to make a sine wave at resonance to maximize
 is starting to sound like a poor substitute for reinforcement learning, I'll have to consider where
 that lies.
 
+## Lisp
+
+This website it written in lisp, using the `hunchentoot cl-who parenscript` stack. Why do this when
+I already know how to use python's flask and javascript and a few python templating and reverse
+templating systems? Because this is more fun! Also, it is much nicer. When you makes a website in
+python, you have your routing and your templates and some glue here and there. If you want to makes
+a template for a template or functions that return template bits, it all gets confusing and hacky.
+In lisp, everything is already confusing and hacky! So you can go about and mix several mini
+languages without ever loosing the main language.
+
+Lisp also allows you to turn your architecture ideas into programming constructs. This website uses
+a "define-url-fn" macro that I adapted from a similar one, which allows for functions defined
+in that way to be registered on the `/fun/` page and provides a url based on the name of the
+function. And it's all done at compile time, so there's no performance difference than if you did it
+all painstakingly by hand. By using this macro to define these functions, there's no way you could
+ever forget to register a function with the routing parts.
+
 # Past Stuff
 
 ## MAST-ML
 
 Summer of 2019, [Luke Miles](https://lukemiles.org/) and I worked for Dr. Finkel at the University
-of Kentucky, on the [MAST-ML](https://github.com/uw-cmg/MAST-ML)
+of Kentucky, on the [MAST-ML](https://github.com/uw-cmg/MAST-ML) project with the University of
+Wisconsin. We worked full time for 10 weeks and worked with the main developer, Ryan Jacobs, to
+understand how the software did and didn't work, and made a rewrite which is now the main branch. We
+learned many lesson about software development; it was the first time either of us has worked on a
+project of that scale. Most of our time was spend considering how to approach a problem, and when to
+break a model to allow for some functionality. For instance, we wanted to:
 
