@@ -41,24 +41,6 @@
 (defun remove-tags (s)
   (mapcar #'(lambda (s) (car (str:split "<" s))) (str:split ">" s)))
 
-;; takes in markdown string and converts to html preview
-;;(defun generate-preview (stream)
-;;  (str:concat 
-;;    (str:substring 
-;;      0 200 
-;;      (str:join 
-;;        "" 
-;;        (remove-tags
-;;          (str:trim 
-;;            (str:substring 0 500 (second-value (markdown (str:join " " (take-n-lines stream 5)) :stream nil)))) 
-;;          ))) 
-;;    "..."))
-
-
-
-;;(ql:quickload :max-website)
-;;(in-package :max-website)
-
 (defun blog-name-date-extractor (namestring)
   (mapcar #'parse-integer (subseq (str:split "-" namestring) 0 3)))
 
@@ -75,8 +57,3 @@
 
 (defun blog-name-sort-by-date (a b)
   (not (less-than-int-list (blog-name-date-extractor a) (blog-name-date-extractor b))))
-
-;;(blog-name-date-extractor "2018-1-9-Adversarial-Examples")
-  
-
-;;what is this doing here;; eg 2018-1-9-Adversarial-Examples
