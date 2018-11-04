@@ -42,17 +42,17 @@
   (mapcar #'(lambda (s) (car (str:split "<" s))) (str:split ">" s)))
 
 ;; takes in markdown string and converts to html preview
-(defun generate-preview (stream)
-  (str:concat 
-    (str:substring 
-      0 200 
-      (str:join 
-        "" 
-        (remove-tags
-          (str:trim 
-            (str:substring 0 500 (second-value (markdown (str:join " " (take-n-lines stream 5)) :stream nil)))) 
-          ))) 
-    "..."))
+;;(defun generate-preview (stream)
+;;  (str:concat 
+;;    (str:substring 
+;;      0 200 
+;;      (str:join 
+;;        "" 
+;;        (remove-tags
+;;          (str:trim 
+;;            (str:substring 0 500 (second-value (markdown (str:join " " (take-n-lines stream 5)) :stream nil)))) 
+;;          ))) 
+;;    "..."))
 
 
 

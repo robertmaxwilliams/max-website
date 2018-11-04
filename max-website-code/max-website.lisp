@@ -79,14 +79,7 @@ recompiles *dispatch-table*."
 	 :alt "Max Williams"
 	 :class "logo"
 	 :style "center;")
-   (markdown #p"bio.md" :stream html-stream)
-   (:h1 "Current Stuff")
-   (:p "Mostly wasting time and procrastintaing")
-   (:h1 "Previous stuff")
-   (:h2 "Optical Illusions Dataset")
-   (:p "So I like collected data stuff")
-   (:h2 "MAST-ML")
-   (:p "Some sort of stuff with UWc")))
+   (markdown #p"bio.md" :stream html-stream)))
 
 (defun controller-hello ()
   "Hello there")
@@ -128,6 +121,3 @@ recompiles *dispatch-table*."
     (standard-page (:title (str title))
       (:h1 (str title))
       (str (blog-page pathname)))))
-
-
-

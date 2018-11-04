@@ -71,3 +71,16 @@ padded with zeros"
 
 (defun bare-url-p (url) ;; check if the request uri is just /blog
   (< (length (str:split "/" url)) 3))
+
+
+
+(defmacro maplb (function list)
+  "lapmambda like this: (maplb (+ 1 it) '(1 2 3 4))"
+  `(mapcar #'(lambda (it) ,function) ,list))
+
+(defmacro mapfor (var-in-list function)
+  "ex: (mapfor (x in '(1 2 3)) (1+ x))"
+  (destructuring-bind (var the-word-in list) var-in-list
+    (assert (eql 'in the-word-in))
+    `(mapcar #'(lambda (,var) ,function) ,list)))
+

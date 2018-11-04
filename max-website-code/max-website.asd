@@ -2,7 +2,8 @@
 
 (defsystem max-website
   :name "maxs-website"
-  :serial nil
+  :serial t ;; makes sure each file depends on the other in series
+  ;; and force recompile of everything if, for instance, a page template macro changes.
   :version "0.0.1"
   :maintainer "Max"
   :author "Max"
