@@ -60,3 +60,4 @@ Does not acknowledge lisp2, aka all symbols are fair game."
 	 `(defvar data (create nodes nodes edges edges))
 	 `(defvar options (create))
 	 `(defvar network (new ((@ vis *network) container data options)))))
+

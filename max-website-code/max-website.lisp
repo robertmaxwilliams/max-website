@@ -28,6 +28,8 @@ calls to define-url-fn"
 	  (create-prefix-dispatcher "/fun" 'controller-fun)
 	  (create-regex-dispatcher "^/fun/*" 'controller-404)
 	  (create-folder-dispatcher-and-handler "/images/" *images-dir*)
+	  (create-regex-dispatcher "^/principia-discordia/$" 'redirect-page-1)
+	  (create-folder-dispatcher-and-handler "/principia-discordia/" *principia-dir*)
 	  (create-folder-dispatcher-and-handler "/css/" *css-dir*)
 	  (create-static-file-dispatcher-and-handler "/favicon.ico" *favicon-file*)
 	  (create-regex-dispatcher "^/$" 'controller-index) ;; order matters?? TF I don't udnerstand thita
@@ -35,6 +37,12 @@ calls to define-url-fn"
 	  (create-regex-dispatcher "^/hello" 'controller-hello))
 	 (if (not *testing*) ;; optionally included Let's Encrypt challenge dir on real server
 	   (create-folder-dispatcher-and-handler "/.well-known/" "/home/public/.well-known/")))))
+
+(defun redirect-page-1 ()
+  "rediercting to page 1"
+  (standard-page (:title "The Principia According to Huneker")
+    (:h1 "YOU HAVE BEEN CHEATED AND LIED TO")
+    (:a :href "/principia-discordia/1.html" "TO THE BOOK")))
 
 (defun remove-alist-duplicate-string-keys (alist)
   (delete-duplicates alist :test #'string-equal :key #'car :from-end t))

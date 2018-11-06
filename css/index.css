@@ -8,6 +8,15 @@ body {
   background-color: lightblue;
 }
 
+@media (max-aspect-ratio: 1/1) {
+    /* used for mobile or skinny displays */
+    body {
+        width: 500px;
+        margin: 50px auto 100px auto;
+        background-color: red;
+    }
+}
+
 a {
   color: darkblue;
 }
