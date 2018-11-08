@@ -17,6 +17,18 @@
 
     (2d-table-from-list html-stream (n-iterations-pascal-triangle (parse-integer (default-value "5" (parameter "n")))))))
 
+
+(define-url-fn (negative-pascal)
+  "Pascal triangle, with the SECRET negative part"
+  (let ((parameter-n (safety-cap 1000  5 (parse-integer (default-value "5" (parameter "n"))))))
+    (standard-page (:title "||SECRET||")
+      (:h1 "What math people don't want you to know")
+      (loop for button-n in '(5 10 20 50 100)
+	 do (htm (:a :class "button" :href (format nil "/fun/negative-pascal?n=~A" button-n)
+		     (str (format nil "n=~a" button-n)))))
+      (2d-table-from-array html-stream (array-pascal parameter-n)))))
+
+
 (define-url-fn (update-server)
   "dies so the run script does a git pull and runs the server again"
   (cl-user::exit) ;; todo why do I have to use cl-user?

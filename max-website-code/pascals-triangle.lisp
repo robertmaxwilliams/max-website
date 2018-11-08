@@ -10,7 +10,7 @@
       (funcall f args)
       (funcall f (repeat f args (- n 1)))))
 
-(repeat #'next-pascal '(1) 3)
+;;(repeat #'next-pascal '(1) 3)
 
 (defun n-iterations-pascal-triangle (n)
   (reverse
@@ -18,8 +18,6 @@
 	(ls '(1) (next-pascal ls))
 	(accumulate nil (cons ls accumulate)))
        ((> i n) accumulate))))
-
-
 
 
 
@@ -38,43 +36,6 @@
 						      (t "green"))
 				      (str (aref array i j))))))))))))
 
-
-
-
-
-(defun next-pascal-negative (arr)
-  (let* ((max-len (array-total-size arr))
-	 (new-arr (make-array (list max-len) :initial-element 0)))
-    (loop for i from 1 below max-len
-       do (setf (aref new-arr i) (- (aref arr i) (aref new-arr (1- i)))))
-    new-arr))
-
-(defun next-pascal-positive (arr)
-  (let* ((max-len (array-total-size arr))
-	 (new-arr (make-array (list max-len) :initial-element 0)))
-    (loop for i from 1 below max-len
-       do (setf (aref new-arr i) (+ (aref arr i) (aref arr (1- i)))))
-    new-arr))
-
-;;(next-pascal-negative #(0 1 0 0 0 0 0 0))
-;;(next-pascal-positive #(0 1 0 0 0 0 0 0))
-
-(defun double-pascal (size)
-  (let ((seed (make-array (list (+ 2 size)) :initial-element 0)))
-    (setf (aref seed 1) 1)
-    (append
-      (do ((cur seed (next-pascal-negative cur))
-	   (n 0 (1+ n))
-	   (accumulate nil (push cur accumulate)))
-	  ((= size n) accumulate))
-      (cdr (reverse 
-	    (do ((cur seed (next-pascal-positive cur))
-		 (n 0 (1+ n))
-		 (accumulate nil (push cur accumulate)))
-		((= size n) accumulate)))))))
-
-
-
 (defun 2d-table-from-array (html-stream array)
   (print (array-dimension array 1))
   (with-html-output (html-stream)
@@ -87,4 +48,29 @@
 			       (:td :bgcolor (cond ((zerop (aref array i j)) "lightblue")
 						   ((oddp (aref array i j)) "pink")
 						   (t "green"))
-				    (str (aref array i j))))))))))))
+				    (str (aref array i j)))))))))))
+
+(defun array-pascal (size)
+  (let* ((n-rows (1- (* 2 size)))
+	 (n-cols (+ 1 size))
+	 (middle-row-i (1- size))
+	 (output-array (make-array (list n-rows n-cols) :initial-element 0)))
+    (setf (aref output-array middle-row-i 1) 1)
+    (loop for i downfrom (1- middle-row-i) to 0
+	   do (loop for j from 1 below n-cols
+		 do (setf (aref output-array i j)
+			  (-
+			   (aref output-array (1+ i) j)
+			   (aref output-array i (1- j))))))
+    (loop for i from (1+ middle-row-i) below n-rows
+	   do (loop for j from 1 below n-cols
+		 do (setf (aref output-array i j)
+			  (+
+			   (aref output-array (1- i) j)
+			   (aref output-array (1- i) (1- j))))))
+    output-array))
+
+;;(array-pascal 5)
+
+
+;; TODO extended eucledian algorythm

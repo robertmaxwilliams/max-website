@@ -84,3 +84,9 @@ padded with zeros"
     (assert (eql 'in the-word-in))
     `(mapcar #'(lambda (,var) ,function) ,list)))
 
+
+(defun safety-cap (max-abs-value default-value x)
+  " If (abs x) is above max, return 0 "
+  (if (> (abs x) max-abs-value) default-value x))
+      
+
