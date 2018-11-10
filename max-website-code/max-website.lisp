@@ -29,6 +29,7 @@ calls to define-url-fn"
 	  (create-regex-dispatcher "^/fun/*" 'controller-404)
 	  (create-folder-dispatcher-and-handler "/images/" *images-dir*)
 	  (create-regex-dispatcher "^/principia-discordia/$" 'redirect-page-1)
+	  (create-regex-dispatcher "^/principia-discordia$" 'redirect-page-1)
 	  (create-folder-dispatcher-and-handler "/principia-discordia/" *principia-dir*)
 	  (create-folder-dispatcher-and-handler "/css/" *css-dir*)
 	  (create-static-file-dispatcher-and-handler "/favicon.ico" *favicon-file*)
@@ -47,20 +48,24 @@ calls to define-url-fn"
 (defun remove-alist-duplicate-string-keys (alist)
   (delete-duplicates alist :test #'string-equal :key #'car :from-end t))
 
+;; todo refaactor html-stream to use half-earmuff
+
 (defmacro define-url-fn ((name) &body body)
   "Call like this: (define-url-fn (foo) \"some docstring\" (string 'bar))
 defines the function, pushes it into *fun-dispatch-table* and *fun-index* then
 recompiles *dispatch-table*."
-  `(progn
-     (defun ,name ()
-       ,@body)
-     (push (create-prefix-dispatcher ,(format nil "/fun/~(~a~)" name) ',name)
-	   *fun-dispatch-table*)
-     (push (list (string-downcase (string ',name)) (documentation #',name t))
-	   *fun-index*)
-     (remove-alist-duplicate-string-keys *fun-index*)
-     (set-dispatch-table)))
-
+  (let ((url (format nil "/fun/~(~a~)" name)))
+    `(progn
+       (let ((*my-url ,url)) ;; wrapping in let to make *my-url available
+	 (declare (ignore *my-url));;to get rid of warning when not used, which is usualy
+	 (defun ,name ()
+	   ,@body))
+       (push (create-prefix-dispatcher ,url ',name)
+	     *fun-dispatch-table*)
+       (push (list (string-downcase (string ',name)) (documentation #',name t))
+	     *fun-index*)
+       (remove-alist-duplicate-string-keys *fun-index*)
+       (set-dispatch-table))))
 
 (defun controller-index ()
  (standard-page (:title "Max Williams")
@@ -69,13 +74,14 @@ recompiles *dispatch-table*."
 	 :alt "Max Williams"
 	 :class "logo"
 	 :style "center;")
-   (markdown #p"bio.md" :stream html-stream)))
+   (markdown (truename #p"bio.md") :stream html-stream)))
+
 
 (defun controller-hello ()
   "Hello there")
 
 (defun controller-404 ()
-  "<h1>FOUR TO THE OH TO THE FOUR</h1>")
+  "<h1>Error: Page not found (404) </h1>")
 
 ;; s is the html stream
 (defun describe-fun-index (s)

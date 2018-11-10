@@ -2,8 +2,26 @@
     height: 100px;
 }
 
+.blackborder {
+    border: 1px solid grey;
+}
+
+table.numbertable {
+    border-collapse: collapse;
+}
+
+td.fixedcell {
+    width: 2em;
+    height: 1em;
+}
+
+pre {
+    padding: 0px;
+    margin: 0px;
+}
+
 body {
-  width: 500px;
+    width: 40em;
   margin: 50px auto 100px auto;
   background-color: lightblue;
 }
@@ -11,14 +29,18 @@ body {
 @media (max-aspect-ratio: 1/1) {
     /* used for mobile or skinny displays */
     body {
-        width: 500px;
-        margin: 50px auto 100px auto;
-        background-color: red;
+        width: auto;
+        margin: 50px 1em 100px 1em;
+        background-color: lightblue;
     }
 }
 
 a {
   color: darkblue;
+}
+
+input {
+    background-color: white;
 }
 
 /*p, ul {

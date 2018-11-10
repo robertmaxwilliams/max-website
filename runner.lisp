@@ -9,11 +9,16 @@
 ;; if the TESTING magic file is in pwd, then set to my laptop's dir. Otherwise set to 
 ;; server's dir. Not the best way but it works.
   
+;; for interactive use, bc. I'm usually in the code dir when I launch slime
+;;(setf *default-pathname-defaults* (truename "/Users/max/Repos/website/"))
+
 (if (probe-file "TESTING")
   (progn 
+    (print "Testing mode")
     (defparameter *max-website-dir* "/Users/max/Repos/website/")
     (defparameter *testing* t))
   (progn
+    (print "Deployment mode")
     (defparameter *max-website-dir* "/home/public/max-website/")
     (defparameter *testing* nil)))
 
@@ -26,4 +31,3 @@
 (ql:quickload :max-website)
 
 (max-website:start-website *max-website-dir* *testing*)
-

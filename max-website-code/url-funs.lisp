@@ -28,15 +28,71 @@
 		     (str (format nil "n=~a" button-n)))))
       (2d-table-from-array html-stream (array-pascal parameter-n)))))
 
+(defmacro number-table-row (number-strings)
+  "takes a list of strings and makes a <tr> for them"
+  `(htm 
+   (:tr
+    :align "right"
+    (loop for x in ,number-strings
+	 do (htm (:td :class "blackborder" (:pre (str x))))))))
+
+
+(defmacro base-table (ls)
+  "html table of each element of the list"
+  `(htm (:table
+	 :class "numbertable"
+	 :border 0 :cellpadding 0
+	 (number-table-row '("base 10" "base 2" "base 3"))
+	 (dolist (x ,ls)
+	   (number-table-row (list (write-to-string x :base 10)
+				   (write-to-string x :base  2)
+				   (write-to-string x :base  3)))))))
+
+(defun recur-until (fun cur-val end-val)
+  " trivial consing recur on numeric function until reaches end val"
+  (let ((next (funcall fun cur-val)))
+    (if (= next end-val)
+	(list cur-val next)
+	(cons cur-val (recur-until fun next end-val)))))
+
+;; example:
+(recur-until #'1+ 1 4)
+
+(defmacro simple-form (url variable-name default-value)
+  "form that sends a single variable (input as a STRING) to a url by GET"
+  `(htm (:form :action ,url
+	  (:input :type "text" :name ,variable-name :value (str (format nil "~a" ,default-value)))
+	  (:input :type "submit" :value "Go"))))
+
+(define-url-fn (collatz-bases)
+  "Find collatz sequence of a number"
+  (let ((parameter-n (default-value 5
+			 (parse-integer (default-value "" (parameter "n")) :junk-allowed t))))
+    (standard-page (:title "Collatz")
+      (:h2 "Take the collatz of any sequence")
+      (simple-form *my-url "n" parameter-n)
+      (:a :class "button" :href (format nil "~a?n=~a" *my-url (1+ (random 500))) "random")
+      (:h1 (str (format nil "Collatz of ~a" parameter-n)))
+      (base-table
+       (recur-until #'next-collatz parameter-n 1)))))
+
+(define-url-fn (shortcut-collatz-bases)
+  "Find collatz sequence of a number using the powers of two shortcut"
+  (let ((parameter-n (default-value 5
+			 (parse-integer (default-value "" (parameter "n")) :junk-allowed t))))
+    (standard-page (:title "Collatz")
+      (:h2 "Take the shortcut collatz of any sequence")
+      (:p "Shortcut collatz takes in an odd number and calculates " :code "(3n+1)/(2^x)"
+	  " where 2^x is chosen to make the output odd.")
+      (simple-form *my-url "n" parameter-n)
+      (:h1 (str (format nil "Collatz of ~a" parameter-n)))
+      (base-table
+       (recur-until #'shortcut-collatz parameter-n 1)))))
 
 (define-url-fn (update-server)
   "dies so the run script does a git pull and runs the server again"
   (cl-user::exit) ;; todo why do I have to use cl-user?
   "this should not be seen because the server was supposed to exit")
-
-(define-url-fn (dont-run-this)
-  "just kidding please run it"
-  "hi 234923809")
 
 ;; some parenscript fun
 (define-url-fn (parenscript-hello)
@@ -55,22 +111,22 @@
 	    "Hello World")))))
 
 
-;; vis js is fun, too!
-(define-url-fn (dependency-graph)
-    "dependency graph of the main file of this website"
-    (standard-page (:title "Vis Dot Jay Ess" :include-vis t)
-	(:style :type "text/css"
-			   "#mynetwork { width: 600px; height: 400px; border: 1px solid lightgray; }")
-	(:h1 "vis.js is fun ;)")
-	(:div :id "mynetwork")
-	(:script :type "text/javascript"
-		 (str (vis-js-graph (function-graph-nodes-edges '("max-website-code/max-website.lisp")))))))
+;;;; vis js is fun, too!
+;;(define-url-fn (dependency-graph)
+;;    "dependency graph of the main file of this website"
+;;    (standard-page (:title "Vis Dot Jay Ess" :include-vis t)
+;;	(:style :type "text/css"
+;;			   "#mynetwork { width: 600px; height: 400px; border: 1px solid lightgray; }")
+;;	(:h1 "vis.js is fun ;)")
+;;	(:div :id "mynetwork")
+;;	(:script :type "text/javascript"
+;;		 (str (vis-js-graph (function-graph-nodes-edges '("max-website-code/max-website.lisp")))))))
 
 (define-url-fn (website-dependency-graph)
     "dependency graph of all lisp files of this website"
   (standard-page (:title "Vis Dot Jay Ess" :include-vis t)
 		 (:style :type "text/css"
-			 "#mynetwork { width: 600px; height: 400px; border: 1px solid lightgray; }")
+			 "#mynetwork { width: auto; height: 400px; border: 1px solid lightgray; }")
 		 (:h1 "This website's dependency graph")
 		 (:p "All defun and defmacros are nodes, arrows indicate dependency.")
 		 (:div :id "mynetwork")
@@ -85,4 +141,24 @@
 
 
 
+
+(define-url-fn (collatz-graph)
+  "graph of how all numbers lead back to unity"
+  (standard-page (:title "Collatz Graph" :include-vis t)
+		 (:style :type "text/css"
+			 "#mynetwork { width: auto; height: 400px; border: 1px solid lightgray; }")
+		 (:h1 "Collatz Graph")
+		 (:p "Explanation goes here")
+		 (:button :onclick "explodeLeaves()" "Explode Leaves")
+		 (:div :id "mynetwork")
+		 (:script :type "text/javascript"
+			  (str (vis-js-graph '((1 2 4) ((2 1) (4 2) (1 4)))))
+			  (str (vis-js-inverse-collatz))
+			  
+			  (str
+			   (ps
+			     ((@ *network* on)
+			      "click"
+			      (lambda (params) (add-inverses-to-graph
+						(aref (@ params 'nodes) 0)))))))))
 
