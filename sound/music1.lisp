@@ -1,18 +1,5 @@
 
-;;(ql:quickload :cl-mixed)
-
-;; (cl-mixed:make-unpacker c-buffer bytes sample-encoding channel-count channel-layout samplerate)
-
-;;(cl-mixed:make-unpacker NIL 4096 :int16 2 :alternating 44100)
-
-(defvar *sr* 44100)
-
-;;(cl-mixed:make-space-mixer)
-
-;;(cl-mixed:make-fader :duration 5.0)
-
 (ql:quickload :cl-portaudio)
-
 
 (defpackage :audio-fun
   (:use :cl :portaudio))
@@ -45,14 +32,202 @@
 					 (float ,@body))))
 			   arr)))))))
 
-(defun sound-noise-wave ()
-  (trivial-with-audio ()
-    (float (/ (random 100) 100))))
-(sound-noise-wave)
+;; redoing many of the wave functions to be stateful instruments, makes it easier to
+;; slide frequency without creating artifacts
+;; I think I'll make them all closures just for consistency, and
+;; end their names with "-maker"
+(defun let-over-lambdas () 
+  " returns a property list with umm some lambdas and such. Use this pattern like class."
+  (let ((x 0)) ;; x is the value we return every call
+    (list
+     :increment (lambda () (incf x))
+     :decrement (lambda () (incf x -1)))))
+;;(defvar quuzer (let-over-lambdas))
+;;(print quuzer)
+;;(getf quuzer :increment)
 
+(defmacro @ (plist property &body args)
+    " just like accessing a member function or watever "
+  `(funcall (getf ,plist ,property) ,@args))
+
+;;(@ quuzer :increment)
+;;(@ quuzer :decrement)
+
+;; basic wave classes
+;; use plist closures for standard
+;; should always have a step function
+;; oh gee I really am becoming an OO programmer
+;; should go from -1 to 1
 
 ;; samples per second
 (defparameter *sps* 44100)
+
+(defun triange-wave-maker (starting-freq)
+  (let ((x 0.0)
+	(freq starting-freq)
+	(direction 1)) ;; -1 for down
+    (list
+     :step (lambda (&optional (dt 1))
+	     (progn
+	       (incf x (/ (* 2 dt freq) (* 1 *sps*)))
+	       (if (> x 1) (progn
+			     (incf x -2)
+			     (setf direction (* -1 direction))))
+	       (* direction x)))
+     :get-x (lambda () (* direction x))
+     :set-freq (lambda (new-freq) (setf freq new-freq)))))
+
+(defun slider-maker (starting-val slowness)
+  (let ((x (float starting-val))
+	(target (float starting-val))
+	(ratio (expt 10 (- slowness))))
+    (list
+     :step (lambda () (setf x (+ x (* ratio (- target x)))))
+     :get-x (lambda () x)
+     :set-target (lambda (new-target) (setf target new-target)))))
+
+(defun kyu-maker (ls)
+  " very neat! And I came up with it myself!"
+  ;; sorry I got really sick of spelling queueueuueueue
+  (let* ((kyu ls)
+	(tail (last kyu)))
+    (list
+     :push (lambda (x)
+	     (nconc tail (list x))
+	     (setf tail (cdr tail))
+	     kyu)
+     :pop (lambda () (pop kyu)))))
+
+
+(defun delay-kyu-maker (steps initial-element)
+  " call at each time step, and get out a value from
+    so many steps back!"
+  (let ((kyu
+	 (kyu-maker
+	  (loop for i from 0 below steps
+	     collect initial-element))))
+    (lambda (new-entry)
+      (@ kyu :push new-entry)
+      (@ kyu :pop))))
+
+(defun trash (arg)
+  (declare (ignore arg)))
+
+  
+(let ((in1 (triange-wave-maker 440))
+      (in2 (triange-wave-maker 100))
+      (delay (delay-kyu-maker (* *sps* 2) 0.0)))
+  (trivial-with-audio (:duration 5)
+    (if (= *channel 0)
+	(@ in1 :step)
+	(* 3 (funcall delay (@ in2 :step))))))
+
+(let ((in1 (triange-wave-maker 440))
+      (in1f (slider-maker 440 4)))
+  (trivial-with-audio (:duration 3)
+    (progn
+      (if (= *channel 0)
+	  (progn 
+	    (if (> *time *sps*) (@ in1f :set-target 220))
+	    (@ in1 :set-freq (@ in1f :step))
+	    (@ in1 :step))
+	  (@ in1 :get-x)))))
+
+;; short alias
+(defmacro f (fun &rest args)
+  `(funcall ,fun ,@args))
+
+(defmacro return-after (value &body body)
+  " saves a value to a gensym, progn's body, then returns saved value"
+  (let ((temp1 (gensym)))
+    `(let ((,temp1 ,value))
+       (progn ,@body)
+       ,temp1)))
+
+(let ((x 5))
+  (return-after x (incf x)))
+
+
+(defun cycle-trigger-maker (freq &key (first-time nil))
+  " gives a single t in a sea of nil at freq hz
+    set first-time to start on a t"
+  (let ((time (if first-time 0 1)) ;; flag is true after event is triggered
+	(period (floor *sps* freq)))
+  (lambda () (return-after
+		 (if (zerop (mod time period)) t nil)
+	       (incf time)))))
+
+(defun play-list (ls &optional (speed 4))
+  (let ((in1 (triange-wave-maker (car ls)))
+	(in1f (slider-maker (car ls) 3))
+	(ct (cycle-trigger speed)))
+    (trivial-with-audio (:duration (/ (+ 3 (length ls)) speed))
+      (progn
+	(if (= *channel 0)
+	    (progn 
+	      (if (and (f ct)
+		       (not (null ls)))
+		  (@ in1f :set-target (pop ls)))
+	      (@ in1 :set-freq (@ in1f :step))
+	      (@ in1 :step))
+	    (@ in1 :get-x))))))
+
+
+(defun tone-cycle-instrument-maker (freq-list oscillator freq-slider cycle-trigger)
+  (lambda () (if (and (f cycle-trigger)
+		      (not (null freq-list)))
+		 (@ freq-slider :set-target (pop freq-list)))
+	  (@ oscillator :set-freq (@ freq-slider :step))
+	  (@ oscillator :step)))
+
+(defun list-player-maker (ls speed) 
+  (tone-cycle-instrument-maker 
+   ls
+   (triange-wave-maker (car ls))
+   (slider-maker (car ls) 3)
+   (cycle-trigger-maker speed)))
+
+(defun play-lists (ls1 ls2 &optional (speed 4))
+  " plays one through each speaker "
+ (flet ()
+    (let ((instrument1 (list-player-maker ls1 speed))
+	  (instrument2 (list-player-maker ls2 speed)))
+      (trivial-with-audio (:duration (/ (+ 3 (length ls)) speed))
+	(progn
+	  (if (= *channel 0)
+	    (funcall instrument1)
+	    (funcall instrument2)))))))
+ 
+(defun one-or-minus-one ()
+  (if (zerop (random 2)) 1 -1))
+
+(defmacro incf-bounce (place x)
+  " like incf but if it would go to zero, bounce to 1"
+  `(progn (incf ,place ,x)
+	  (if (<= ,place 0)
+	      (setf ,place 1))
+	  ,place))
+
+(defun rand-inc (ls)
+  (let ((x (one-or-minus-one)))
+    (if (zerop (random 2))
+      (incf-bounce (car ls) x)
+      (incf-bounce (cdr ls) x))))
+
+(defun rand-frac-list ()
+  " starts at 3/3, each step num or den can increase or decrease "
+  (let ((frac (cons 3 3)))
+    (loop for i from 1 to 10
+       do (rand-inc frac)
+       collect (/ (car frac) (cdr frac)))))
+;;(randfraclist)
+
+(defun sound-noise-wave ()
+  (trivial-with-audio ()
+    (float (/ (random 100) 100))))
+;;(sound-noise-wave)
+
+
 
 ;; some math scratch
 ;; freq = 1/secs
@@ -61,107 +236,5 @@
 ;; freq = sps/x
 ;; x = sps/freq
 
-(defun triangle-wave (time frequency)
-  " frequency in hz, time in samples (1/44100 secs) "
-  (let ((divisor (/ *sps* frequency)))
-    (- 0.5 (/ (mod time divisor) divisor))))
-
-(defun square-wave (time frequency)
-  (let ((divisor (/ *sps* frequency)))
-    (if (< (mod time divisor) (floor divisor 2))
-	-0.5 0.5)))
-
-(defun v-wave (time frequency)
-  (let ((divisor (/ *sps* frequency)))
-    (- 0.5 (abs (- (/ (mod time divisor) divisor) 0.5)))))
-
-(defun sound-triangle-wave (root wobble duration)
-  (let ((f2 (* (/ 3 2) root)))
-    (trivial-with-audio (:duration duration)
-      (- 0.5
-	 (*
-	  (v-wave *time wobble)
-	  (+ 
-	   (triangle-wave *time root)
-	   (* 0.5 (triangle-wave *time f2))))))))
-
 (defun white-noise ()
   (- 0.5 (/ (random 100) 100)))
-
-(trivial-with-audio (:duration 1) (* (v-wave *time 440) (square-wave *time 4)))
-(trivial-with-audio (:duration 1) (square-wave *time 440))
-(trivial-with-audio (:duration 1) (white-noise))
-(sound-triangle-wave 440 30 3)
-(sound-triangle-wave 220 60 3)
-
-
-
-(defun fraction-explorer (time)
-  " takes in samples of time, and returns a changing sequence of fractions"
-  (let ((step (floor time (floor *sps* 2)))
-	(ls (list 1 (/ 3 2) 1 (/ 2 3) 1 (/ 5 3) 1 (/ 3 5))))
-    (nth (mod step (length ls)) ls)))
-
-
-(trivial-with-audio (:duration 8) (v-wave *time (* 440 (fraction-explorer *time))))
-
-(defun descender (decay-ratio)
-  (let ((x 1.0))
-    #'(lambda (&optional force)
-	(if force (setf x force))
-	(setf x (* x decay-ratio))
-	x)))
-
-(let ((foo (descender 0.9999)))
-  (trivial-with-audio (:duration 1) (* (/ (random 100) 100) (funcall foo))))
-
-
-(defun beat (freq)
-  (let ((i 0)
-	(t-reset (floor *sps* freq))
-	(desc (descender 0.9999)))
-    #'(lambda () 
-	(incf i)
-	(if (>= i t-reset)
-	    (progn
-	      (funcall desc 1.0)
-	      (setf i 0)))
-	(funcall desc))))
-
-
-
-  
-(let ((foo (beat 1)))
-  (trivial-with-audio (:duration 10) (* (/ (random 100) 100) (funcall foo))))
-
-
-(defparameter *p1* 440)
-
-(defun global-slider-spaceship (ratio)
-  (let ((pitch-tracker *p1*))
-    #'(lambda ()
-	(setf pitch-tracker (+ pitch-tracker (* ratio (- *p1* pitch-tracker)))))))
-
-(defun global-slider (ratio)
-  (let ((pitch-tracker *p1*))
-    #'(lambda ()
-	(setf pitch-tracker (+ pitch-tracker (* ratio (- *p1* pitch-tracker)))))))
-
-(let ((foo (global-slider 0.0001)))
-  (trivial-with-audio (:duration 10) (v-wave *time (funcall foo))))
-
-
-(let* ((freq1 440)
-      (freq2 500)
-      (freq freq1))
-  (trivial-with-audio (:duration 3) (v-wave (*time
-					    (progn (setf freq (+ freq (* 0.0001 (- freq2 freq)))))))))
-  
-
-(setf *p1* (* *p1* (/ 11 12)))
-(setf *p1* (* *p1* (/ 4 12)))
-(setf *p1* (* *p1* (/ 3 12)))
-(setf *p1* 440)
-(setf *p1* (* *p1* (/ 12 3)))
-(setf *p1* (* *p1* (/ 12 4)))
-(setf *p1* (* *p1* (/ 12 11)))
