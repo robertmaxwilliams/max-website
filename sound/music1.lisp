@@ -6,6 +6,8 @@
 
 (in-package :audio-fun)
 
+;; set to true to kill music globaly
+(defparameter *kill* nil)
 
 (defmacro trivial-with-audio ((&key (duration 3)) &body body)
   " reduce boiler plate. I hate boiling plates! Supplies *i, half-earmuffed scoped var for time."
@@ -22,6 +24,7 @@
 		    :sample-rate sample-rate
 		    :frames-per-buffer frames-per-buffer)
 	 (dotimes (frame-count (round (/ (* seconds sample-rate) frames-per-buffer)))
+	   (if *kill* (error 'error))
 	   (write-stream astream
 			 (let ((arr (make-array '(2048) :element-type '(single-float) :initial-element 0.0)))
 			   (loop for i from 0 below 2048
@@ -133,7 +136,7 @@
 	    (@ in1 :step))
 	  (@ in1 :get-x)))))
 
-;; short alias
+;; short alias for funcall
 (defmacro f (fun &rest args)
   `(funcall ,fun ,@args))
 
@@ -172,7 +175,6 @@
 	      (@ in1 :step))
 	    (@ in1 :get-x))))))
 
-
 (defun tone-cycle-instrument-maker (freq-list oscillator freq-slider cycle-trigger)
   (lambda () (if (and (f cycle-trigger)
 		      (not (null freq-list)))
@@ -192,49 +194,225 @@
  (flet ()
     (let ((instrument1 (list-player-maker ls1 speed))
 	  (instrument2 (list-player-maker ls2 speed)))
-      (trivial-with-audio (:duration (/ (+ 3 (length ls)) speed))
+      (trivial-with-audio (:duration (/
+				      (+ 3 (max (length ls1) (length ls2)))
+				      speed))
 	(progn
 	  (if (= *channel 0)
 	    (funcall instrument1)
 	    (funcall instrument2)))))))
- 
-(defun one-or-minus-one ()
-  (if (zerop (random 2)) 1 -1))
-
-(defmacro incf-bounce (place x)
-  " like incf but if it would go to zero, bounce to 1"
-  `(progn (incf ,place ,x)
-	  (if (<= ,place 0)
-	      (setf ,place 1))
-	  ,place))
-
-(defun rand-inc (ls)
-  (let ((x (one-or-minus-one)))
-    (if (zerop (random 2))
-      (incf-bounce (car ls) x)
-      (incf-bounce (cdr ls) x))))
-
-(defun rand-frac-list ()
-  " starts at 3/3, each step num or den can increase or decrease "
-  (let ((frac (cons 3 3)))
-    (loop for i from 1 to 10
-       do (rand-inc frac)
-       collect (/ (car frac) (cdr frac)))))
-;;(randfraclist)
 
 (defun sound-noise-wave ()
   (trivial-with-audio ()
     (float (/ (random 100) 100))))
-;;(sound-noise-wave)
 
 
 
-;; some math scratch
-;; freq = 1/secs
-;; sps = samples/sec
-;; (mod s x) -> repeates every x samples
-;; freq = sps/x
-;; x = sps/freq
 
+(defun mero (x y)
+  "means mod-equals-zero"
+  (zerop (mod x y)))
+
+(defun cannonize (pair)
+  (let ((frac (/ (car pair) (cadr pair))))
+    (list (numerator frac) (denominator frac))))
+ 
+(defun one-or-minus-one ()
+  (if (zerop (random 2)) 1 -1))
+
+(defun nat-add (a b)
+  "add but if 0 or less, return 1"
+  (let ((result (+ a b)))
+    (if (<= result 0)
+	1
+	result)))
+
+
+(defun move-pair (pair &optional (direction (one-or-minus-one)))
+  (let* (;;(direction (one-or-minus-one))
+	 (x1 (random 2)) ;; x1=1;x2=0 or x1=0;x2=1
+	 (x2 (- 1 x1))) 
+    (list
+     (nat-add (car pair) (* x1 direction))
+     (nat-add (cadr pair) (* x2 direction)))))
+
+(defun increase-pair (pair)
+    "either move numerator up or denominator down"
+    (destructuring-bind
+     (n d) pair
+     (if (= 1 d)
+	 (list (1+ n) d)
+	 (if (zerop (random 2))
+	     (list (1+ n) d)
+	     (list n (1- d))))))
+
+
+
+(defun decrease-pair (pair)
+  "either move car down or caddr up"
+  ;; hahahahahhahaha
+  (reverse (increase-pair (reverse pair))))
+
+(move-pair '(3 4) -1)
+(decrease-pair '(1 1))
+
+(defun bass-constraint (pair)
+  " if pair is greater than 4, double denominator and cannonize
+    if pair is less than 1/4, double numerator and cannonize"
+  (destructuring-bind
+	(n d) pair
+    (cond ((> n (* 4 d))
+	   (cannonize (list n (* 2 d))))
+	  ((> d (* 4 n))
+	   (cannonize (list (* 2 n) d)))
+	  (t pair))))
+
+(bass-constraint '(1 15))
+
+(defun orchestra-maker ()
+  (let ((bass '(1 1))
+	(tenor '(2 1))
+	(alto '(3 2))
+	(saprano '(4 1))
+	(saprano-direction 1)
+	(time 0)
+	(self nil))
+    (setf self
+	  (list
+	   :get-freqs
+	   (lambda ()
+	     (let ((freqs (mapcar #'pair->frac (list bass tenor alto saprano))))
+	       (cons (car freqs) (mapcar (lambda (x) (* x (car freqs))) (cdr freqs)))))
+	   :get-bass (lambda () (* 440.0 (pair->frac bass)))
+	   :get-tenor (lambda () (* 440.0 (pair->frac tenor)))
+	   :get-alto (lambda () (* 440.0 (pair->frac alto)))
+	   :get-saprano (lambda () (* 440.0 (pair->frac saprano)))
+	   :get-pairs
+	   (lambda ()
+	     (list bass tenor alto saprano))
+	   :step
+	   (lambda ()
+	     (if (mero time 9)
+		   (setf bass (bass-constraint (move-pair bass))))
+
+	     (if (mero time 3)
+		 (progn
+		   (setf tenor (cannonize (move-pair tenor)))
+		   (setf alto (move-pair alto))
+		   (if (< (pair->frac alto) (pair->frac tenor))
+		       (setf alto (increase-pair alto)))
+		   (setf saprano (move-pair (frac->pair (* 2 (pair->frac tenor)))))
+		   (setf saprano-direction (one-or-minus-one))))
+
+	     (setf saprano (move-pair saprano saprano-direction))
+	     (incf time)
+	     (print (@ self :get-pairs))
+	     (@ self :get-pairs))))))
+
+
+(defun closure-cycle-instrument-maker (freq-closure oscillator freq-slider cycle-trigger)
+  (lambda () (if (and (f cycle-trigger)
+		      (not (null (f freq-closure))))
+		 (@ freq-slider :set-target (f freq-closure)))
+	  (@ oscillator :set-freq (@ freq-slider :step))
+	  (@ oscillator :step)))
+
+
+(defun closure-player-maker (fun speed)
+  " pass in a fun which is called every step for instrument freq"
+  (closure-cycle-instrument-maker 
+   fun
+   (triange-wave-maker (f fun))
+   (slider-maker (f fun) 3.5)
+   (cycle-trigger-maker speed)))
+(yes 10)
+
+(mapcar #'* '(1 2 3) '(9 9 0))
+(reduce #'+ '(1 2 3))
+
+(defun merge-sum (ls1 ls2)
+  "dot produce then sum"
+  (reduce #'+ (mapcar #'* ls1 ls2)))
+
+(defun yes (duration)
+  (let* ((temp1 '(0 0 0 0))
+	 (speed 3)
+	 (left-balance '(0.1 0.25 0.25 0.4))
+	 (right-balance '(0.4 0.25 0.25 0.1))
+	 (orchestra-cycle-trigger (cycle-trigger-maker 3))
+	 (orchestra (orchestra-maker))
+	 (bass (closure-player-maker (getf orchestra :get-bass) speed))
+	 (tenor (closure-player-maker (getf orchestra :get-tenor) speed))
+	 (alto (closure-player-maker (getf orchestra :get-alto) speed))
+	 (saprano (closure-player-maker (getf orchestra :get-saprano) speed)))
+    (trivial-with-audio (:duration duration)
+      (if (= *channel 0)
+	  (progn
+	    (if (f orchestra-cycle-trigger)
+		(@ orchestra :step))
+	    (setf temp1 (list (f bass) (f tenor) (f alto) (f saprano)))
+	    (merge-sum temp1 left-balance))
+	  (merge-sum temp1 right-balance)))))
+(yes 5)
+	  
 (defun white-noise ()
   (- 0.5 (/ (random 100) 100)))
+
+(defun nat (x)
+  (if (<= x 0) 1 x))
+(defun maybe-trim (x)
+  (if (and (> x 7) (zerop (random (nat (- 15 x)))))
+      (1- x)
+      x))
+
+
+(defun reduce-highs (pair)
+  " if n or d is greater than 7, is might get decremented"
+  (mapcar #'maybe-trim pair))
+
+(yes 100)
+(defparameter *kill* nil)
+(defparameter *kill* t)
+
+;; version two
+(defun orchestra-maker ()
+  (let ((bass '(1 1))
+	(tenor '(2 1))
+	(alto '(3 2))
+	(saprano '(4 1))
+	(saprano-direction 1)
+	(time 0)
+	(self nil))
+    (setf self
+	  (list
+	   :get-freqs
+	   (lambda ()
+	     (let ((freqs (mapcar #'pair->frac (list bass tenor alto saprano))))
+	       (cons (car freqs) (mapcar (lambda (x) (* x (car freqs))) (cdr freqs)))))
+	   :get-bass (lambda () (* 440.0 (pair->frac bass)))
+	   :get-tenor (lambda () (* 440.0 (pair->frac tenor)))
+	   :get-alto (lambda () (* 440.0 (pair->frac alto)))
+	   :get-saprano (lambda () (* 440.0 (pair->frac saprano)))
+	   :get-pairs
+	   (lambda ()
+	     (list bass tenor alto saprano))
+	   :step
+	   (lambda ()
+	     (if (mero time 9)
+		   (setf bass (bass-constraint (move-pair bass))))
+
+	     (if (mero time 3)
+		 (progn
+		   (setf tenor (cannonize (move-pair tenor)))
+		   (setf alto (reduce-highs (move-pair alto)))
+		   (if (< (pair->frac alto) (pair->frac tenor))
+		       (setf alto (increase-pair alto)))
+		   (setf saprano (move-pair (frac->pair (* 2 (pair->frac tenor)))))
+		   (setf saprano-direction (one-or-minus-one))))
+
+	     (setf saprano (move-pair saprano saprano-direction))
+	     (incf time)
+	     (print (@ self :get-pairs))
+	     (@ self :get-pairs))))))
+
+
