@@ -1,11 +1,16 @@
 
+Hi! I'm Max Williams. I program computers, sometimes they even do things. I think the most
+beneficial thing to do with my life is contribute to AI safety/AI alignment research. The most 
+interesting (and most harmful) thing I could do is to research AI technology with no regard to
+safety. 
+
 # Current Stuff
 
 ## Undergraduate at UofL
 
 I'm studying Computer Engineering and Computer Science, with a Math minor.  While I tend to learn
 more in my own projects than in curriculum, I also know I wouldn't be able to do it without the
-scheduled and mandated learning environment filled with skilled professors and deadlines.
+scheduled and mandated learning environment filled with deadlines and skilled professors. 
 
 ## Research Project 
 
@@ -22,25 +27,40 @@ to go about making proxies that give useful adversarial examples is the challeng
 
 I'm working on an RNN that emulates a spring-mass system, and seeing if the standard way of creating
 adversarial input will discover how to make a sine wave at resonance to maximize displacement. This
-is starting to sound like a poor substitute for reinforcement learning, I'll have to consider where
-that lies.
+is starting to sound like a poor substitute for reinforcement learning, but I need to actually do
+experiments before I can know anything.
 
 ## Lisp
 
-This website it written in lisp, using the `hunchentoot cl-who parenscript` stack. Why do this when
-I already know how to use python's flask and javascript and a few python templating and reverse
-templating systems? Because this is more fun! Also, it is much nicer. When you makes a website in
-python, you have your routing and your templates and some glue here and there. If you want to makes
-a template for a template or functions that return template bits, it all gets confusing and hacky.
-In lisp, everything is already confusing and hacky! So you can go about and mix several mini
-languages without ever loosing the main language.
+I made this website using lisp, which was a lot of fun. The [fun](/fun) pages are all lisp functions
+that do things, but the website architecture was the trickiest part. I'm not really sure what I did, 
+but it sure is neat. 
 
-Lisp also allows you to turn your architecture ideas into programming constructs. This website uses
-a "define-url-fn" macro that I adapted from a similar one, which allows for functions defined
-in that way to be registered on the `/fun/` page and provides a url based on the name of the
-function. And it's all done at compile time, so there's no performance difference than if you did it
-all painstakingly by hand. By using this macro to define these functions, there's no way you could
-ever forget to register a function with the routing parts.
+I'm also working on some DSP stuff, [here](https://www.youtube.com/watch?v=CjsbYHC7b1g) is a sample
+of my first attempt. Maybe I'll make more, with some percussion and more interesting virtual
+instruments.
+
+## Internship Hunting
+
+Like many people my age, I have grand ideas about what I want to do with my life but I have trouble
+visualizing exactly what they would look like. I really enjoyed programming robots in high school, 
+I also like doing math stuff for fun and exploring math things using programming. The corporate
+software development world looks soulless and unproductive, like a big hamster wheel that consumes
+man hours and keeps alive the collective conciousness of the business. Maybe I'm wrong, and making
+software for Microsoft would actually be really enjoyable. 
+
+My summer internship working on MAST-ML
+made me think that making software for researchers is a valuable thing to do, since many researchers
+write software for their own use and don't adhere to coding standards or development paradigms. They
+get the job done but aren't left with something useful for others, and so a lot of work is wasted
+doing the same tasks over and over again. Almost all software I used in the bioinformatics world was
+hacky and under-documented.
+
+My dream is to do actual good for the AI safety community, but it's such a turbulent field and it's
+hard to tell what skills will be useful. Will being a better programmer make me more useful, or is
+general programming skill too general to be genuinely useful? Worse still, my experience with lisp
+has made me think that "general programming skill" means "learning to work within a weak and
+idiosyncratic model of thinking that's been practically unchanged for decades".
 
 # Past Stuff
 
@@ -52,5 +72,33 @@ Wisconsin. We worked full time for 10 weeks and worked with the main developer, 
 understand how the software did and didn't work, and made a rewrite which is now the main branch. We
 learned many lesson about software development; it was the first time either of us has worked on a
 project of that scale. Most of our time was spend considering how to approach a problem, and when to
-break a model to allow for some functionality. For instance, we wanted to:
+break a model to allow for some functionality. For instance, we wanted to allow data columns control
+test and train data splits, which broke the pattern of data splitters not needing access to the actual 
+data cells. 
+
+## Informatics Lab Internship
+
+During my Sophomore year, I assisted the bioinformatics lab with some data tasks, neural network
+programming in Keras, and typesetting their paper in Latex, word, and then Latex again. I made
+several figures programmatically using Latex's tikz package, which was fun. I also got very good at
+typesetting formulas.
+The final version of the paper is
+[here](https://ir.library.louisville.edu/cgi/viewcontent.cgi?article=4082&context=etd).
+
+## Vex Robotics 
+
+In high school I was on one of my high school robots teams, 5454J. We only had 4 people on our team
+so all of us did a little bit of everything. We spent most of our time taking the robot apart and 
+trying to fix things being weak and slow and wobbly. [Here](https://www.youtube.com/watch?v=QdJfA6GkgFk)
+is a snippet of the arm robot we took to Worlds in 2015. We tended to go for the long shot and make 
+unusual designs with the hope that we would get an edge that no one else had. This didn't really work
+that well but we had a lot of fun.
+
+## Exchange Year in Thailand
+
+I spent my senior year on a rotary exchange in Thailand. I stayed with three wonderful families
+for a total of nine months, and went on a few rotary organized trips with the other exchange
+students. [Here](http://thaipie.blogspot.com/) is my blog from the trips and other side adventures. 
+I can also read/write/converse on a pretty good level, but since I've been away for so long I would
+need to reacclimate to have a non-ridiculous accent and ease of speaking.
 

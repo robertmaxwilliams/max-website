@@ -18,6 +18,7 @@
                (:file "blog")
                (:file "max-website")
                (:file "pascals-triangle")
+               (:file "undecide")
                (:file "visjs-helpers")
                (:file "url-funs")))
 

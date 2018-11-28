@@ -40,6 +40,8 @@
 		   (:a :class "headlink" :href "/blog" "BLOG")
 		   (:a "&middot;")
 		   (:a :class "headlink" :href "/fun" "FUN")
+		   (:a "&middot;")
+		   (:a :class "headlink" :href "/about" "ABOUT")
 		   (:br)
 		   (:span :class "strapline"
 			  "Max website dot website"))

@@ -112,12 +112,58 @@
 	      (list other-result)
 	      nil))))
 
-(inverse-collatz 1)
-(next-collatz 0)
-  
+(defparameter *foo* 0)
+(defun foo-counter ()
+  (setf *foo* (1+ *foo*))
+  (if (zerop (mod *foo* 10000)) t))
+(foo-counter)
+
+(defun find-double (n)
+  (let ((next-colls (inverse-collatz n)))
+    (if (> (length next-colls) 1)
+	(format t "FOUND IT!!!! ~a" next-colls)
+	(progn
+	  (if (foo-counter) (format t "Found only one, with ~a digits.~%" (log (car next-colls) 10)))
+	  (find-double (car next-colls))))))
+;;(find-double 42)
+;;(inverse-collatz 42)
+;;(next-collatz 0)
+;;
+;;(cadr '(4 (8 16)))
+;;(cadr '(4 8))
+
+(defun value-to-split (n)
+  (cons n (inverse-collatz n)))
+;;(value-to-split 16)
+;;'(16 32 5)
+(defun values-to-splits (ns)
+  (loop for n in ns
+     collect (value-to-split n)))
+(values-to-splits '(32 5))
+
+(defun grow-tree (tree)
+  (cond ((null tree) nil)
+	((atom (cadr tree))
+	 (cons (car tree)
+	       (values-to-splits (cdr tree))))
+	(t (cons (car tree) (loop for rast in (cdr tree)
+				 collect (grow-tree rast))))))
+
+;;(grow-tree '(4 (8 16)))
+;;(grow-tree (grow-tree '(4 (8 16))))
+;;(grow-tree (grow-tree (grow-tree '(4 (8 16)))))
+(defun n-times (fun n x)
+  " calls fun n times on x"
+  (if (zerop n)
+      x
+      (funcall fun (n-times fun (1- n) x))))
+;;(n-times #'1+ 4 4)
+;;(pprint (n-times #'grow-tree 8 '(4 8)))
+;;(grow-tree '(4 (8 16)))
+;;(cadr '(4 (8 16)))
       
 ;;(bstring 5)
-(list 'foo (lambda (x) 5))
+;;(list 'foo (lambda (x) 5))
 
 (defun inverse-collatz-grower-maker (starting-list)
   (list
@@ -138,24 +184,24 @@
   (apply (cdr (assoc key alist)) args))
 
 ;; minimal example of structure it works on
-(dot (list (cons 'foo #'(lambda (x y) (+ x y)))) 'foo 4 2)
+;;(dot (list (cons 'foo #'(lambda (x y) (+ x y)))) 'foo 4 2)
 ;; >> 6
 
-(defvar foo1 (inverse-collatz-grower-maker '(1)))
+;;(defvar foo1 (inverse-collatz-grower-maker '(1)))
 ;; >> foo1
 
-(dot foo1 'get-starting-list)
-;; >> (1)
-(dot foo1 'set-starting-list '(1 2 3))
-;; >> (1 2 3)
-(dot foo1 'expand-n 1)
-;; >> (0 1 2 3) ;; 0 should be redacted ;(
-(dot foo1 'expand-n 2)
-;; >> (4 0 1 2 3)
-(dot foo1 'expand-n 3)
-;; >> (6 4 0 1 2 3)
-(dot foo1 'expand-n 4)
-;; >> (8 6 4 0 1 2 3)
+;;(dot foo1 'get-starting-list)
+;;;; >> (1)
+;;(dot foo1 'set-starting-list '(1 2 3))
+;;;; >> (1 2 3)
+;;(dot foo1 'expand-n 1)
+;;;; >> (0 1 2 3) ;; 0 should be redacted ;(
+;;(dot foo1 'expand-n 2)
+;;;; >> (4 0 1 2 3)
+;;(dot foo1 'expand-n 3)
+;;;; >> (6 4 0 1 2 3)
+;;(dot foo1 'expand-n 4)
+;;;; >> (8 6 4 0 1 2 3)
 
 
 
@@ -164,7 +210,7 @@
       (remove-duplicates (append ls (inverse-collatz n)))
       ls))
 
-(inverse-grow-collatz '(1) 1)
+;;(inverse-grow-collatz '(1) 1)
 
 (defun grow-collatz-graph-edges (nodes-edges n)
   "adds links from inverses of n to n."
@@ -185,6 +231,6 @@
 	nodes-edges)))
   
 
-(let ((nodes-edges '((1 2 4 8 16 5 32)
-		     ((2 1) (1 4) (4 2) (8 4) (16 8) (5 16) (32 16)))))
-  (grow-collatz-graph-edges nodes-edges 32))
+;;(let ((nodes-edges '((1 2 4 8 16 5 32)
+;;		     ((2 1) (1 4) (4 2) (8 4) (16 8) (5 16) (32 16)))))
+;;  (grow-collatz-graph-edges nodes-edges 32))

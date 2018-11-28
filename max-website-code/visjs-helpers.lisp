@@ -76,7 +76,7 @@ Does not acknowledge lisp2, aka all symbols are fair game."
 		:highlight (create :background "#FFD2D2" :border "#E92A2A")))
       (defvar *leaves* '(4)) ;; nodes that have been added but not used
       (defun rand ()
-	(* 100 (chain -math (random))))
+	(* 10 (chain -math (random))))
       (defun push (obj arr)
 	(chain arr (push obj)))
       (defun zerop (x)
@@ -91,12 +91,14 @@ Does not acknowledge lisp2, aka all symbols are fair game."
 	       (offset-y (- 100 offset-x))
 	       (new-node (create :id n :label (-string n)
 				 :x (+ offset-x x) :y (+ offset-y y)
+				 :scaling (create :max 100 :min 90 :label t)
+				 :shape 'circle
 				 :color (if (oddp n)
 					    *red-node-color*
 					    *blue-node-color*))))
 	  (ignore-errors (chain *nodes* (add new-node)))))
       (defun add-edge (from to)
-	(chain *edges* (add (create :from from :to to :arrows 'to))))
+	(chain *edges* (add (create :from from :to to :arrows 'to :length 20))))
       (defun member (x arr)
 	(chain arr (includes x)))
       (defun remove-duplicates (arr)

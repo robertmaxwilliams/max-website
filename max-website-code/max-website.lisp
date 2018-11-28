@@ -26,8 +26,10 @@ calls to define-url-fn"
 	  (create-regex-dispatcher "^/blog$" 'controller-blog)
 	  (create-regex-dispatcher "^/blog/*" 'controller-blog-a-blog)
 	  (create-prefix-dispatcher "/fun" 'controller-fun)
+	  (create-prefix-dispatcher "/about" 'controller-about)
 	  (create-regex-dispatcher "^/fun/*" 'controller-404)
 	  (create-folder-dispatcher-and-handler "/images/" *images-dir*)
+	  (create-folder-dispatcher-and-handler "/files/" *files-dir*)
 	  (create-regex-dispatcher "^/principia-discordia/$" 'redirect-page-1)
 	  (create-regex-dispatcher "^/principia-discordia$" 'redirect-page-1)
 	  (create-folder-dispatcher-and-handler "/principia-discordia/" *principia-dir*)
@@ -57,7 +59,7 @@ recompiles *dispatch-table*."
   (let ((url (format nil "/fun/~(~a~)" name)))
     `(progn
        (let ((*my-url ,url)) ;; wrapping in let to make *my-url available
-	 (declare (ignore *my-url));;to get rid of warning when not used, which is usualy
+	 (declare (ignorable *my-url));;to get rid of warning when not used, which is usualy
 	 (defun ,name ()
 	   ,@body))
        (push (create-prefix-dispatcher ,url ',name)
@@ -75,6 +77,14 @@ recompiles *dispatch-table*."
 	 :class "logo"
 	 :style "center;")
    (markdown (truename #p"bio.md") :stream html-stream)))
+
+(defun controller-about ()
+ (standard-page (:title "About")
+   (:h1 "How did this website?")
+   (:img :src "/images/lisplogo_fancy_trans_256.png"
+	 :alt "Lisp Alien, credit to Conrad Barski"
+	 :style "center; height: 150px")
+   (markdown (truename #p"about.md") :stream html-stream)))
 
 
 (defun controller-hello ()

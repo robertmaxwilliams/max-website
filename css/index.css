@@ -80,3 +80,15 @@ a.button {
     padding: 2px;
     display: inline;
 }
+
+/* this hack is genius */
+textarea {
+    background: url(/images/linenums.png);
+    background-attachment: local;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+    padding-top: 11px;
+    border-color: #ccc;
+    background-color: white;
+    line-height: 16px;
+}

@@ -162,3 +162,58 @@
 			      (lambda (params) (add-inverses-to-graph
 						(aref (@ params 'nodes) 0)))))))))
 
+
+(define-url-fn (minsky-register-machine-sim)
+    "probably a vunerability"
+    (let* ((codestring (str:trim (default-value "inc 0" (parameter "code"))))
+           (datastring (str:trim (default-value "0 0 0 0" (parameter "data"))))
+	   (foo (format t "~%~%CODE FROM USER WATCH OUT ~%~a ~%~%" codestring)) ;;debug print
+	   (output-array (read-eval-mrm (format nil "list ~a~%~a" datastring codestring)))
+	   (oa-as-string (format nil "~a" output-array)))
+      (standard-page (:title "Minsky Machine")
+	(:h1 "Minsky Register Machine Simulator")
+	(htm (markdown "
+## How To Use This Machine
+
+This machine has two parts: an array of integers (the memory) 
+and a list of instructions (the code)
+
+This machine only has two instructions: `inc` and `branch`. They take the following arguments:
+
+`inc <memory index>` will increment the integer at that memory cell
+
+`branch <memory index> <codepoint a> <codepoint b>` will first check if the integer at `<memory index>`
+is greater than zero. If it is, it decrements that integer and jumps to `<codepoint a>`. Otherwise, it
+jumps to `<codepoint b>` without decrementing the memory cell's value.
+
+Examples (the first line goes in the data input box, the rest goes in the line numbered code box:
+TODO handle nils correctly
+
+    0 0 1 0
+
+    inc 0
+
+result: `#(1 0 1 0)`
+
+    0 0 0 1 0
+
+    inc 0
+    inc 1
+    branch 0 4 5
+    inc 0
+    inc 0
+    inc 0
+
+result: `#(2 1 0 1 0)`
+
+
+
+" :stream html-stream))
+	(:br) (:br)
+	(:p :id "output" "Output: " (:br) (str oa-as-string))
+	(:form :action (str (format nil "~a#~a" *my-url "output")) :method "post" :id "codeform"
+	       (:input :type "submit" :value "Go")
+	       (:br)
+	       (:input :type "text" :name "data" :value (str datastring))
+	       (:br)
+	       (:textarea :cols 50 :rows 100 :name "code" (str codestring))))))

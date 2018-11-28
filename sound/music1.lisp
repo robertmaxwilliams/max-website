@@ -35,26 +35,9 @@
 					 (float ,@body))))
 			   arr)))))))
 
-;; redoing many of the wave functions to be stateful instruments, makes it easier to
-;; slide frequency without creating artifacts
-;; I think I'll make them all closures just for consistency, and
-;; end their names with "-maker"
-(defun let-over-lambdas () 
-  " returns a property list with umm some lambdas and such. Use this pattern like class."
-  (let ((x 0)) ;; x is the value we return every call
-    (list
-     :increment (lambda () (incf x))
-     :decrement (lambda () (incf x -1)))))
-;;(defvar quuzer (let-over-lambdas))
-;;(print quuzer)
-;;(getf quuzer :increment)
-
 (defmacro @ (plist property &body args)
     " just like accessing a member function or watever "
   `(funcall (getf ,plist ,property) ,@args))
-
-;;(@ quuzer :increment)
-;;(@ quuzer :decrement)
 
 ;; basic wave classes
 ;; use plist closures for standard
@@ -79,6 +62,25 @@
 	       (* direction x)))
      :get-x (lambda () (* direction x))
      :set-freq (lambda (new-freq) (setf freq new-freq)))))
+
+
+(defun spring-mass-maker ()
+  (let ((x 1.0)
+	(v 0.0)
+	(k -0.1) ;; spring constant
+	(b 0.99)) ;; damping
+    (list
+     :step (lambda ()
+	     (progn
+	       (incf v (* x k))
+	       (setf v (* v b))
+	       (incf x v)))
+     :reset (lambda () (setf x 1.0)))))
+
+;;(defvar foo (spring-mass-maker))
+;;(@ foo :step)
+
+
 
 (defun slider-maker (starting-val slowness)
   (let ((x (float starting-val))
@@ -116,26 +118,6 @@
 (defun trash (arg)
   (declare (ignore arg)))
 
-  
-(let ((in1 (triange-wave-maker 440))
-      (in2 (triange-wave-maker 100))
-      (delay (delay-kyu-maker (* *sps* 2) 0.0)))
-  (trivial-with-audio (:duration 5)
-    (if (= *channel 0)
-	(@ in1 :step)
-	(* 3 (funcall delay (@ in2 :step))))))
-
-(let ((in1 (triange-wave-maker 440))
-      (in1f (slider-maker 440 4)))
-  (trivial-with-audio (:duration 3)
-    (progn
-      (if (= *channel 0)
-	  (progn 
-	    (if (> *time *sps*) (@ in1f :set-target 220))
-	    (@ in1 :set-freq (@ in1f :step))
-	    (@ in1 :step))
-	  (@ in1 :get-x)))))
-
 ;; short alias for funcall
 (defmacro f (fun &rest args)
   `(funcall ,fun ,@args))
@@ -147,8 +129,8 @@
        (progn ,@body)
        ,temp1)))
 
-(let ((x 5))
-  (return-after x (incf x)))
+;;(let ((x 5))
+;;  (return-after x (incf x)))
 
 
 (defun cycle-trigger-maker (freq &key (first-time nil))
@@ -163,7 +145,7 @@
 (defun play-list (ls &optional (speed 4))
   (let ((in1 (triange-wave-maker (car ls)))
 	(in1f (slider-maker (car ls) 3))
-	(ct (cycle-trigger speed)))
+	(ct (cycle-trigger-maker speed)))
     (trivial-with-audio (:duration (/ (+ 3 (length ls)) speed))
       (progn
 	(if (= *channel 0)
@@ -253,8 +235,15 @@
   ;; hahahahahhahaha
   (reverse (increase-pair (reverse pair))))
 
-(move-pair '(3 4) -1)
-(decrease-pair '(1 1))
+
+
+(defun pair->frac (pair)
+  (/ (car pair) (cadr pair)))
+
+(defun frac->pair (frac)
+  (list (numerator frac) (denominator frac)))
+
+
 
 (defun bass-constraint (pair)
   " if pair is greater than 4, double denominator and cannonize
@@ -266,8 +255,6 @@
 	  ((> d (* 4 n))
 	   (cannonize (list (* 2 n) d)))
 	  (t pair))))
-
-(bass-constraint '(1 15))
 
 (defun orchestra-maker ()
   (let ((bass '(1 1))
@@ -325,10 +312,6 @@
    (triange-wave-maker (f fun))
    (slider-maker (f fun) 3.5)
    (cycle-trigger-maker speed)))
-(yes 10)
-
-(mapcar #'* '(1 2 3) '(9 9 0))
-(reduce #'+ '(1 2 3))
 
 (defun merge-sum (ls1 ls2)
   "dot produce then sum"
@@ -353,7 +336,6 @@
 	    (setf temp1 (list (f bass) (f tenor) (f alto) (f saprano)))
 	    (merge-sum temp1 left-balance))
 	  (merge-sum temp1 right-balance)))))
-(yes 5)
 	  
 (defun white-noise ()
   (- 0.5 (/ (random 100) 100)))
@@ -370,9 +352,13 @@
   " if n or d is greater than 7, is might get decremented"
   (mapcar #'maybe-trim pair))
 
-(yes 100)
-(defparameter *kill* nil)
-(defparameter *kill* t)
+
+
+
+
+;;(yes 1000)
+;;(defparameter *kill* nil)
+;;(defparameter *kill* t)
 
 ;; version two
 (defun orchestra-maker ()
@@ -403,7 +389,7 @@
 
 	     (if (mero time 3)
 		 (progn
-		   (setf tenor (cannonize (move-pair tenor)))
+		   (setf tenor (reduce-highs (move-pair tenor)))
 		   (setf alto (reduce-highs (move-pair alto)))
 		   (if (< (pair->frac alto) (pair->frac tenor))
 		       (setf alto (increase-pair alto)))
@@ -414,5 +400,6 @@
 	     (incf time)
 	     (print (@ self :get-pairs))
 	     (@ self :get-pairs))))))
+
 
 
