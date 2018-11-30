@@ -58,6 +58,11 @@
       (adjust-array array (list (+ index 5)) :initial-element 0))
   (decf (aref array index))
   array)
+
+
+(let ((foo #(1 2 3 4)))
+  (safe-dec foo 0)
+  foo)
 "
 Instruction I_n: Increment a_n
 and go on to instruction I_n1
@@ -79,6 +84,8 @@ go to instruction I_n2 .
 ;;)
 ;;
 
+(defun ignore-var (x)
+  (declare (ignorable x)))
 
 (defun minsky-register-machine (instructions &optional initial-memory)
   " creates compilable code for given mrm "
@@ -88,6 +95,7 @@ go to instruction I_n2 .
 		      :initial-contents ,initial-memory
 		      :adjustable t))
 	 (jump-count 0)) ;; project against infinite loops and long programs that don't halt
+     (ignore-var jump-count)
      (tagbody
 	,@(loop for instr in instructions
 	     for i from 0
@@ -98,7 +106,7 @@ go to instruction I_n2 .
 			    `(progn
 			       (incf jump-count)
 			       (if (> jump-count 100000) (error "jump count exceeded"))
-			       (if (> 0 (safe-aref memory ,(cadr instr)))
+			       (if (< 0 (safe-aref memory ,(cadr instr)))
 				   (progn
 				     (safe-dec memory ,(cadr instr))
 				     (go ,(caddr instr)))
@@ -126,31 +134,177 @@ go to instruction I_n2 .
 	 (funcall checkfun ls))
 	(t
 	 (and (recursive-all checkfun (car ls)) (recursive-all checkfun (cdr ls))))))
-(recursive-all #'integerp '(1 2 (1 2 3) (a) 3))
 
-(defun read-eval-mrm (description-string)
-  (let ((codestring
-	 (with-output-to-string (codestream)
-	   (with-input-from-string (s description-string)
-	     (format codestream "((~a)~%" (read-line s nil))
-	     (do ((line (read-line s nil) ;; var init-form
-			(read-line s nil))) ;; step=form
-		 ((null line) (format codestream ")"))
-	       (format codestream "(~a)~%" line))))))
-    (with-input-from-string (s codestring)
-      (let ((forms (read s)))
-	(pprint forms)
-	;; assert for safety before eval. Still has read vunerabilities but wattaya gonna do about it
-	(assert (recursive-all (lambda (x) (or (integerp x)
-					       (string= x 'list)
-					       (string= x 'inc)
-					       (string= x 'branch)))
-			       forms))
-	(setf forms (remove nil forms)) ;; remove bottom level nils
-	(if (not (string= 'list (caar forms))) ;; if starts on a code line
-	    (setf forms (cons nil forms))) ;; prepend an empty list
-	(eval (minsky-register-machine (cdr forms) (car forms)))))))
+;;(recursive-all #'integerp '(1 2 (1 2 3) (a) 3))
 
+(defun accumulate-stream (stream end-fun)
+  " lists chars from stream until end-fun returns false on one,
+    then put that char back and return "
+  (let ((pchar (read-char stream nil 'end-of-stream)))
+    (cond
+      ((eql pchar 'end-of-stream) nil)
+      ((funcall end-fun pchar)
+       (progn
+	 (unread-char pchar stream)
+	 nil))
+      (t (cons pchar (accumulate-stream stream end-fun))))))
+
+  
+;;(with-input-from-string (s "foo bar")
+;;  (coerce (accumulate-stream s (lambda (x) (char= x #\Space)))
+;;	  'string))
+
+(defun any (ls)
+  (some #'identity ls))
+(defun all (ls)
+  (every #'identity ls))
+(defmacro maplambda (lambda-list lambda-form &rest list-args)
+  `(mapcar (lambda ,lambda-list ,lambda-form) ,@list-args))
+
+;;(all '(t t t))
+;;(maplambda (x) (+ x 1) '(2 3 4))
+
+(defparameter +whitespace+ (list #\Space #\Newline #\Tab #\Return #\Linefeed))
+
+(defun read-symbol (stream)
+  "reads chars from stream to form string or int and returns it"
+  (let ((char-list 
+	 (accumulate-stream
+	  stream
+	  (lambda (c) ;; like python (c in ['\n', ' '])
+	    (any (maplambda (x) (char= x c) (append (list #\( #\) ) +whitespace+)))))))
+    (if (all (mapcar #'digit-char-p char-list))
+	(parse-integer (coerce char-list 'string))
+	(coerce char-list 'string))))
+
+(with-input-from-string (s "31d")
+  (read-symbol s))
+
+(defun trivial-read (stream)
+  " reads string for sexp into list of strings "
+  (if (stringp stream) ;; convenience for strings
+      (with-input-from-string (s stream) (trivial-read s))
+      (let ((char (read-char stream nil 'end-of-stream)))
+	(cond ((eql char 'end-of-stream)
+	       nil)
+	      ((char= char #\( )
+	       (cons (trivial-read stream) (trivial-read stream)))
+	      ((char= char #\) )
+	       nil)
+	      ((any (maplambda (x) (char= x char) +whitespace+))
+	       (trivial-read stream))
+	      (t ;; read until space or ) is found, and intern as symbol
+	       (progn
+		 (unread-char char stream)
+		 (cons (read-symbol stream) (trivial-read stream))))))))
+
+(trivial-read "     fooo 0 1 2")
+
+
+(mapcar #'trivial-read (str:lines " branch 0 1 3
+inc 1
+branch 4 0 0
+inc 4 "))
+;;(with-input-from-string (s "(foo
+;;
+;;   bar (bar 32 foo) bar)")
+;;  (trivial-read s))
+
+;;(trivial-read "foo bar rsoco")
+
+;;(string= 'bar (make-symbol "bar"))
+
+;;(make-symbol "bar")
+;;(intern "bar")
+
+;;(loop for sym in '(foo bar rosco)
+;;   collect (cons (symbol-name sym) sym))
+;;(let* ((symbols '(foo bar rocat))
+;;       (fob (pairlis (mapcar #'symbol-name symbols) symbols)))
+;;  (string-lookup fob "truck"))
+
+
+(defun string-lookup (key alist)
+    (cdr (assoc key alist :test #'string-equal)))
+(string-lookup "foo" '(("bar" . bar) ("foo" . foo)))
+
+(defun error-if-null (x &optional (message "That was supposed to be non-null"))
+  (if x
+      x
+      (error message)))
+
+(defun recursive-symbol-swap (ls symbols)
+  " recurs through ls. integers pass through, strings try to convert to symbols
+    raises error if string not in symbols"
+  (let ((name-to-sym (pairlis (mapcar #'symbol-name symbols) symbols)))
+    (recursive-symbol-swap-helper ls name-to-sym)))
+
+(safe-aref #(0 2 3) 0)
+
+
+(defun recursive-symbol-swap-helper (ls str->sym)
+  " does the recursion because im a bad programmer "
+  (cond
+    ((null ls) 
+      nil)
+    ((stringp ls) (error-if-null (string-lookup ls str->sym)
+				 (format nil "~s not in ~a" ls str->sym)))
+    ((integerp ls) ls)
+    ((not (atom ls)) (cons (recursive-symbol-swap-helper (car ls) str->sym)
+			   (recursive-symbol-swap-helper (cdr ls) str->sym)))
+    (t (error "yuh mesd up"))))
+
+;;(recursive-symbol-swap '("foo" ("foo" 4 "truck" "bar" 5) "bar") '(foo bar))
+;;(ql:quickload :str)
+;;(use-package :str)
+
+(defun read-eval-mrm (data-string code-string)
+  (let* ((data (trivial-read data-string))
+	 (code (mapcar #'trivial-read (str:lines code-string)))
+	 (butts (format t "~%[DEBUG] ~%DATA: ~a~%CODE: ~%~a~%" data code))
+	 (code-symbols (recursive-symbol-swap code '(inc branch))))
+    (assert (every #'integerp data))
+    (setf data (cons 'list data))
+    (format t "[COMPOLED]~%~a~%~%" (minsky-register-machine code-symbols data))
+    (eval (minsky-register-machine code-symbols data))))
+
+(read-eval-mrm "4 0 0 0 0"
+	       " branch 0 1 3
+		inc 1
+		branch 4 0 0
+		inc 4 ")
+
+(coerce (caadr (mapcar #'trivial-read
+	(str:lines "    branch 0 1 3
+		inc 1
+		branch 4 0 0
+		inc 4 "))) 'list)
+(trivial-read (car (str:lines "   basr 4
+     unbu 1 2")))
+(trivial-read "      fobor")
+;;(defun read-eval-mrm (data-string code-string)
+;;  (let ((codestring
+;;	 (with-output-to-string (codestream)
+;;	   (with-input-from-string (s description-string)
+;;	     (format codestream "((~a)~%" (read-line s nil))
+;;	     (do ((line (read-line s nil) ;; var init-form
+;;			(read-line s nil))) ;; step=form
+;;		 ((null line) (format codestream ")"))
+;;	       (format codestream "(~a)~%" line))))))
+;;    (with-input-from-string (s codestring)
+;;      (let ((forms (read s)))
+;;	(pprint forms)
+;;	;; assert for safety before eval. Still has read vunerabilities but wattaya gonna do about it
+;;	(assert (recursive-all (lambda (x) (or (integerp x)
+;;					       (string= x 'list)
+;;					       (string= x 'inc)
+;;					       (string= x 'branch)))
+;;			       forms))
+;;	(setf forms (remove nil forms)) ;; remove bottom level nils
+;;	(if (not (string= "list" (caar forms))) ;; if starts on a code line
+;;	    (setf forms (cons nil forms))) ;; prepend an empty list
+;;	(eval (minsky-register-machine (cdr forms) (car forms)))))))
+;;
 
 
 ;;(defpackage :foobar

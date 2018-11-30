@@ -168,7 +168,7 @@
     (let* ((codestring (str:trim (default-value "inc 0" (parameter "code"))))
            (datastring (str:trim (default-value "0 0 0 0" (parameter "data"))))
 	   (foo (format t "~%~%CODE FROM USER WATCH OUT ~%~a ~%~%" codestring)) ;;debug print
-	   (output-array (read-eval-mrm (format nil "list ~a~%~a" datastring codestring)))
+	   (output-array (read-eval-mrm datastring codestring))
 	   (oa-as-string (format nil "~a" output-array)))
       (standard-page (:title "Minsky Machine")
 	(:h1 "Minsky Register Machine Simulator")
