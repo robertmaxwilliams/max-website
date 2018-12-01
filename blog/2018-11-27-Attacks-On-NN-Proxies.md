@@ -47,4 +47,21 @@ showing that the concept is sound.
 There are some things where this would simply not work. For instance, it would probably be very poor
 at Mario... I think. Actually I have no idea.
 
+## Update Dec 12
+
+I have made a RNN to emulate a spring, next is the task of creating adversarial examples for it and
+applying them to the actual spring system. I realize how trick training RNN's is. So far I am
+training it on several timesteps of the real spring, and having it predict the next state of the
+spring. If it's run on its own input, is creates oscillating waves that look a lot like the spring
+but contain occasional errors and don't stay fixed at the starting point.
+
+<img src="/images/nn-wave1.gif" alt="not quite a sine wave" width="400"/>
+
+The red and purple lines are displacement and velocity, and the other horizontal lines are
+constants such as the spring constant and mass. I am very eager to apply adversarial attacks to this
+model, and find ways of securing it against adversarial attacks in such a way that adversarial
+attacks that work in this model also work on a real mass spring system.
+
+It's also quite interesting to see a fuzzy model of a not fuzzy at all phenomenon, I wonder how
+similar this is to my physics intuitions.
 
