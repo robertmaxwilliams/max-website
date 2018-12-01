@@ -114,7 +114,58 @@ go to instruction I_n2 .
 			   (t (error (format nil "instruction not known: ~a" (car instr)))))))
      memory))
 
+(defvar adder-program
+  '((branch 0 1 3)
+    (inc 2)
+    (branch 0 1 3)
+    (branch 1 4 6)
+    (inc 2)
+    (branch 1 4 6)
+    (inc 5)))
 
+(eval (minsky-register-machine adder-program #(2 3 0 0 0 0)))
+
+(defun adder-program-writer (a b result ln)
+  " ln mean linenum "
+  `((branch ,a ,(+ 1 ln) ,(+ 3 ln))
+    (inc ,result)
+    (branch ,a ,(+ 1 ln) ,(+ 3 ln))
+    (branch ,b ,(+ 4 ln) ,(+ 6 ln))
+    (inc ,result)
+    (branch ,b ,(+ 4 ln) ,(+ 6 ln))))
+
+(defun copy-program-writer (a x y ln)
+  " copies value at a to x and y "
+  `((assign ,ln current-line-number)
+    (branch ,a (+ 1 ,ln) (+ 3 ,ln))
+    (inc ,x)
+    (inc ,y)
+    (branch ,a (+ 1 ,ln) (+ 4 ,ln))))
+
+;; TODO implement parser for linenum assign
+
+;;(defvar program-2
+;;  `((inc 0) ;; 0 
+;;    (inc 0) ;; 1
+;;    (inc 0) ;; 2
+;;    (inc 1) ;; 3
+;;    (inc 1) ;; 4
+;;    ,@(copy-program-writer 1 2 3 'mylinenum) 
+;;    (inc 5)))
+;;(print program-2)
+
+;; TODO finish
+;;(defun program-parser (code &default (current-line-number 0) variables)
+;;  (cond ((null (code)
+;;	       nil))
+;;	((or (eql (caar code) 'branch)
+;;	     (eql (caar code) 'inc))
+;;	 (cons (car code) (program-parse (cdr code)) (1+ current-line-number) variables))
+;;	((eql (caar code) 'assign)
+;;	 (program-parser (cdr codr) current-line-number (cons (cons (cadar code) current-line-number))))))
+
+
+;;(eval (minsky-register-machine program-2 #(0 0 0 0 0 0)))
 ;;(minsky-register-machine
 ;; ((inc 0)
 ;;  (inc 1)
