@@ -59,7 +59,7 @@ good word of the emacs manual, I came up with this:
                   ("^\\s-*(\\(defun5\\)" 1 font-lock-keyword-face)))
 
 Figuring out that this process is known by the strange name "font lock" took as long as anything
-else. Then hardest part was noticing the `1` and `2` that could be used as the second argument. They seem
+else. Then the hardest part was noticing the `1` and `2` that could be used as the second argument. They seem
 to take the nth return from the regular expression, so that it can match `defun5` to find the
 function's name, then discard the part of the match that is `defun5`. Regular expressions are
 confusing.  
