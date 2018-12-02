@@ -1,13 +1,18 @@
 
 (ql:quickload :cl-portaudio)
+(ql:quickload :vecto)
 
 (defpackage :audio-fun
-  (:use :cl :portaudio))
+  (:use :cl :portaudio :vecto))
 
 (in-package :audio-fun)
 
 ;; set to true to kill music globaly
 (defparameter *kill* nil)
+
+;; short alias for funcall
+(defmacro f (fun &rest args)
+  `(funcall ,fun ,@args))
 
 (defmacro trivial-with-audio ((&key (duration 3)) &body body)
   " reduce boiler plate. I hate boiling plates! Supplies *i, half-earmuffed scoped var for time."
@@ -63,24 +68,282 @@
      :get-x (lambda () (* direction x))
      :set-freq (lambda (new-freq) (setf freq new-freq)))))
 
+;; this should be a functoin?
+(defun defclosure->plist-lambda (name lambdalist &rest body)
+  " converts (:foo (x) (+ x 1)) to (:foo (lambda (x) (+ x 1))) "
+  `(,name (lambda ,lambdalist ,@body)))
 
-(defun spring-mass-maker ()
-  (let ((x 1.0)
-	(v 0.0)
-	(k -0.1) ;; spring constant
-	(b 0.99)) ;; damping
-    (list
-     :step (lambda ()
-	     (progn
-	       (incf v (* x k))
-	       (setf v (* v b))
-	       (incf x v)))
-     :reset (lambda () (setf x 1.0)))))
+(defmacro defmulticlosure (name lambdalist docstring letforms &body methods)
+  (if (listp docstring) ;; optional docstring is missing, shift args by one
+      (progn
+	(setf methods (cons letforms methods))
+	(setf letforms docstring) ;;oops!
+	(setf docstring nil)))
+  `(defun ,name ,lambdalist
+     ,docstring
+     (let* ,letforms
+       (let (self)
+	 (setf
+	  self
+	  ,(cons 'list
+		 (loop for method in methods
+		    append (list (car method)
+				 (cons 'lambda (cdr method))))))
+	 (if (getf self :init) (@ self :init))
+	 self))))
 
-;;(defvar foo (spring-mass-maker))
+;;(print "")
+;;(print
+;; (macroexpand-1
+;;  '(defmulticlosure foo-maker (somearg)
+;;    ((a 5)
+;;     (b somearg))
+;;    (:foo () a)
+;;    (:bar (x) (incf a x))
+;;    (:init () (incf b)))))
+
+(defmulticlosure foo-maker (somearg)
+    ((a 5)
+     (b somearg))
+    (:foo () a)
+  (:get-b () b)
+  (:bar (x) (incf a x))
+  (:init () (incf b)))
+
+;;(defvar foo (foo-maker 4))
+;;(@ foo :get-b)
+
+
+(defun random-walk-maker ()
+  (let ((x 0.5))
+    (lambda ()
+      (incf x (/ (- (random 100) 50) 900))
+      (if (> x 1)
+	  (setf x 1.0))
+      (if (< x 0)
+	  (setf x 0.0))
+      x)))
+
+(defun walking-tone-maker (starting-freq)
+  (setf starting-freq (coerce starting-freq 'float))
+  (let* ((f starting-freq)
+	 (tone (triange-wave-maker f)))
+    (lambda ()
+      (setf f (* f (1+ (/ (- (random 101) 50) 90000))))
+      (if (< f (* 0.1 starting-freq))
+	  (setf f (* 0.1 starting-freq)))
+      (if (> f (* 10 starting-freq))
+	  (setf f (* 10 starting-freq)))
+      
+      (@ tone :set-freq f)
+      (@ tone :step))))
+
+(defun rumble-sound ()
+  (let ((foo1 (random-walk-maker))
+	(foo2 (random-walk-maker))
+	(temp 0))
+    (trivial-with-audio (:duration 500)
+      (if (= *channel 0)
+	  (setf temp (* 0.4 (+ (f foo1) (f foo2))))
+	  temp))))
+ 
+;;(let ((foo (walking-tone-maker 220.0)))
+;;  (trivial-with-audio (:duration 5)
+;;    (f foo)))
+
+;;(rumble-sound)
+
+(defun rumble-sound-with-tone ()
+  (let ((foo1 (random-walk-maker))
+	(foo2 (random-walk-maker))
+	(foo3 (random-walk-maker))
+	(tone (walking-tone-maker 220.0))
+	(temp 0))
+    (trivial-with-audio (:duration 500)
+      (if (= *channel 0)
+	  (setf temp (+ (* 0.5 (* (f tone) (f foo3))) (* 0.4 (+ (f foo1) (f foo2)))))
+	  temp))))
+
+;;(rumble-sound-with-tone)
+
+(defun spring-mass-maker (&key (k -0.01) (b 0.9999))
+  (let* ((x 1.0)
+	 (v 0.0)
+	 (freq nil) ;; measured on init
+	 ;;(k -0.01) ;; spring constant
+	 ;;(b 0.9999);; damping
+	 self) 
+    (setf
+     self
+     (list
+      :init ;; to reduce click without doing calculus
+      (lambda () (let ((time-to-fall 0.0))
+		   (loop while (> x 0)
+		      do (@ self :step)
+		      do (incf time-to-fall))
+		   (setf freq (/ *sps* (* 2 time-to-fall)))))
+      :step (lambda ()
+	      (progn
+		(incf v (* x k))
+		(setf v (* v b))
+		(incf x v)))
+      :get-vars (lambda () (list x v k b freq))
+      :set-k (lambda (new-k) (setf k new-k))
+      :get-k (lambda () k)
+      :get-x (lambda () x)
+      :reset (lambda ()
+	       (setf x 1.0)
+	       (@ self :init))))
+    (@ self :init)
+    self))
+
+(loop for ls on '(1 2 3)
+   collect ls)
+
+(defun add-to-car (x ls)
+  (if (null ls)
+      (cons x nil)
+      (cons (+ x (car ls)) (cdr ls))))
+;;(add-to-car 5 '(1 2 3))
+
+
+(defun adj-pairs (ls)
+  (loop for rest on ls
+     until (null (cdr rest))
+     collect (list (car rest) (cadr rest))))
+(adj-pairs '(1 2 3 4 5))
+
+
+(defun rand-1 ()
+  (/ (random 100) 100))
+
+(defun simple-plot (sequences file &key (width 500) (height 500) (x-width 2))
+  (vecto:with-canvas (:width width :height height)
+    (vecto:translate 45 45)
+    (vecto:set-rgb-stroke 1 0 0)
+    (vecto:set-rgba-stroke 0 0 1.0 0.5)
+    (vecto:set-line-width 2)
+    (loop for ls in sequences
+       do (vecto:set-rgb-stroke (rand-1) (rand-1) (rand-1))
+       do (loop for a-b in (adj-pairs ls)
+	     for x from 0
+	     do (progn
+		  (vecto:move-to (* x-width x) (* 10 (car a-b)))
+		  (vecto:line-to (* x-width (1+ x)) (* 10 (cadr a-b)))
+		  (vecto:stroke))))
+    (vecto:save-png file)))
+
+(simple-plot '((1 2 3 4) (5 4 3 2 2)) "oops.png")
+
+(defun get-dvs (xs k)
+  " using posisions, gets change in velocities of all masses "
+  (cond ((null (cdr xs)) ;; end when only one element bc we need 2
+	 nil)
+	(t (let* ((d (1+ (- (car xs) (cadr xs) ))) ;; displacement
+		  (dv (* d k))) ;; delta v
+	     (cons dv (add-to-car (- dv) (get-dvs (cdr xs) k)))))))
+
+(defun update-wobble-stack (xs vs k)
+  " returns vs and xs, incremented "
+  (let* ((dvs (get-dvs xs k))
+	 (new-vs (mapcar #'+ vs dvs))
+	 (new-xs (mapcar #'+ xs vs)))
+    (setf new-vs (mapcar (lambda (v) (- v 0.00001)) new-vs)) ;;gravity
+    (if (< (car new-xs) 0)
+	(setf (car new-vs) (- (car new-vs)))) ;; bounce
+    (mapcar (lambda (v) (* 0.9 v)) vs) ;; damping (TODO better damping)
+    (list new-xs new-vs)))
+
+(defun draw-wobble-plot ()
+  (simple-plot
+   (let ((foo (wobble-stack-maker :k 0.1)))
+     (apply #'mapcar #'list
+	    (loop for i from 0 to 100
+	       collect 
+		 (progn
+		   (@ foo :step)
+		   (@ foo :get-xs)))))
+   "oops.png"))
+
+;;(draw-wobble-plot)
+
+(defmulticlosure wobble-stack-maker (&key (k -0.01))
+    " several weights, unit distance apart with stiff springs that default to
+    unit distance. This whole thing falls, hits the groung (at zero) and bounced.
+    output is displacement of lowest mass from it's partner (car and cadr of xs) "
+    ((xs '(0.0 1.0 2.0 3.0 4.0)) ;; starting with 5 weights
+     (vs '(0.0 0.0 0.0 0.0 0.0)))
+  ;; raise all masses by one unit
+  (:raise () (setf xs (mapcar #'1+ xs)))
+  ;; pysics step
+  (:step ()
+	 (let ((new-xs-vs (update-wobble-stack xs vs k)))
+	   (setf xs (car new-xs-vs))
+	   (setf vs (cadr new-xs-vs)))
+	 (car xs))
+  (:get-xs () xs)
+  (:get-vs () vs))
+
+;;(defvar foo (wobble-stack-maker))
+;;(progn
+;;  (@ foo :step)
+;;  (@ foo :get-xs))
+;;
+;;(defvar foo (spring-mass-maker :k -0.00011 :b 0.99995))
+;;(@ foo :get-vars)
 ;;(@ foo :step)
+;;(@ foo :get-vars)
+;;
+;;(@ foo :set-k (* 0.9999 (@ foo :get-k)))
+
+(defun play-tone ()
+  (let ((tone (spring-mass-maker :k -0.0041 :b 0.99999)))
+    (print (@ tone :get-vars))
+    (trivial-with-audio ()
+      (if (= *channel 0)
+	  (@ tone :step)
+	  0))))
+
+(defun play-another-tone ()
+  (let ((tone (triange-wave-maker 565.0)))
+    (trivial-with-audio ()
+      (if (= *channel 0)
+	  (@ tone :step)
+	  0))))
 
 
+(defun repeate-dingo-maker ()
+  (let ((tone (spring-mass-maker :k -0.0011 :b 0.99995))
+	(wobble (spring-mass-maker :k -0.000002 :b 1.0)))
+    (lambda ()
+      (progn
+	(destructuring-bind (x v k b freq) (@ tone :get-vars)
+	  (declare (ignore k b freq))
+	  (if (and (> 0.1 x -0.1)
+		   (< (abs v) 0.001))
+	      (progn
+		(@ tone :reset)
+		(@ wobble :reset)
+		(* (@ tone :get-x)
+		   (@ wobble :get-x)))
+	      (* (@ tone :step) ;;else
+		 (@ wobble :step))))))))
+		     
+
+(defun play-ding-sound ()
+  (let ((foo (repeate-dingo-maker)))
+    (trivial-with-audio (:duration 10)
+      (f foo))))
+
+
+(defun play-wobble ()
+  (let ((foo (spring-mass-maker :k -0.0011 :b 0.99995))
+	(bar (spring-mass-maker :k -0.000002 :b 0.99999)))
+    (trivial-with-audio ()
+      (if (= *channel 0)
+	  (* (@ foo :step)
+	     (@ bar :step))
+	  0))))
 
 (defun slider-maker (starting-val slowness)
   (let ((x (float starting-val))
@@ -117,10 +380,6 @@
 
 (defun trash (arg)
   (declare (ignore arg)))
-
-;; short alias for funcall
-(defmacro f (fun &rest args)
-  `(funcall ,fun ,@args))
 
 (defmacro return-after (value &body body)
   " saves a value to a gensym, progn's body, then returns saved value"
@@ -256,6 +515,10 @@
 	   (cannonize (list (* 2 n) d)))
 	  (t pair))))
 
+
+
+
+;; ======= branch - everything under this line is special purpose for this orchestra
 (defun orchestra-maker ()
   (let ((bass '(1 1))
 	(tenor '(2 1))
