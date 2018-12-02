@@ -15,14 +15,14 @@ usual:
 And now I can use it:
 
     (defun5 add-one (a)
-            (1+ a))
+                 (1+ a))
 
-    >> You defined FOO to be a fuction! Good job!
+    >> You defined ADD-ONE to be a fuction! Good job!
 
-Which all good, except that emacs doesn't highlight defun5 as a keyword, and it doesn't highlight
-add-one as a function name. This makes it hard to parse code that uses these custom `defun`-like
-constructs. I looked in the syntax file for `lisp-mode` (`lisp-mode.el`) and found the following
-code:
+Which is all good, except that emacs doesn't highlight `defun5` as a keyword, and it doesn't
+highlight add-one as a function name. This makes it hard to visually parse code that uses these
+custom defun-like constructs. I looked in the syntax file for `lisp-mode` (`lisp-mode.el`) and
+found the following code:
 
     (list nil
          (purecopy (concat "^\\s-*("
