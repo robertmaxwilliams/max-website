@@ -1,5 +1,10 @@
+---
+layout: post
+title: Artificial Intelligence Safetey And Security Independent Study
+---
 
-## Week 1
+
+## Week 1 Monday
 
 Reading: Curiosity-driven Exploration by Self-supervised Prediction
 
