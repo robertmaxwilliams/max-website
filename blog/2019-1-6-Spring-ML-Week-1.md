@@ -21,26 +21,25 @@ https://arxiv.org/abs/1705.05363
 
 1. What is the research problem the paper attempts to address? 
 
-It addresses a few questions, each on different levels.
--How can an agent explore its environment productively?
--How can an agent perform well with no extrinsic reward?
--How can an agent work with very high dimensional data (images) efficiently? 
--How to formulate curiosity
+    + How can an agent explore its environment productively?
+    + How can an agent perform well with no extrinsic reward?
+    + How can an agent work with very high dimensional data (images) efficiently? 
+    + How to formulate curiosity
 
 2. What are the claimed contributions of the paper? 
 
-They have created a formulation for curiosity that works with noisy high dimensional input and leads
-to high performance in Mario and VizDoom without intrinsic reward.
+    + They have created a formulation for curiosity that works with noisy high dimensional input and leads
+    to high performance in Mario and VizDoom without intrinsic reward.
 
 3. How do the authors substantiate their claims?
 
-They explain the algorithm and show the agent's performance in two video games, and perform
-experiments on the agent showing its abilities.
+    + They explain the algorithm and show the agent's performance in two video games, and perform
+    experiments on the agent showing its abilities.
 
 4. What are the conclusions? 
 
-Their formulation is very useful and should be expanded on and applied to real world robotics or
-something.
+    + Their formulation is very useful and should be expanded on and applied to real world robotics or
+    something.
 
 
 #### My own thoughts as I read the paper:
