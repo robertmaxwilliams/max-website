@@ -12,6 +12,10 @@ introduction sentence. Next time I will spend more time consulting my peers on s
 
 I compiled a list of all the place my article ended up:
 
+[https://arxiv.org/abs/1811.10565](https://arxiv.org/abs/1811.10565)
+<br>
+A paper cited my paper! Very exciting!
+
 [https://twitter.com/bjornstenger](https://twitter.com/bjornstenger)
 <br>
 linked to my article, he also linked to 
