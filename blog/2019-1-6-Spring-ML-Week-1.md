@@ -123,3 +123,119 @@ the game.
 It also explored most of the first level of Mario with no rewards at all, and learned how to walk
 around in VizDoom without rewards.
 
+I don't have enough time today for the rest of the paper but it seems to be mostly more careful
+experimentation. What I really want to see is this agent play games that don't have goals, such as
+
+Minecraft or Game of Life/[Lenia](https://chakazul.github.io/Lenia/JavaScript/Lenia.html). THAT
+would be exciting.
+
+One of the authors has a website with aditional content about the paper, and a follow up paper:
+
+[https://people.eecs.berkeley.edu/~pathak/](https://people.eecs.berkeley.edu/~pathak/)
+
+
+## Week 1 Wednesday 
+
+Reading: 
+Personal Universes: A Solution to the Multi-Agent Value Alignment Problem
+
+[https://arxiv.org/abs/1901.01851v1](https://arxiv.org/abs/1901.01851v1)
+
+This one was Luke's finding, it is more aligned with our goal (pun intended) of studying agent
+alignment.
+
+
+Terms used in the paper and in this write-up:
+
+**ISU**: Individual Simulated Universe. A simulated universe tailored to a single person's best
+interests.
+
+**AGI**: Artificial General Intelligence. An artificial mind with general reasoning skills, possibly
+similar to a human mind but possibly very different and dangerous because of their power and
+different goals.
+
+**User**: The "real" agent in an ISU, like the player in a video game.
+
+**NPC**: Non-playable Character, a video game term I'm using to talk about the "fake" agents in an ISU.
+
+After reading the abstract once, I tried to guess at what the paper was about:
+
+    It sounds like this paper is focusing on how to satisfy multiple agent's goals,
+    once you have a good way of extracting goals. So if a paperclip CEO and a postage stamp CEO both
+    wanted to make a universe eating AI, how could they makes sure it had both of their values?
+
+My guess was wrong, it's actually a way to sidestep the multi-agent value alignment problem entirely
+by giving every agent their own simulation. Yamposkiy also states that is is probably desirable for
+the agent (called the "user" at this point in the paper) to "forget" that they are in a simulation.
+The simulation itself is ran by an AGI (artificial general intelligence) and the virtual environment
+is assumed to be "safe", meaning the AGI controlling everything is assumed to have some degree of
+human value alignment preventing it from putting everyone in eternal torture or reducing humanity
+for the sake of a poorly defined goal, such as maximizing happiness by filling the universe with
+tanks of seratonin. 
+
+I have some troubles with this, that aren't addressed completely in the paper:
+
+About being able to forget that you're in a simulation, is it ethical to enable people to forget
+specific facts? (Think of the consequences in the movie "Eternal Sunshine of a Spotless Mind")?
+This decision to doom your future self to never know the truth of their world seems like a
+profound action, possibly even a crime against your future self. In the same line as suicide is
+illegal, perhaps intentionally forgetting that you are in simulation could fall under the same
+category.
+
+If people are given the choice to live in the real world, what rights do they have in the real
+world? A value alignment problem emerges here, for those agents who refuse to participate in the
+simulation.
+
+If there's no freedom to opt-out or if the real world is really terrible or boring, then this
+situation is more like an eternal prison, like The Matrix.
+
+In an accurate simulation of the world, you would have to simulate other people. The ethical
+status of simulated minds is a point of debate, but I expect the following possiblilities to be
+reasonable to anyone who rejects substrate cheavanism (like Bolstrom):
++ The simulated minds are accurate simulations of humans. In this case, allowing a person in their ISU
+  (individual simulated universe) to torture its inhabitants, or simply deleting unneeded simulated
+  minds, could amount to enourmous mindcrime. Any one "real" agent could dedicate all of the
+  computer resources to simulating minds being tortured.
++ The simulations are externally completely indistinguishable from humans but carefully designed not
+  to have ethical status. I question whether this is remotely possible, and I personally tend to 
+  believe that a functionally equivalent human has the same ethical status as a perfect simulation
+  which has the same ethical status as a meat and bones human. 
++ The simulations are more like today's video game AI and aren't capable of general intelligence.
+  This would comprimise the believability of the simulation, and there comes a point where the
+  simulation are accurate enough that the "real" agent develops deep empathetic bonds with the
+  "fake" agents and treats them as real. 
++ **[Good idea]** Instead of dealing with the moral quandries of simulating lesser minds inside the
+  ISU, the AGI that controls the universe could instead be like an actor in a play, simulating the
+  characters within ISUs just as actors play the role as characters in a performance and no mind
+  crime is committed when the actor takes off the costume and the character disapears. 
+  
+  
+#### Issues with the idea of having the AGI be an "actor" to play the NPCs in everyone's ISU
+
+An actor in a play has to create a mental model of their character accurate enough to represent the
+character's personality, and the gaps are filled in with their real personality. Something similar
+happens when we empathise with people around us: we create a mental model of their personality and
+assume everything else is the same as our own mind.
+
+Speculating about an AGI acting as a person inside of one of these ISUs, it seems there are many
+ways mindcrime could still be committed. It's very speculative, because I'm assuming it would use a
+human-like machanism for acting out the NPCs. Assuming that, the AGI would have a human-like
+base personality mask, then specific masks for specific NPCs. If these "masks" are detailed enough,
+then they might have ethical status of their own.
+
+Aside: sorry for changing terms all the time, these are a lot of sticky ideas and I'm trying to get
+my thoughts out as clearly as possible without spending tons of time editing. That will come later.
+
+**And also some fun word play:**
+
+The last line of the paper is as follows:
+
+    "The main point of this paper is that a personal universe is a place where virtually everyone
+    can be happy."
+
+but add some commas and a different meaning emerges:
+
+    "The main point of this paper is that a personal universe is a place where, virtually, everyone
+    can be happy."
+
+
