@@ -158,20 +158,25 @@ different goals.
 
 **NPC**: Non-playable Character, a video game term I'm using to talk about the "fake" agents in an ISU.
 
+**Mindcrime** (from Bolstrom): A crime that can be performed within ones own mind (which may or may not be a
+computer) such as simulating sentient beings suffering. That's actually the only one I can think of.
+
 After reading the abstract once, I tried to guess at what the paper was about:
 
     It sounds like this paper is focusing on how to satisfy multiple agent's goals,
     once you have a good way of extracting goals. So if a paperclip CEO and a postage stamp CEO both
     wanted to make a universe eating AI, how could they makes sure it had both of their values?
 
-My guess was wrong, it's actually a way to sidestep the multi-agent value alignment problem entirely
-by giving every agent their own simulation. Yamposkiy also states that is is probably desirable for
-the agent (called the "user" at this point in the paper) to "forget" that they are in a simulation.
-The simulation itself is ran by an AGI (artificial general intelligence) and the virtual environment
-is assumed to be "safe", meaning the AGI controlling everything is assumed to have some degree of
-human value alignment preventing it from putting everyone in eternal torture or reducing humanity
-for the sake of a poorly defined goal, such as maximizing happiness by filling the universe with
-tanks of seratonin. 
+My guess wasn't entirely wrong, it's actually a way to sidestep the multi-agent value alignment problem entirely
+by giving every agent their own simulation. So the paperclip maximizer would maximize paperclips in
+one simulation and the stamp maximizers would maximize stamps in another simulation, each free to be
+as destructive and horrible within the safety of the computer. Yamposkiy also states that is is
+probably desirable for the agent (called the "user" at this point in the paper) to "forget" that
+they are in a simulation.  The simulation itself is ran by an AGI (artificial general intelligence)
+and the virtual environment is assumed to be "safe", meaning the AGI controlling everything is
+assumed to have some degree of human value alignment preventing it from putting everyone in eternal
+torture or reducing humanity for the sake of a poorly defined goal, such as maximizing happiness by
+filling the universe with tanks of seratonin. 
 
 I have some troubles with this, that aren't addressed completely in the paper:
 
