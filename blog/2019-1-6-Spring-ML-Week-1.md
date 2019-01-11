@@ -243,4 +243,95 @@ but add some commas and a different meaning emerges:
     "The main point of this paper is that a personal universe is a place where, virtually, everyone
     can be happy."
 
+## Week 1 Friday
 
+Reading: [https://arxiv.org/pdf/1806.07366.pdf](https://arxiv.org/pdf/1806.07366.pdf)
+
+From the abstract, they claim to have made a continuous version of a multi-layered neural network,
+so instead of having 10 layers you have 10.0 layers with data smoothly sliding between them, using
+differential equation solvers somehow.
+
+The first page explains it in terms of basic calculus. They call a normal hidden state RNN a "Euler
+discretization of a continuous transformation", and the smooth version.
+
+If the discreet version is this:
+
+`h_(t+1) = h_t + f(h_t, O_t)`
+
+then their "smoothed out" version would be the limit of this:
+
+`dh(t)/dt = f(h(t), t, O)`
+
+as h approaches zero (actually it looks like varying `h` is on of the important aspects of this
+model)
+
+They describe various advantages of this, such as constant memory usage with depth, ability to
+tradeoff accuracy with resource consumption, reducing the number of parameters needed, something to
+do with change of variable and normalization, and the ability to process continuous time data.
+
+The key part of this method is the use of an "ODE solver" to compute the parameter updates. It is
+possible (but not usually necessary) for gradients to be backpropagated completely through the
+model, allowing it to be used as a part of a large end-to-end trainable model.
+
+I really don't understand a lot of the math here. It's somewhat familiar from differential equations
+but my math reading skills are quite poor. I'll come back to the mathy section after I'm done with
+the first read through of the paper.
+
+They also introduce "continuous normalizing flows", where the differential equation describing the
+network changes with time. Also they introduce a "gating mechanism" for each hidden unit, it seems
+to be another way of taking time as a parameter that tweaks the network parameters.
+
+#### Experiements
+
+The next section shows several experiements, including density plots showing the difference in
+learning a normalizing flow (NF) and continuous normalizing flow (CNF). The CNF is shown to be
+superior. They also show this distinction on the task of drawing two concentric circles, and talk
+about how the CNF learns to "rotate" the plane to draw the circles accurately. I have no idea how
+that could work. They included a series of videos of the learned behavior:
+
+[http://www.cs.toronto.edu/~jessebett/nodes/playlist.html](http://www.cs.toronto.edu/~jessebett/nodes/playlist.html)
+
+And I see the rotating now, and the first few show the vector field, but I really don't understand
+what't going on. 
+
+The experiements with spirals are interesting, the RNN performs very poorly at extrapolation and has
+a lot of sharp edges in its prediction, while the LNODE (Latent Neural Ordinary Differential 
+Equation) smoothly follows the path and extrapolates accurately. 
+
+#### Math stuff
+
+I don't think this paper will make any sense unless I understand the underlying math.
+
+They compare their method to residual networks in several places. I read
+[this](https://blog.waya.ai/deep-residual-learning-9610bb62c355) to get an idea of how residual
+networks work. The idea is to have the identity function as a shortcut around some layers, allowing
+for really deep networks to be trained without having to have the gradient get all scrambled in
+dozens of intervening layers while training. 
+
+After staring at Figure 1 for some time, I think I'm starting to get an idea about how this all
+works. Interpreting the figures is half the battle, since I don't understand what they represent. On
+the left, they're modeling a normal multi-layered network as a series of transforms. I think the
+reason they choose a residual network is because they add the layer's output and input to get the
+residual block's output, which makes a continuous approximation more sensible. 
+
+<img src="/images/resnet-vs-ode.png" alt="Figure 1 from ODE paper" width="286"/>
+
+I think how you're supposed to read this figure is each black line is one data point coming into the
+network at the bottom and being transformed by several layers, following a trajectory until it
+reaches the end of the network as output. In the ODE network, they same thing is done, but instead
+of adding something to the state at each layer, the field is a vector field defined at every point,
+and the ODE solver approximates the motion of a data sample through the network, sampling the
+function as nescassary. 
+
+I think I have a sorface level understanding of it now. How this "network" is trained, however, is a
+mystery to my. They talk about using the "adjoint method". They cite a 1962 paper on optimimal processes:
+
+Lev Semenovich Pontryagin, EF Mishchenko, VG Boltyanskii, and RV Gamkrelidze. The mathematical
+theory of optimal processes. 1962.
+
+It's hard to find, but the method itself is on wikipedia:
+
+[https://en.wikipedia.org/wiki/Adjoint\_state\_method](https://en.wikipedia.org/wiki/Adjoint_state_method)
+
+
+(Out of time for now, I should revisit this at a later time)
