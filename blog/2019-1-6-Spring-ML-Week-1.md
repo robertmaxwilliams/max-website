@@ -158,6 +158,13 @@ different goals.
 
 **NPC**: Non-playable Character, a video game term I'm using to talk about the "fake" agents in an ISU.
 
+**Ethical Status**: An entity has ethical status if you believe it deserves consideration into
+ethical choices. For instance, most people agree that all humans have ethical status and deserve to
+live. Vegeterians choose to believe that animals have ethical status and deserve to not be
+systematically killed for their flesh. Vegans take this further and grant animals even higher
+ethical status by believing that animals lack the facualty to grant consent to take from them, and
+thus taking milk from cows or eggs from chickens is unethical.
+
 **Mindcrime** (from Bolstrom): A crime that can be performed within ones own mind (which may or may not be a
 computer) such as simulating sentient beings suffering. That's actually the only one I can think of.
 
@@ -335,3 +342,74 @@ It's hard to find, but the method itself is on wikipedia:
 
 
 (Out of time for now, I should revisit this at a later time)
+
+
+# Meeting Notes
+
+We had a 30 minute meeting with Dr. Yampolskiy, Dr. Harrison, Luke, and myself. 
+
+At the mention of the curiosity driven AI paper, Dr. Yamposkiy sent us this paper:
+
+[https://www.mitpressjournals.org/doi/pdfplus/10.1162/EVCO\_a\_00025](https://www.mitpressjournals.org/doi/pdfplus/10.1162/EVCO_a_00025)
+
+I would really like to make my own implementation of the curiosity reward signal, it seems fairly
+straighforward in it basic form and the official implementation isn't monumental in size. I wish
+there was a better way to describe graphs in programming languages, like a text-based format with an
+interactive editor. Most object oriented programs are graphs as well, program source visualization
+seems to be very underutilized. 
+
+Next we talked about the "Personal Universes" paper (that Dr. Yampolskiy authored). I wanted to ask
+more question but we were short on time. I emailed Dr. Yampolskiy and he said my questions were good
+questions to ask and we should talk about it in person. Dr. Harrison also brought up a paper he
+authored about using simulations to solve the stop button problem:
+
+[https://arxiv.org/abs/1703.10284](https://arxiv.org/abs/1703.10284)
+
+I heard about this solution in a Computerphile video by Rob Miles (might have been
+[this one](https://www.youtube.com/watch?v=3TYT1QfdfsM)) and the problem is that when the agent is
+returned to the real world, it experiences some kind of interruption, which might lead to a negative
+reward and thus the stop button problem returns. 
+
+We trailed off at "Neural Ordinary Differential Equations". Luke and I approached this one the same
+as the other two (by trying to understand it as best as possible) and got tangled in the details.
+Dr. Harrison reminded us that our final paper doesn't need to include summaries of all of the
+papers' contents, but instead on thier claims, support, impact, etc. A good thing to notice here
+would have been the apparent cherry-picking of toy problems they solved using their method. How
+could it perform on some varient of MNIST? I could search around for other studies on this method,
+and see if anyone has performed more experiments like MNIST or natural language processing.
+
+Dr. Yampolskiy also sent me some links to read, which I'll catalog here:
+
+[http://iopscience.iop.org/article/10.1088/0031-8949/90/1/018001](http://iopscience.iop.org/article/10.1088/0031-8949/90/1/018001)
+
+(Oooh html format, and very tastefully done.)
+
+This paper reviews existing literature to review the possibility of catastrophic risk from AGI.
+Their references are a great pool of material for this indepentent study.
+
+[https://www.lesswrong.com/posts/a72owS5hz3acBK5xc/2018-ai-alignment-literature-review-and-charity-comparison](https://www.lesswrong.com/posts/a72owS5hz3acBK5xc/2018-ai-alignment-literature-review-and-charity-comparison)
+
+(Oh I love lesswrong! The stuff here tends to be a bit extreme but I guess I'm a bit of an extremist
+in some domains, too. Also this html paper format is nicer than the other one.)
+
+I also like how they drop words like "infohazard", it makes me feel like I'm living in the SCP
+universe. Feeling like you're in a sci-fi tends to be a goal of "futurists", whatver implications
+that has. 
+
+"Contemporaneous unemployment has more to do with poor macroeconomic policy and inflexible labour
+markets than robots."
+
+That's a bold statement, I'll have to start throwing that around when people are throwing around
+thier expert opinions on unemployment.
+
+The aithor also believes that UBI will not be helpful when there are a lot of emulated humans around
+claiming personhood. I don't think this is relavent to the UBI discussion at all. It also harks back
+to [Meditations on Moloch](https://slatestarcodex.com/2014/07/30/meditations-on-moloch/) which I
+appreciate greatly but find myself wondering about how applicable it is to the real world, with its
+many levels of living things and their interactions.
+
+[https://futureoflife.org/landscape/](https://futureoflife.org/landscape/)
+
+A graph visualization of the entire field of AI safety, in a taxonomy. I'll have to spend more time
+with this, it's very dense with meaning.
+
