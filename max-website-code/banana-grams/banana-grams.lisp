@@ -1,10 +1,14 @@
 (ql:quickload :str) ;; str is never :use'd in a pacakge, access by prefix
 (ql:quickload :alexandria)
 (ql:quickload :iterate)
+(ql:quickload :cl-ppcre)
+(ql:quickload :prove)
+(ql:quickload :cl-slice)
 
 ;;(delete-package :banana-grams)
 (defpackage :banana-grams
-  (:use :cl :alexandria :iterate))
+  (:use :cl :alexandria :iterate)
+  (:export :peel)
 (in-package :banana-grams)
 
 ;; Step 1 is to build a frequency ordered dictionary (not in the python sense!)
@@ -12,6 +16,10 @@
 ;; keeping any words that match the scrabble list. Then, remaining scrabble
 ;; words are appended to the end. Excess scrabble words can be left off for
 ;; less memory consumption
+
+
+;; word list credit:
+;; https://gist.github.com/deekayen/4148741#file-1-1000-txt
 
 (defun normalize-string (string)
   " strips whitespace and uppercase a string "
@@ -32,37 +40,41 @@
 	     (gethash (normalize-string line) lines)
 	     t)))
     lines))
-(defvar ofoo (file-lines-to-hash  "collins-scrabble-words-2015.txt"))
-(gethash "BUTTS" ofoo)
 
-(file-lines-to-list "google-10000-english-usa.txt")
-(file-lines-to-list "collins-scrabble-words-2015.txt")
-
+(print
+ (subseq
+  (sort 
+   (file-lines-to-list "1-1000.txt")
+   (lambda (a b) (< (length a) (length b))))
+  0 5))
   
+;; longer dict but more garbage words
+;;(defun build-dict ()
+;;  (let ((common-words
+;;	 (file-lines-to-list "google-10000-english-usa.txt"))
+;;	(scrabble-words
+;;	 (file-lines-to-hash  "collins-scrabble-words-2015.txt"))
+;;	(blacklist '("ET" "ST" "AVE")))
+;;    (loop for word in common-words
+;;       when (and
+;;	     (gethash word scrabble-words)
+;;	     (not (member word blacklist :test #'string=)))
+;;	 collect word)))
+
 (defun build-dict ()
-  (let ((common-words
-	 (file-lines-to-list "google-10000-english-usa.txt"))
-	(scrabble-words
-	 (file-lines-to-hash  "collins-scrabble-words-2015.txt")))
-    (loop for word in common-words
-       when (gethash word scrabble-words)
-	 collect word)))
+  (file-lines-to-list "1-1000.txt"))
 
 (defparameter *dict* (build-dict))
-(defparameter *all-scrabble*
-  (file-lines-to-list "collins-scrabble-words-2015.txt"))
-
-(nth 6888 *dict*)
 
 (defun sorted-string (string)
   (let ((temp-string (copy-seq string)))
     (sort temp-string #'char-lessp)))
 
-(defun spells-p (a b)
-  "takes two strings and checks if one can be arranged into the other"
-  (and
-   (= (length a) (length b)) ;; short circuit for performance
-   (string= (sorted-string a) (sorted-string b))))
+;;(defun spells-p (a b)
+;;  "takes two strings and checks if one can be arranged into the other"
+;;  (and
+;;   (= (length a) (length b)) ;; short circuit for performance
+;;   (string= (sorted-string a) (sorted-string b))))
 
 (defun spells-p (letters word)
   (setf letters (coerce letters 'list))
@@ -73,13 +85,11 @@
      return nil
        finally (return t)))
 
-(spells-p "pasdfat" "fart")
-(spells-p "pasdfrat" "fart")
-	   
+(prove:is (spells-p "pasdfat" "fart") nil)
+(prove:is (spells-p "pasdfrat" "fart") t)
 
 (defun possible-words (letters)
   (setf letters (normalize-string letters))
-  ;;(loop for word in *all-scrabble*;;*dict*
   (loop for word in *dict*
      when (spells-p letters word)
        collect word))
@@ -89,7 +99,7 @@
   (coerce (normalize-string string) 'list))
 
 (defun str->ls-spaces (string)
-  " because im' tired of typing coerce"
+  " same as str->ls but preserves surrounding whitespace"
   (coerce (string-upcase string) 'list))
 
 (defun ls->str (ls)
@@ -99,9 +109,7 @@
 
 
 
-(concatenate 'string "foo" (list #\o))
-(str:concat "foo" (list #\o))
-(ls->str '(#\F #\o #\o))
+(prove:is (ls->str '(#\F #\o #\o)) "FOO" :test #'string=)
 
 
 ;;freqencies from:
@@ -138,45 +146,67 @@
   (loop for pair in letter-to-freq
        collect (cons (car pair) (/ (cdr pair)))))
 
+(loop for pair in letter-to-freq
+   collect (cons (car pair) (/ 24 (cdr pair))))
+
 (defun n-repeates->score (n)
   " Calculates score multiplier for n repeates of 
 a letter that you have to get rid of"
   (expt 1.5 n))
-;;(mapcar #'n-repeates->score '(0 1 2 3 4))
 
 (defun n-occurences (item ls)
   (count-if (lambda (x) (equal x item)) ls))
 
-;; internally uses all capitol chars
-(n-occurences #\O (str->ls "foooo"))
+	
+(defun occurences-pairs (ls)
+  (let ((graveyard nil))
+    (iter (for x in ls)
+	  (if (not (member x graveyard :test #'equal))
+	      (collect (cons x (n-occurences x ls))))
+	  (setf graveyard (cons x graveyard)))))
+
+
+(occurences-pairs (str->ls "FOOBARROSCO"))
+
+(defun rare-letter-penalty (letters)
+  " gives penalty for holding onto rare letters. This doesn't seem to help much"
+  (- (iter (for letter-freq in (occurences-pairs (str->ls letters)))
+	   (summing (*
+		     (/ 24 (cdr (assoc (car letter-freq) letter-to-freq)))
+		     (expt 2 (cdr letter-freq)))))))
+
+(rare-letter-penalty "A")
+(rare-letter-penalty "AAA")
+(rare-letter-penalty "EEE")
+(rare-letter-penalty "QQQ")
+(rare-letter-penalty "ZZZ")
+(rare-letter-penalty "ZJQ")
 
 (defun word-score (word letters)
   " scores a word based on length and usage of rare letters
-or letters that you have a lot of"
-  (setf letters (str->ls letters))
-  (loop for x in (str->ls word)
-     sum (*
-	  (cdr (assoc x letter-to-score))
-	  (n-repeates->score (n-occurences x letters)))))
-
-(word-score "qfoo" "ffrtw")
+or letters that you have a lot of. This is critical to the functioning of the AI"
+  (+
+   (* 0.1 (rare-letter-penalty letters))
+   (let ((letters-list (str->ls letters)))
+     (loop for x in (str->ls word)
+	sum (*
+	     (cdr (assoc x letter-to-score))
+	     (n-repeates->score (n-occurences x letters-list)))))))
+   
+(prove:ok (word-score "qfoo" "qffrtw"))
 
   
+;; most of this isn't needed but keeping around anyway
 (defun score-compare-maker (letters)
   (lambda (a b)
     (> (word-score a letters) (word-score b letters))))
-
 (defun score-caadr-compare-maker (letters)
   (lambda (a b)
     (> (word-score (caadr a) letters) (word-score (caadr b) letters))))
-
 (defun length> (a b)
   (> (length a) (length b)))
-
 (defun caadr-length> (a b)
   (> (length (caadr a)) (length (caadr b))))
-
-(find #\f "oo")
 (defun build-on-word (word letters)
   (loop for extra-char in (str->ls word)
      collect (list
@@ -187,44 +217,27 @@ or letters that you have a lot of"
 		  (find extra-char string))
 		(possible-words (str:concat (normalize-string letters) (list extra-char))))
 	       #'length>))))
-
 (sort (possible-words "nncieuafte") #'length>)
 (sort (build-on-word "acute" "finne") #'caadr-length>)
 (build-on-word "cute" "nie")
-
 (print (sort (possible-words "datusesnrntnogtrqiror") #'length>))
-(print (sort (build-on-word "signature" "dtnsrrrnotoq") #'caadr-length>))
-
-(print (sort (possible-words "datusesnrntnogtrqiror") (score-compare-maker "")))
-;; picked equations
-(print (sort (build-on-word "equations" "sdntrrgntror")
-	     (score-caadr-compare-maker "sdntrrgntror")))
-;; picked grounds on u
-(print (sort (build-on-word "equations" "trntrr")
-	     (score-caadr-compare-maker "trntrr")))
-;; picked rent on e
-(print (sort (build-on-word "equations" "trr")
-	     (score-caadr-compare-maker "trr")))
-;; dead end?
-
-" I think I have an idea of how this could work now. Start with a blank grid 
-of chars, and choose a first word. Then, choose a word to go on it. Choose a 
-place within the placed chars and try to build on it. Check if everything placed
-is still a valid word. If that succeeds, repeat until either out of letters (and return success) or letters can't be used up (failure). On failure, step back up and try oother options. Alternatively, try random choices all the way down, as in monte carlo tree search. This might be a much simpler algorithm and won't have to worry about depth/breadth"
-
 
 (defun print-board (board)
   (format t "~%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<~%")
   (loop for i from 0 below (array-dimension board 0)
-     do (format t "|")
-       do (loop for j from 0 below (array-dimension board 1)
-	     do (format t "~a" (aref board i j)))
-     do (format t "|~%"))
+     do (let ((line
+	       (coerce 
+		(loop for j from 0 below (array-dimension board 1)
+		   collect (aref board i j))
+		'string)))
+	  (if (str:blankp line)
+	      nil
+	      (format t "|~a|~%" line))))
   (format t ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>~%"))
 
-(print-board (make-array '(2 5) :initial-contents '((1 2 3 4 5)
-						    (1 2 3 6 4))))
-
+(print-board (make-array '(3 5) :initial-contents '((#\B #\O #\C #\B #\B)
+							      (#\  #\  #\  #\  #\ )
+							      (#\B #\B #\B #\B #\B))))
 
 (defun place-word (word coords board is-vertical)
   (destructuring-bind (ii jj) coords
@@ -234,51 +247,14 @@ is still a valid word. If that succeeds, repeat until either out of letters (and
 	      (setf (aref board (+ dd ii) jj) char)
 	      (setf (aref board ii (+ dd jj)) char)))))
 
-(defun nonempty-coords (board)
-  (loop for i from 0 below (array-dimension board 0)
-       append (loop for j from 0 below (array-dimension board 1)
-		 when (not (equal #\Space (aref board i j)))
-		   collect (list i j))))
-  
-(print "asda")
-
-(iter (for i from 0 below 5)
-      (collect i))
-
-(defun rows (board)
-  (destructuring-bind (di dj) (array-dimensions board)
-    (iter (for i from 0 below di)
-	  (collect (iter (for j from 0 below dj)
-			 (collect (aref board i j)))))))
-
-
-;; introducing the lingo "line" to mean
-;; a string representing a row or column in a banan board
-
 (defun word-to-regex (word)
   (str:concat ".*" (str:replace-all " " "." (str:trim word)) ".*"))
 
-(word-to-regex "   FN D      ")
+(prove:is (word-to-regex "   FN D      ") ".*FN.D.*" :test #'string=)
 
-(ql:quickload "cl-ppcre")
-(cl-ppcre:parse-string "a[a-z]")
-(cl-ppcre:scan "WA..LE" "WAFFLE")
-(cl-ppcre:regex-replace-all "(?i)fo+" "foo Fooo FOOOO bar" "frob" :preserve-case t)
-(cl-ppcre:regex-replace-all "o" "foo Fooo FOOOO bar" "p")
-(cl-ppcre:regex-replace-all "^ " "   WA  LE" ".")
-(cl-ppcre:regex-replace-all " " "   WA  LE" ".")
-
-(format t "~r" (/ 100000000 (expt 10 16) ))
-
-
-(let ((ptrn (ppcre:create-scanner "BAN")))
-  (ppcre:scan ptrn "xaaabd"))
-
-    
 ;; the naive way to do this is to try all scramblings of extra-chars and
 ;; slide across the line... but way too expensive. Instead, search through
-;; word dictionary with line like a regex... maybe using regex will improve
-;; performance.  
+;; word dictionary with line like a regex then checking from there
 
 (defun matching-words (word)
   " scans over *dict* looking for words that word could match to"
@@ -298,27 +274,13 @@ is still a valid word. If that succeeds, repeat until either out of letters (and
   (row-or-col nil :type (member nil row col))
   (seq nil :type string)
   (index nil :type integer)
-  score ;; returned by fill-line
-  )
+  score) ;; returned by fill-line
 
 (print (make-banana-line :row-or-col 'row :seq "FOO  BAR" :index 7))
 	    
 (defstruct move
   (line-played nil :type banana-line)
   (letters-consumed nil :type string))
-
-
-
-;; depreciated
-(defun fill-line (word letters)
-  (iter (for real-word in (matching-words word))
-	(if (spells-p (str:concat (remove-spaces word) letters) real-word)
-	    (collect real-word))))
-
-;; version that takes in a line struct
-;; and returns a list of pairs of '(line letters-leftover)
-(ql:quickload :prove)
-
 
 (defun match-strings-ignore-whitespace (holey-word full-word)
   "t if they match, nil if they don't"
@@ -336,8 +298,6 @@ is still a valid word. If that succeeds, repeat until either out of letters (and
 (prove:is (match-strings-ignore-whitespace "FO BR " "FOOBAR") nil)
 (prove:is (match-strings-ignore-whitespace "      " "FOOBAR") nil) ;; fix floating word bug
 (prove:is-error (match-strings-ignore-whitespace "FOBR" "FOOBAR") 'simple-error)
-(delete #\E (list #\F #\E #\O #\E) :count 1)
-(delete #\R (list #\F #\E #\O #\E) :count 1)
 
 (defun fill-letters (holey-word full-word letters)
   "returns what letters are left after using the ones 
@@ -367,10 +327,10 @@ is still a valid word. If that succeeds, repeat until either out of letters (and
 	    (setf (aref parent i) (aref child (- i index)))))
   parent)
 
-(paste-string "lunch with friends" "wins" 6)
+(prove:is (paste-string "lunch with friends" "wins" 6) "lunch wins friends" :test #'string=)
 
-(fill-letters " RA GE" "ORANGE" "OLNL")
-(fill-letters " RA GE" "ORANGE" "LNL")
+(prove:is (fill-letters " RA GE" "ORANGE" "OLNL") "LL")
+(prove:is (fill-letters " RA GE" "ORANGE" "LNL") 'failure)
 
 (defun slide-match (real-word word letters)
   " takes in a word from dict and a 'word' with holes in it to be filled in
@@ -392,6 +352,7 @@ is still a valid word. If that succeeds, repeat until either out of letters (and
 		    (return (list
 		       (paste-string word real-word i)
 		       fill-letters-result))))))))
+
 (prove:is
  (slide-match "JUNGLE" "    JU  LE    " "FUNGJE")
  '("    JUNGLE    " "FUJE") :test #'equal)
@@ -422,17 +383,15 @@ is still a valid word. If that succeeds, repeat until either out of letters (and
 ;; keep around to compare performance in the future
 ;;(if (spells-p (str:concat (remove-spaces word) letters) real-word)
 
-(fill-line (make-banana-line
+;; returns list of possible moves given a line and letters
+(prove:ok (fill-line (make-banana-line
 	    :row-or-col 'row
 	    :seq "   WO  N  " 
 	    :index 7)
-	   "MFAOFLE")
+	   "MFAOFLE"))
 
-(+ (* 4/24 5/25) (* 5/24 20/25))
 
-(ql:quickload :cl-slice)
-
-(defstruct board-letters
+(defstruct board-letters ;; I really need to work on my struct skills
   board
   letters)
 
@@ -463,10 +422,11 @@ is still a valid word. If that succeeds, repeat until either out of letters (and
    (lambda (a b) ;; these are lists of type '(banana-line letters)
      (> (banana-line-score (car a)) (banana-line-score (car b))))))
 
-
-
 (defun play-line (bl line-and-letters)
-  (print line-and-letters)
+  ;;(print "ummmm")
+  ;;(print (board-letters-letters bl))
+  ;;(print line-and-letters)
+  ;;(print "====")
   (destructuring-bind (line letters) line-and-letters
     (place-word
      (banana-line-seq line) ;;word that gets placed (a whole line here)
@@ -476,41 +436,127 @@ is still a valid word. If that succeeds, repeat until either out of letters (and
      (board-letters-board bl) ;; the board
      (eql (banana-line-row-or-col line) 'col));;is-vertical is true if it is a column
     (setf (board-letters-letters bl) letters)
-    bl)) 
+    bl))
 
-;;(defparameter ford (make-array '(30 80) :initial-element #\Space))
-(peel "datusesnrntnogtrqiror")
+(defun play-line-on-board (board line)
+  "like play-line but doesn't care about letters"
+  (place-word
+   (banana-line-seq line) ;;word that gets placed (a whole line here)
+   (if (eql (banana-line-row-or-col line) 'row) ;;placement coords
+       (list (banana-line-index line) 0)
+       (list 0 (banana-line-index line)))
+   board ;; the board
+   (eql (banana-line-row-or-col line) 'col));;is-vertical is true if it is a column
+  board)
 
-(defun peel (letters)
+
+(defun tobool (x)
+  " for predicates that return really big stuff sometimes"
+  (if x t nil))
+
+(defun validate-board (board)
+  (tobool
+   (iter (for line in (rows-and-cols board))
+	 (always (iter (for word in (str:words (banana-line-seq line)))
+		       (always (or
+				(= 1 (length word))
+				(member word *dict* :test #'string=))))))))
+
+
+(let ((bl (make-board-letters
+	   :board (make-array '(30 80) :initial-element #\Space)
+	   :letters "foo")))
+  ;; plays the starting word
+  (place-word
+   "BUTTS"
+   '(15 10) (board-letters-board bl) nil)
+  (place-word
+   "BURN"
+   '(15 10) (board-letters-board bl) t)
+  (print-board (board-letters-board bl))
+  (validate-board (board-letters-board bl)))
+
+(defun copy-board-letters (bl)
+  (make-board-letters
+   :board (copy-array (board-letters-board bl))
+   :letters (copy-seq (board-letters-letters bl))))
+
+;; TODO better score huristics
+
+(defparameter *allow-run* nil)
+(defparameter *allow-run* t)
+
+(defparameter *debug-print* t)
+(defparameter *debug-print* nil)
+
+
+(print "=================")
+
+;; this thing gives me a headache
+(defun dfs (bl &optional (solutions-to-find 1))
+  " returns number of solutions to find and solutions list"
+  ;;(print (board-letters-letters bl))
+  (if (not *allow-run*) (error "terminating")) ;; love this
+  (if *debug-print*
+      (progn
+	(print-board (board-letters-board bl))
+	(print (board-letters-letters bl))
+	(format t "Is board valid: ~a~%   --..--"
+		(validate-board (board-letters-board bl)))))
+  (if (zerop solutions-to-find)
+      (list 0 nil)
+      (let ((backup (copy-board-letters bl))
+	    (found-solutions nil))
+	(iter (for play in ;; play is actually a line-and-letters
+		   (possible-plays
+		    (board-letters-board bl)
+		    (board-letters-letters bl)))
+	      (while (> solutions-to-find 0))
+	      (setf bl (play-line bl play))
+
+	      (if (validate-board (board-letters-board bl)) ;; check if valid board
+		  (if (str:emptyp (board-letters-letters bl)) ;; check if out of letters
+		      (progn ;; if found a solution, print, dec and recur
+			(format t "Found a solution, ~a left.~%" (1- solutions-to-find))
+		        (if *debug-print* (print-board (board-letters-board bl)))
+			(destructuring-bind (stf solution-list) ;; modify return values
+			    (dfs bl (1- solutions-to-find))
+			  (setf solutions-to-find stf)
+			  (setf found-solutions
+				(cons
+				 ;; put the board in there
+				 (copy-array (board-letters-board bl)) 
+				 (append solution-list found-solutions)))))
+		      (progn ;; is board is valid but not solution
+			(destructuring-bind (stf solution-list) ;; modify return values
+			    (dfs bl solutions-to-find)
+			  (setf solutions-to-find stf)
+			  (setf found-solutions
+				(append solution-list found-solutions))))))
+
+	      ;; no matter what, reset and iterate
+	      (setf bl
+		    (copy-board-letters backup)))
+	(list solutions-to-find found-solutions))));;return value
+
+(defun peel (letters &optional (n-solutions 1))
   ;; create 2d grid
   (let ((bl (make-board-letters
 	     :board (make-array '(30 80) :initial-element #\Space)
 	     :letters letters)))
-    ;; plays the starting word
-    (place-word
-     (car (sort (possible-words letters) (score-compare-maker "")))
-     '(15 10) (board-letters-board bl) nil)
-    (print "Rows and cols: ")
-    ;;
-    (print (cadr (possible-plays (board-letters-board bl) (board-letters-letters bl))))
-    (print-board (board-letters-board bl))
-    (setf bl (play-line
-	      bl
-	      (car (possible-plays (board-letters-board bl) (board-letters-letters bl)))))
-    (print-board (board-letters-board bl))
-    (setf bl (play-line
-	      bl
-	      (car (possible-plays (board-letters-board bl) (board-letters-letters bl)))))
-    (print-board (board-letters-board bl))))
 
-(peel "datusesnrntnogtrqiror")
-  ;; place first word randomly, bias toward better words
+    ;; play a single letter at random then call DFS
+    (setf (aref (board-letters-board bl) 15 10) (aref (board-letters-letters bl) 0))
+    (setf (board-letters-letters bl) (subseq (board-letters-letters bl) 1))
+    (mapcar #'print-board (cadr (dfs bl n-solutions)))))
 
-  ;; scan over all placed chars, seeing the best word to build on each one
-  ;; try each of these, see if any overlap to create non-words
-
-  ;; if placement was successful, repeat until out of letters or stuck
-
-  ;; if stuck, return 'failed
-
-(peel "datusesnrntnogtrqiror")
+;;(tobool (member "ET" *dict* :test #'string=))
+;;(peel "datusesnrntnogtrqiror")
+;;
+;;(peel "dogmor")
+;;(peel "datusesnrntnogtrqirort" 3)
+;;
+;;(time (peel "datusesnrntnogtrqirorte"))
+;;
+;;(peel "qwertyuiopasdfghjklzxcvbnm")
+;;(time (peel "qqwuuueeertyuiop"))
