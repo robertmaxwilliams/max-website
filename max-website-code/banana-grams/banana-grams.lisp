@@ -1,14 +1,3 @@
-(ql:quickload :str) ;; str is never :use'd in a pacakge, access by prefix
-(ql:quickload :alexandria)
-(ql:quickload :iterate)
-(ql:quickload :cl-ppcre)
-(ql:quickload :prove)
-(ql:quickload :cl-slice)
-
-;;(delete-package :banana-grams)
-(defpackage :banana-grams
-  (:use :cl :alexandria :iterate)
-  (:export :peel)
 (in-package :banana-grams)
 
 ;; Step 1 is to build a frequency ordered dictionary (not in the python sense!)
