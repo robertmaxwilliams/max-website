@@ -2,15 +2,6 @@
 (load "music1.lisp")
 (in-package :audio-fun)
 
-
-(defmacro defun5 (function-name &body rest)
-  (format t "~%You defined ~a to be a fuction! Good job!~%" function-name)
-  `(defun ,function-name ,@rest))
-
-(defun5 add-one (a)
-	(1+ a))
-(add-one 5)
-
 (yes 10000)
 
 (let ((tone (spring-mass-maker :k -0.00000041 :b 0.99999)))

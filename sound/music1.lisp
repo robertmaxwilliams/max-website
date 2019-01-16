@@ -8,6 +8,7 @@
 (in-package :audio-fun)
 
 ;; set to true to kill music globaly
+(defparameter *kill* t)
 (defparameter *kill* nil)
 
 ;; short alias for funcall
@@ -152,17 +153,34 @@
 ;;    (f foo)))
 
 ;;(rumble-sound)
+(defun channel-wobble-maker ()
+  (let* ((angle 0.5)
+	 (starting-speed 0.00001)
+	 (speed starting-speed))
+    (lambda (channel a b)
+      (incf angle (* speed (/ (random 100) 100))) 
+      (if (> angle 0.7)
+	  (setf speed (- starting-speed)))
+      (if (< angle 0.3)
+	  (setf speed starting-speed))
+      (if (= channel 0)
+	  (+ (* a angle) (* b (- 1 angle)))
+	  (+ (* b angle) (* a (- 1 angle)))))))
 
 (defun rumble-sound-with-tone ()
   (let ((foo1 (random-walk-maker))
 	(foo2 (random-walk-maker))
 	(foo3 (random-walk-maker))
+	(channel-wobble (channel-wobble-maker))
 	(tone (walking-tone-maker 220.0))
-	(temp 0))
-    (trivial-with-audio (:duration 500)
-      (if (= *channel 0)
-	  (setf temp (+ (* 0.5 (* (f tone) (f foo3))) (* 0.4 (+ (f foo1) (f foo2)))))
-	  temp))))
+	(temp0 0)
+	(temp1 0))
+    (trivial-with-audio (:duration 5)
+      (progn (if (= *channel 0)
+		 (progn
+		   (setf temp0 (* (f tone) (f foo3)))
+		   (setf temp1 (+ (f foo1) (f foo2)))))
+	     (f channel-wobble *channel temp0 temp1)))))
 
 ;;(rumble-sound-with-tone)
 
@@ -217,19 +235,19 @@
 (defun rand-1 ()
   (/ (random 100) 100))
 
-(defun simple-plot (sequences file &key (width 500) (height 500) (x-width 2))
+(defun simple-plot (sequences file &key (width 500) (height 500) (x-width 2) (y-scale 50))
   (vecto:with-canvas (:width width :height height)
-    (vecto:translate 45 45)
+    (vecto:translate 45 250)
     (vecto:set-rgb-stroke 1 0 0)
     (vecto:set-rgba-stroke 0 0 1.0 0.5)
-    (vecto:set-line-width 2)
+    (vecto:set-line-width 1)
     (loop for ls in sequences
        do (vecto:set-rgb-stroke (rand-1) (rand-1) (rand-1))
        do (loop for a-b in (adj-pairs ls)
 	     for x from 0
 	     do (progn
-		  (vecto:move-to (* x-width x) (* 10 (car a-b)))
-		  (vecto:line-to (* x-width (1+ x)) (* 10 (cadr a-b)))
+		  (vecto:move-to (* x-width x) (* y-scale (car a-b)))
+		  (vecto:line-to (* x-width (1+ x)) (* y-scale (cadr a-b)))
 		  (vecto:stroke))))
     (vecto:save-png file)))
 
@@ -243,51 +261,138 @@
 		  (dv (* d k))) ;; delta v
 	     (cons dv (add-to-car (- dv) (get-dvs (cdr xs) k)))))))
 
-(defun update-wobble-stack (xs vs k)
-  " returns vs and xs, incremented "
-  (let* ((dvs (get-dvs xs k))
-	 (new-vs (mapcar #'+ vs dvs))
-	 (new-xs (mapcar #'+ xs vs)))
-    (setf new-vs (mapcar (lambda (v) (- v 0.00001)) new-vs)) ;;gravity
-    (if (< (car new-xs) 0)
-	(setf (car new-vs) (- (car new-vs)))) ;; bounce
-    (mapcar (lambda (v) (* 0.9 v)) vs) ;; damping (TODO better damping)
-    (list new-xs new-vs)))
+(defun max-abs (ls)
+  (reduce (lambda (x y) (max (abs x) (abs y))) ls))
 
-(defun draw-wobble-plot ()
-  (simple-plot
-   (let ((foo (wobble-stack-maker :k 0.1)))
+(defun bouncy-ball-maker (&optional (g 0.1))
+  (let ((x 1.0)
+	(v 0))
+    (lambda ()
+      (incf v (- g))
+      (incf x v)
+      (if (< x 0)
+	  (progn
+	    (setf x (- x))
+	    (setf v (- v))))
+      x)))
+    
+(defun average (ls)
+  (/ (reduce #'+ ls) (length ls)))
+
+(defun draw-bouncy-ball ()
+  (let ((foo (bouncy-ball-maker 0.001)))
+    (simple-plot
      (apply #'mapcar #'list
-	    (loop for i from 0 to 100
+	    (loop for i from 1 to 500
 	       collect 
-		 (progn
-		   (@ foo :step)
-		   (@ foo :get-xs)))))
-   "oops.png"))
+		 (append '(0.0 1.0)
+			 (list (average (loop repeat 10
+					   collect (f foo)))))))
+     "oops.png")))
+
+(defun listen-bouncy-ball ()
+  (let ((foo (bouncy-ball-maker 0.000001)))
+    (trivial-with-audio (:duration 5)
+      (f foo))))
+
+(defun update-wobble-stack (xs vs k1 k2)
+  " returns vs and xs, incremented 
+    k1 is k for inter-mass springs, k2 is for 0th mass driving "
+  (assert (< (max-abs xs) 100000))
+  (let* ((dvs (get-dvs xs k1)))
+    ;;(setf vs (mapcar #'+ vs dvs)) ;; v += dv
+    (setf (cdr vs) (mapcar #'+ (cdr vs) (cdr dvs))) ;; v += dv
+    (incf (car vs) (* k2 (car xs))) ;; x is driven independently
+    (setf xs (mapcar #'+ xs vs)) ;; x += v
+    (setf (cdr vs) (mapcar (lambda (v) (* v 0.999)) (cdr vs))) ;; damping
+    ;;(setf (car xs) 0) ;; base stays fixed
+    (list xs vs)))
 
 ;;(draw-wobble-plot)
 
-(defmulticlosure wobble-stack-maker (&key (k -0.01))
+(defmulticlosure wobble-stack-maker (&key (k1 -0.0001) (k2 -0.00002))
     " several weights, unit distance apart with stiff springs that default to
     unit distance. This whole thing falls, hits the groung (at zero) and bounced.
     output is displacement of lowest mass from it's partner (car and cadr of xs) "
-    ((xs '(0.0 1.0 2.0 3.0 4.0)) ;; starting with 5 weights
-     (vs '(0.0 0.0 0.0 0.0 0.0)))
+    ;;((xs '(0.0 1.0 2.0 3.0 4.0)) ;; starting with 5 weights
+     ;;(vs '(0.0 0.0 0.0 0.0 0.0)))
+    ((xs '(0.0 1.0 2.0 3.0)) ;; starting with 2 weights
+     (vs '(0.01 0.0 0.0 0.0)))
   ;; raise all masses by one unit
-  (:raise () (setf xs (mapcar #'1+ xs)))
+  (:raise (&optional (amount 1.0)) (setf xs (mapcar (lambda (x) (+ x amount)) xs)))
   ;; pysics step
   (:step ()
-	 (let ((new-xs-vs (update-wobble-stack xs vs k)))
+	 (let ((new-xs-vs (update-wobble-stack xs vs k1 k2)))
 	   (setf xs (car new-xs-vs))
 	   (setf vs (cadr new-xs-vs)))
 	 (car xs))
   (:get-xs () xs)
+  (:set-k1 (new-k1) (setf k1 new-k1))
+  (:set-k2 (new-k2) (setf k2 new-k2))
+  (:get-k1 () k1)
+  (:get-k2 () k2)
+  (:get-xs-adjusted () (loop for x in xs
+			  for i from 0
+			    collect (- x i)))
   (:get-vs () vs))
 
-;;(defvar foo (wobble-stack-maker))
-;;(progn
-;;  (@ foo :step)
-;;  (@ foo :get-xs))
+;;(draw-wobble-plot)
+
+(defun draw-wobble-plot ()
+  (simple-plot
+   (let ((foo (wobble-stack-maker :k1 -0.001 :k2 -0.0001)))
+     ;;(@ foo :raise 0.5)
+     (apply #'mapcar #'list
+	    (loop for i from 1 to 500
+	       do (loop repeat 10 do (@ foo :step))
+	       collect (append '(0.0 1.0) (progn (@ foo :step) (@ foo :get-xs))))))
+   "oops.png" :y-scale 50))
+(draw-wobble-plot)
+
+
+(defun average-velocity (wobble-stack)
+  (let ((vs (@ wobble-stack :get-vs)))
+    (* 0.1 (1- (reduce (lambda (x y)
+			 (+ (abs x) (abs y)))
+		       vs)))))
+
+	  ;;(let ((xs (@ foo :get-xs)))
+	    ;;(setf temp (* 0.01 (1+ (- (car xs) (cadr xs) -1))))))
+(rumble-sound-with-tone)
+
+(defparameter bar (wobble-stack-maker :k1 -0.001
+				      :k2 -0.0002))
+(let (;;(bar (wobble-stack-maker))
+      (temp 0.0))
+  (trivial-with-audio (:duration 500)
+    (if (= *channel 0)
+	(progn
+	  (@ bar :step)
+	  ;;(setf temp (cadddr (@ bar :get-xs-adjusted))))
+	  (setf temp (* 1 (reduce #'+ (cdr (@ bar :get-xs-adjusted))))))
+	;;temp)))
+	(* 1 (car (@ bar :get-xs-adjusted))))))
+
+(trivial-with-audio (:duration 5)
+  (/ (random 100) 200))
+(@ bar :get-xs)
+(@ bar :get-vs)
+(@ bar :step)
+(@ bar :set-k1 (* (@ bar :get-k1) 0.9))
+(@ bar :set-k1 (/ (@ bar :get-k1) 0.9))
+(@ bar :set-k2 (* (@ bar :get-k2) 0.9))
+(@ bar :set-k2 (/ (@ bar :get-k2) 0.9))
+
+(defparameter *k1* -0.001)
+(setf *k1* (* *k1* 0.9))
+(setf *k1* (/ *k1* 0.9))
+(defparameter *k2* -0.0001)
+(setf *k2* (* *k2* 0.9))
+(setf *k2* (/ *k2* 0.9))
+(format t "k1: ~a~%k2: ~a~%ratio: ~a~%" *k1* *k2* (/ *k1* *k2*))
+
+;;(defun general-tune (freq-setter ;;; TODO
+
 ;;
 ;;(defvar foo (spring-mass-maker :k -0.00011 :b 0.99995))
 ;;(@ foo :get-vars)
