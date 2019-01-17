@@ -1,2 +1,0 @@
-max-website.asd
-banana-grams/banana-grams.asd

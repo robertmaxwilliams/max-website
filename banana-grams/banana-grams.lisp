@@ -30,12 +30,12 @@
 	     t)))
     lines))
 
-(print
- (subseq
-  (sort 
-   (file-lines-to-list "1-1000.txt")
-   (lambda (a b) (< (length a) (length b))))
-  0 5))
+;;(print
+ ;;(subseq
+  ;;(sort 
+   ;;(file-lines-to-list "1-1000.txt")
+   ;;(lambda (a b) (< (length a) (length b))))
+  ;;0 5))
   
 ;; longer dict but more garbage words
 ;;(defun build-dict ()
@@ -50,8 +50,12 @@
 ;;	     (not (member word blacklist :test #'string=)))
 ;;	 collect word)))
 
+;; depends on bananagrams.asd for get this file location
 (defun build-dict ()
-  (file-lines-to-list "1-1000.txt"))
+  (file-lines-to-list
+   (asdf:component-pathname
+    (asdf:find-component
+     :banana-grams "1-1000.txt"))))
 
 (defparameter *dict* (build-dict))
 
@@ -528,6 +532,7 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 		    (copy-board-letters backup)))
 	(list solutions-to-find found-solutions))));;return value
 
+;;(in-package :banana-grams)
 (defun peel (letters &optional (n-solutions 1))
   ;; create 2d grid
   (let ((bl (make-board-letters
@@ -537,7 +542,9 @@ or letters that you have a lot of. This is critical to the functioning of the AI
     ;; play a single letter at random then call DFS
     (setf (aref (board-letters-board bl) 15 10) (aref (board-letters-letters bl) 0))
     (setf (board-letters-letters bl) (subseq (board-letters-letters bl) 1))
-    (mapcar #'print-board (cadr (dfs bl n-solutions)))))
+    (let ((solutions (cadr (dfs bl n-solutions))))
+      (mapcar #'print-board solutions)
+      solutions)))
 
 ;;(tobool (member "ET" *dict* :test #'string=))
 ;;(peel "datusesnrntnogtrqiror")

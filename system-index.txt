@@ -1,2 +1,2 @@
+banana-grams/banana-grams.asd
 max-website-code/max-website.asd
-max-website-code/banana-grams/banana-grams.asd

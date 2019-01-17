@@ -8,4 +8,4 @@
 
 (defpackage :banana-grams
   (:use :cl :alexandria :iterate)
-  (:export :peel)
+  (:export :peel))
