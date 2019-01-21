@@ -37,14 +37,14 @@
 ;;(ql:uninstall :banana-grams)
 
 
-(asdf:component-pathname (asdf:find-component :foo '("bar" "baz")))
-(asdf:component-pathname (asdf:find-component :max-website "package"))
+;;(asdf:component-pathname (asdf:find-component :foo '("bar" "baz")))
+;;(asdf:component-pathname (asdf:find-component :max-website "package"))
 
 
 ;;(in-package :cl-user)
-(banana-grams:peel "dogromasqu" 1)
-(max-website::2d-table-from-
+;;(banana-grams:peel "dogromasqu" 1)
+;;(max-website::2d-table-from-
 
-(setf banana-grams::*allow-run* t)
+;;(setf banana-grams::*allow-run* t)
 
 (max-website:start-website *max-website-dir* *testing*)
