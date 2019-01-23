@@ -79,9 +79,8 @@ their ability to leave whenever they wanted, and the tribes became more permanen
 (Cohesion). The tribe no longer needed to respect individual values and could optimize for large
 scale fitness against other tribes, leading back into the Malthusian trap on a new level (Chaos).
 
-
 I say that Moloch is not absolute because this cycle seems to happen on every level, until all
-resources are collected into a single  very hierarchical entity. The formation of multi-cellular
+resources are collected into a single very hierarchical entity. The formation of multi-cellular
 organisms and tribes of humans is very clear, but I think that there are more subtle instances of
 organization, that takes the form of systematic forces instead of concrete organisms. For instance,
 the system that consists of all commerce in the world is coherent and interdependent, but doesn't

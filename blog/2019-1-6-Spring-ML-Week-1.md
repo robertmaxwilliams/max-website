@@ -14,7 +14,7 @@ own ideas.
 
 Reading: Curiosity-driven Exploration by Self-supervised Prediction
 
-https://arxiv.org/abs/1705.05363
+[https://arxiv.org/abs/1705.05363](https://arxiv.org/abs/1705.05363)
 
 
 #### Four questions, from Dr. Fong's "How to Read a CS Research Paper"
