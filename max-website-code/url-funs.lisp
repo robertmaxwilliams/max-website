@@ -217,3 +217,22 @@ result: `#(2 1 0 1 0)`
 	       (:input :type "text" :name "data" :value (str datastring))
 	       (:br)
 	       (:textarea :cols 50 :rows 100 :name "code" (str codestring))))))
+
+;;
+
+(find-package :banana-foo)
+
+(define-url-fn (banana-gram-solver)
+  (let ((parameter-letters (default-value nil (parameter "letters"))))
+    (standard-page (:title "Banana Gram Solver")
+      (:h1 "Enter all the letters you have, not spaces, case doesn't matter.")
+      (simple-form *my-url "letters" parameter-letters)
+      (htm
+       (if parameter-letters
+	   (if (find-package :banana-grams)
+	       (let ((output-list (banana-grams:peel parameter-letters 1 10000)))
+		 (if output-list
+		     (2d-table-from-array html-stream (car output-list) nil)
+		     (htm (:h1 "no solution found"))))
+	       (htm (:h1 "banana grams no loaded. Contact dev.")))
+	   (htm (:h1 "no letters supplied")))))))

@@ -485,10 +485,24 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 
 (print "=================")
 
+(defun limited-calls (&optional (max-calls 10))
+  (let ((n 0))
+    (lambda () (progn (incf n)
+		      (if (>= n max-calls)
+			  nil
+			  n)))))
+
+(defparameter foo (limited-calls 10))
+(funcall foo)
+
+
 ;; this thing gives me a headache
-(defun dfs (bl &optional (solutions-to-find 1))
+(defun dfs (bl &optional
+		 (solutions-to-find 1)
+		 (termination-closure nil))
   " returns number of solutions to find and solutions list"
   ;;(print (board-letters-letters bl))
+  
   (if (not *allow-run*) (error "terminating")) ;; love this
   (if *debug-print*
       (progn
@@ -504,6 +518,9 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 		   (possible-plays
 		    (board-letters-board bl)
 		    (board-letters-letters bl)))
+	      (if (and termination-closure ;; die if we've been running too long
+		       (null (funcall termination-closure)))
+		  (error "too many recursive calls to dfs"))
 	      (while (> solutions-to-find 0))
 	      (setf bl (play-line bl play))
 
@@ -513,7 +530,7 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 			(format t "Found a solution, ~a left.~%" (1- solutions-to-find))
 		        (if *debug-print* (print-board (board-letters-board bl)))
 			(destructuring-bind (stf solution-list) ;; modify return values
-			    (dfs bl (1- solutions-to-find))
+			    (dfs bl (1- solutions-to-find) termination-closure)
 			  (setf solutions-to-find stf)
 			  (setf found-solutions
 				(cons
@@ -522,7 +539,7 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 				 (append solution-list found-solutions)))))
 		      (progn ;; is board is valid but not solution
 			(destructuring-bind (stf solution-list) ;; modify return values
-			    (dfs bl solutions-to-find)
+			    (dfs bl solutions-to-find termination-closure)
 			  (setf solutions-to-find stf)
 			  (setf found-solutions
 				(append solution-list found-solutions))))))
@@ -533,7 +550,7 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 	(list solutions-to-find found-solutions))));;return value
 
 ;;(in-package :banana-grams)
-(defun peel (letters &optional (n-solutions 1))
+(defun peel (letters &optional (n-solutions 1) (max-depth 1000))
   ;; create 2d grid
   (let ((bl (make-board-letters
 	     :board (make-array '(30 80) :initial-element #\Space)
@@ -542,7 +559,7 @@ or letters that you have a lot of. This is critical to the functioning of the AI
     ;; play a single letter at random then call DFS
     (setf (aref (board-letters-board bl) 15 10) (aref (board-letters-letters bl) 0))
     (setf (board-letters-letters bl) (subseq (board-letters-letters bl) 1))
-    (let ((solutions (cadr (dfs bl n-solutions))))
+    (let ((solutions (cadr (dfs bl n-solutions (limited-calls max-depth)))))
       (mapcar #'print-board solutions)
       solutions)))
 

@@ -90,3 +90,41 @@ padded with zeros"
   (if (> (abs x) max-abs-value) default-value x))
       
 
+
+(defun 2d-table-from-list (html-stream lsls)
+  (let ((array (list-to-2d-array lsls)))
+    (print (array-dimension array 1))
+    (with-html-output (html-stream)
+      (:table :border 0 :cellpadding 4
+	      (loop for i from 0 below (array-dimension array 0)
+		 do (htm
+		     (:tr :align "right"
+			  (loop for j from 0 below (array-dimension array 1)
+			     do (htm
+				 (:td :bgcolor (cond ((zerop (aref array i j)) "lightblue")
+						      ((oddp (aref array i j)) "pink")
+						      (t "green"))
+				      (str (aref array i j))))))))))))
+
+(defun 2d-table-from-array (html-stream array &optional (numeric t))
+  " set numeric to false is odd/even/nonzero don't apply to data"
+  (print (array-dimension array 1))
+  (with-html-output (html-stream)
+    (:table :border 0 :cellpadding 4
+	    (loop for i from 0 below (array-dimension array 0)
+	       do (htm
+		   (:tr :align "right"
+			(loop for j from 0 below (array-dimension array 1)
+			   do (htm
+			       (:td :class "fixedcell" :align "center" :bgcolor
+				    (if numeric
+					(cond 
+					  ((zerop (aref array i j)) "lightblue")
+					  ((oddp (aref array i j)) "pink")
+					  (t "green"))
+					(cond ;; assume character array
+					  ((char= (aref array i j) #\Space) "lightblue")
+					  (t "white")))
+				    (str (aref array i j)))))))))))
+
+

@@ -20,36 +20,6 @@
        ((> i n) accumulate))))
 
 
-
-(defun 2d-table-from-list (html-stream lsls)
-  (let ((array (list-to-2d-array lsls)))
-    (print (array-dimension array 1))
-    (with-html-output (html-stream)
-      (:table :border 0 :cellpadding 4
-	      (loop for i from 0 below (array-dimension array 0)
-		 do (htm
-		     (:tr :align "right"
-			  (loop for j from 0 below (array-dimension array 1)
-			     do (htm
-				 (:td :bgcolor (cond ((zerop (aref array i j)) "lightblue")
-						      ((oddp (aref array i j)) "pink")
-						      (t "green"))
-				      (str (aref array i j))))))))))))
-
-(defun 2d-table-from-array (html-stream array)
-  (print (array-dimension array 1))
-  (with-html-output (html-stream)
-    (:table :border 0 :cellpadding 4
-	    (loop for i from 0 below (array-dimension array 0)
-	       do (htm
-		   (:tr :align "right"
-			(loop for j from 0 below (array-dimension array 1)
-			   do (htm
-			       (:td :class "fixedcell" :bgcolor (cond ((zerop (aref array i j)) "lightblue")
-						   ((oddp (aref array i j)) "pink")
-						   (t "green"))
-				    (str (aref array i j)))))))))))
-
 (defun array-pascal (size)
   (let* ((n-rows (1- (* 2 size)))
 	 (n-cols (+ 1 size))

@@ -33,7 +33,7 @@
 ;;(ql:quickload :max-website)
 ;;(ql:uninstall :max-website)
 (ql:quickload :max-website)
-;;(ql:quickload :banana-grams)
+(ql:quickload :banana-grams)
 ;;(ql:uninstall :banana-grams)
 
 
@@ -43,8 +43,10 @@
 
 ;;(in-package :cl-user)
 ;;(banana-grams:peel "dogromasqu" 1)
+;;(banana-grams:peel "dogr" 1)
 ;;(max-website::2d-table-from-
 
 ;;(setf banana-grams::*allow-run* t)
+
 
 (max-website:start-website *max-website-dir* *testing*)
