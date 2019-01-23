@@ -223,10 +223,12 @@ result: `#(2 1 0 1 0)`
 (find-package :banana-foo)
 
 (define-url-fn (banana-gram-solver)
+  "Shows you how to arrange letters to win scrabble-style game, \"bananagrams\""
   (let ((parameter-letters (default-value nil (parameter "letters"))))
     (standard-page (:title "Banana Gram Solver")
       (:h1 "Enter all the letters you have, not spaces, case doesn't matter.")
-      (simple-form *my-url "letters" parameter-letters)
+      (str "scroll down if you don't see anything")
+      (simple-form *my-url "letters" (default-value "dogf" parameter-letters))
       (htm
        (if parameter-letters
 	   (if (find-package :banana-grams)
