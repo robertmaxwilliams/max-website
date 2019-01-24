@@ -20,6 +20,7 @@
                (:file "pascals-triangle")
                (:file "undecide")
                (:file "visjs-helpers")
+	       (:file "tubes-game")
                (:file "url-funs")))
 
 

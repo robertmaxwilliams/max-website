@@ -1,6 +1,6 @@
 (in-package :max-website)
 
-(defmacro standard-page ((&key title include-vis) &body body)
+(defmacro standard-page ((&key title include-vis extra-style-sheets) &body body)
   ;; html-stream is available inside scope, use it (with-html-output (html-stream) (:p ...))
   ;; set include-vis to true to get vis.js from CDN
   `(with-html-output-to-string (html-stream nil :prologue t :indent t)
@@ -22,8 +22,13 @@
 	     (:link :type "text/css"
 		    :rel "stylesheet"
 		    :href "/css/index.css")
+	     ,(loop for filename in extra-style-sheets
+		 collect `(:htm (:link
+				 :type "text/css"
+				 :rel "stylesheet"
+				 :href ,filename)))
 	     (:link :rel "shortcut icon"
-                :href "/favicon.ico?")
+		    :href "/favicon.ico?")
 	    ;; org properties so messaging/social app previews are better
 	     (:meta :name "description" :content "a website the takes the fun out of living...")
 	     (:meta :property "og:site_name" :content "Max Williams website dot website")
