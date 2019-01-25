@@ -244,9 +244,6 @@ result: `#(2 1 0 1 0)`
   (standard-page (:title "Tubes Game" :extra-style-sheets (list "/css/tubes.css"))
     (:h1 "Drag things into tube to get more things. Win by")
 
-    (:div :id "item")
-    (:div :id "item"
-	  :style "background-image: url(\"/images/sprites/tiger.png\");")
     (:script :type "text/javascript" (str (tubes-js)))))
 
 

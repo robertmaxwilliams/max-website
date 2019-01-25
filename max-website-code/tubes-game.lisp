@@ -5,39 +5,64 @@
 (defun lowstring (x)
   (string-downcase (string x)))
 
+(defparameter tube-transforms
+   '((bird tiger bird)
+     (tiger)
+     (brick scissors)
+     (scissors muscle)
+     (muscle cake)
+     (cake heart scissors)
+     (heart wheel pig)
+     (heart pig wheel)
+     (wheel brick goldfish goldfish goldfish)
+     (goldfish)
+     (pig ghost leg leg)
+     (leg bone)
+     (ghost balloon tiny-ghost)
+     (tiny-ghost)
+     (balloon ant popped blue-bird)
+     (ant tiny-ghost tiny-tube)
+     (tiny-tube tiny-tube)
+     (blue-bird heart bones bones bones)
+     (popped)
+     (bone)))
+
+(defun tubize (item)
+  (cdr (assoc item tube-transforms)))
+
+
+(defun play-tubes (item inventory)
+  (if (member item inventory :test #'string=)
+      (append (tubize item) (remove item inventory :count 1))
+      (progn
+	(format t "you don't have ~a!~%" item)
+	inventory)))
+
+;;(play-tubes 'bird '(bird brick))
+
+(defun tubes-repl ()
+  (let ((inventory '(bird brick)))
+    (loop
+       (progn
+	 (format t "TOOB:> ")
+	 (finish-output)
+	 (setf inventory (play-tubes (intern (string-upcase (read-line))) inventory))
+	 (format t "Inventory: ~a~%" inventory)))))
+
 (defun tube-transforms-js ()
   " convert from tube-transforms to js alist"
-  (let ((tube-transforms
-	 '((bird ((1 tiger)
-		  (2 bird)))
-	   (tiger ())
-	   (frog ((2 frog))))))
-    `(create
-      ,@(loop for entry in tube-transforms
-	   append (list
-		   (lowstring (car entry))
-		   (cons
-		    'list
-		    (loop for newthing in (cadr entry)
-		       collect `(create thing ,(lowstring (cadr newthing))
-					amount ,(car newthing)))))))))
-(ps* (tube-transforms-js))
-(tube-transforms-js)
-
-(let ((tube-transforms
-       '((bird ((1 tiger)
-		(2 bird)))
-	 (tiger ())
-	 (frog ((2 frog))))))
-  (loop for entry in tube-transforms
-     append (list
-	     (lowstring (car entry))
-	     (loop for newthing in (cdr entry)
-		  collect newthing))))
+  `(create
+    ,@(loop for entry in tube-transforms
+	 append (list
+		 (lowstring (car entry))
+		 (cons
+		  'list
+		  (loop for newthing in (cdr entry)
+		     collect (lowstring newthing)))))))
+;;(ps* (tube-transforms-js))
+;;(tube-transforms-js)
 
 
-(ps* '(create inner-H-T-M-L "bar" inner+HTML+ "foo"))
-(ps* '(append "foo" "o"))
 
 ;;(with-html-output-to-string (s) (:h1 "hi"))
 
@@ -55,7 +80,6 @@
 		     collect (make-item div)))
    `(defvar ai nil) ;;short for active item
    `(defvar container (chain document (query-selector "body")))
-   `(defvar tube (chain document (query-selector ".tube")))
    `(defun make-item (div)
       (create active nil
 	      div div
@@ -63,29 +87,39 @@
 	      initial (create x 0 y 0) ;; where it was clicked
 	      offset (create x 0 y 0))) ;; where it landed after leave
 
-   `(defun place-item (item-class)
+   `(defun place-item (item-class initial-position)
+      ;;(setf initial-position (pair-mult initial-position (make-pair 0.5 0.5))))
+      (setf initial-position (pair-sub initial-position origin-offset))
+      (print initial-position)
       (let ((div (chain document (create-element "div"))))
 	(setf (@ div id) "item")
 	(setf (@ div class-name) item-class)
-	(let ((new-item (make-item div))
-	      (initial-position (make-pair (random 500) (random 500))))
+	(let ((new-item (make-item div)))
+	      
 	  (setf items (chain items (concat new-item)))
 	  (css-translate (+ (@ initial-position x))
 			 (+ (@ initial-position y)) div)
-	  ;;(setf (@ items initial) (pair-sub (pair-copy initial-position)))
-	  (setf (@ new-item offset) (pair-copy initial-position))
-	  ;;(setf (@ items current) (pair-copy initial-position))
-	  )
+	  (setf (@ new-item offset) (pair-copy initial-position)))
 	(chain container (append-child div))))
 
    `(defvar tube-transforms ,(tube-transforms-js)) ;; alist of thing to tube out
+   `(defun get-tube-place (widther)
+      (let* ((tube-rect (chain tube (get-bounding-client-rect))))
+	     (make-pair
+	      (+ (* (@ tube-rect width) widther) (@ tube-rect left))
+	      (avg (@ tube-rect top)  (@ tube-rect bottom)))))
 
    `(defun tube-spawn (in-item)
       (let* ((in-thing (@ in-item div class-name))
-	     (out-thing-amount-list (getprop tube-transforms in-thing)))
-	(loop for out-thing-amount in out-thing-amount-list
-	   do (loop repeat (@ out-thing-amount amount)
-		 do (place-item (@ out-thing-amount thing))))))
+	     (spawn-location (pair-sub (get-tube-place 1)
+				       (make-pair 0 50)))))
+      (loop for thing in (getprop tube-transforms in-thing)
+	 do (place-item
+	     thing
+	     (pair-add
+	      (pair-sub (make-pair 50 50) ;; random -50 to 50
+			(make-pair (random 100) (random 100)))
+	      spawn-location))))
 
    `(defun remove-item (item)
       (chain container (remove-child (@ item div)))
@@ -95,9 +129,13 @@
 		     (find-index (lambda (x) (eql x item))))
 	      1)))
 
-   `(place-item "tiger")
-   `(place-item "tiger")
-   `(place-item "bird")
+   `(place-item "tube" (make-pair 0 0))
+   `(place-item "bird" (make-pair -200 -400))
+   `(place-item "brick" (make-pair -300 -400))
+   `(defvar tube (chain document (query-selector ".tube")))
+   `(defvar origin-offset
+      (let ((tube-rect (chain tube (get-bounding-client-rect))))
+	(make-pair (@ tube-rect x) (@ tube-rect y))))
 
    `(progn
       ;; touch
@@ -128,6 +166,20 @@
       (create
        x (@ pair x)
        y (@ pair y)))
+   `(defun sqrt (x)
+      (chain -math (sqrt x)))
+   `(defun sqr (x) (* x x))
+   `(defun pair-mult (a b)
+      (make-pair
+       (* (@ a x) (@ b x))
+       (* (@ a y) (@ b y))))
+   `(defun pair-add (a b)
+      (make-pair
+       (+ (@ a x) (@ b x))
+       (+ (@ a y) (@ b y))))
+   `(defun pair-dist (a b)
+      (let ((diff (pair-sub a b)))
+	(sqrt (+ (sqr (@ diff x)) (sqr (@ diff y))))))
 
    `(defun client-pos (e)
       (if (touch-event-p e)
@@ -152,13 +204,16 @@
 		  (setf (@ item active) nil))))
       (if ai
 	  (setf (@ ai initial) (pair-sub (client-pos e) (@ ai offset)))))
+   `(defun avg (a b) (/ (+ a b) 2))
    `(defun touching-tube-p (el)
-      (let* ((el-rect (chain el (get-bounding-client-rect)))
-	     (touches-top-right (chain document
-				       (element-from-point
-					(@ el-rect right)
-					(@ el-rect top)))))
-	(chain touches-top-right class-list (contains "tube"))))
+      (if (eql (@ el class-name) "tube")
+	  nil
+	  (let* ((tube-place (get-tube-place 0.2))
+		 (el-rect (chain el (get-bounding-client-rect)))
+		 (el-place (make-pair 
+			    (avg (@ el-rect left) (@ el-rect right))
+			    (avg (@ el-rect top)  (@ el-rect bottom)))))
+	    (> 50 (pair-dist tube-place el-place)))))
 
    `(defun drag (e)
       ;;(Print e)
