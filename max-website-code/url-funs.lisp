@@ -243,7 +243,7 @@ result: `#(2 1 0 1 0)`
   "Alchemy game"
   (standard-page (:title "Tubes Game" 
                          :extra-style-sheets (list "/css/tubes.css") 
-                         :draggable-viewport t)
+                         :draggable-viewport nil)
     (:h1 "Drag things into tube to get more things. Win by")
 
     (:script :type "text/javascript" (str (tubes-js)))))
