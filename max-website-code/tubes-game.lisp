@@ -130,8 +130,8 @@
 	      1)))
 
    `(place-item "tube" (make-pair 0 0))
-   `(place-item "bird" (make-pair -200 -400))
-   `(place-item "brick" (make-pair -300 -400))
+   `(place-item "bird" (make-pair -200 -200))
+   `(place-item "brick" (make-pair -300 -200))
    `(defvar tube (chain document (query-selector ".tube")))
    `(defvar origin-offset
       (let ((tube-rect (chain tube (get-bounding-client-rect))))

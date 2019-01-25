@@ -1,6 +1,6 @@
 (in-package :max-website)
 
-(defmacro standard-page ((&key title include-vis extra-style-sheets) &body body)
+(defmacro standard-page ((&key title include-vis extra-style-sheets draggable-viewport) &body body)
   ;; html-stream is available inside scope, use it (with-html-output (html-stream) (:p ...))
   ;; set include-vis to true to get vis.js from CDN
   `(with-html-output-to-string (html-stream nil :prologue t :indent t)
@@ -10,6 +10,9 @@
 	    (:head
 	     (:meta :http-equiv "Content-Type" 
 		    :content    "text/html;charset=utf-8")
+         ,(if draggable-viewport
+            `(:meta :name "viewport"
+                    :content "width=device-width, initial-scale=1.0, user-scalable=no"))
 	     ,(if include-vis
 		  `(:htm (:script
 			  :type "text/javascript"
