@@ -1,4 +1,4 @@
-
+/*
 #container {
   width: 100%;
   height: 400px;
@@ -10,19 +10,10 @@
   border-radius: 7px;
   touch-action: none;
 }
-#container {
-  width: 100%;
-  height: 400px;
-  background-color: #333;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 7px;
-  touch-action: none;
-}
+*/
 body {
     height: 1000px;
+    touch-action: none;
 }
 #item {
   background-repeat: no-repeat;
