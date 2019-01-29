@@ -86,3 +86,52 @@ theorems being included in the pricing. In this case, the price of `A` and `B` m
 Oh, on page 12 they make the analogy of Ramanujan as the inductive "intuitive" mathematician, and
 G.H. Hardy as the rigorous deductive mathematician.
 
+# Week 3 Friday
+
+Luke is continuing logical induction, I will do the same. 
+
+I've gotten throught the main part of the paper, and now I'm in the theorems about the properties of
+the algorithm. Even if I could summarize them, it would be more benificial for me to analyze the
+paper on a higher level. I'm going to start with 
+[How to Read a CS Paper](http://www2.cs.uregina.ca/~pwlfong/CS499/reading-paper.pdf).
+
+
+1. What is the research problem the paper attempts to address? 
+    How to create agents that can assign probabilities to theorems faster than they can be proved. 
+
+2. What are the claimed contributions of the paper? 
+    An algorithm that converges to this behavior and has many nice theoretical properties, while
+    being provable.
+
+3. How do the authors substantiate their claims?
+    They explain how they developed the algorithm and why it has these properties. However, they do
+    not show any output of the algorithm running, or indicate a publically available implementation
+    as far as I can tell. They present many theories about their algorithm (and prove them in the
+    full paper) but most of them are beyond my understanding at the depth I'm reading this paper.
+
+4. What are the conclusions? 
+    They conclude their algorithm can be applied to any situation with true/false conditions in
+    descrete time; it could also play prediction markets and be used as a does-a-program-halt
+    estimator. 
+
+I foud this blog post by the first author (Scott Garravrant) explaining their process of making the
+discovery: 
+[https://www.alignmentforum.org/posts/iBBK4j6RWC7znEiDv/history-of-the-development-of-logical-induction](https://www.alignmentforum.org/posts/iBBK4j6RWC7znEiDv/history-of-the-development-of-logical-induction)
+
+And their first blog post on a related issue:
+[https://www.lesswrong.com/posts/NHFFzBF4b3SZLHckt/how-should-eliezer-and-nick-s-extra-usd20-be-split](https://www.lesswrong.com/posts/NHFFzBF4b3SZLHckt/how-should-eliezer-and-nick-s-extra-usd20-be-split)
+
+They ask for the reader to consider their own solutions to the following problem before moving on,
+so I will do so here, even through it's a bit off topic.
+
+    Nick and Eliezer took a taxi and split the fare. They find an extra twenty. Both don't think
+    it's theirs and want the other to take it. Nick thinks the probability that it is his is 15%,
+    while Eliezer thinks there is a 20% chance it is his. How should the split the twenty?
+
+The obvious joke solution is to give the taxi driver a huge tip, since neither person thinks it is
+theirs. Or you could have a random number generator with a 15% chance of giving it all to Nick, 20%
+chance of giving it to Eliezer, and the 65% chance of destroying it. Then, allow Nick and Eliezer to
+modify their probabilties until they both no longer want to change.
+
+The answers given all use the given facts and calculate some value around 11 or 12 dollars, using
+four different methods of combining or averaging beliefs.

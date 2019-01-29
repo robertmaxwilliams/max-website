@@ -100,4 +100,40 @@ can look at an arid terrain and determine what shape a river will one day take b
 will obey gravity, so you can look at a civilization and determine what shape its institutions will
 one day take by assuming people will obey incentives." - Meditations on Moloch
 
+#### Relation to AI safety
 
+We are controlled soley by systematic force, meaning we will either discard all of our values except
+reproduction (Malthus) or form cohesive system and let it rule our values from above (wholism). Even
+the most iron-fisted dictators still 
+[depend on systematic forces to grant them power.](https://www.youtube.com/watch?v=rStL7niR7gs)
+The image of the sole dictator, affecting everything but affected by nothing, is largely a myth
+[todo back this up]. 
+
+In our current state, without any superintelligence, we are still controlled by forces larger than
+ourselves which are often not aligned with anyone's values. The collective being of humanity
+doesn't even seem to be aware that it can die from its actions, given its inability to stop
+polluting the oceans and generating greenhouse gasses.
+
+Deciding not to create superintelligent AI is to doom ourselves to doom ourselves to this different
+kind of maligned force, one that also poses existential risk. This needs to be considered when
+weighting the risks and benifits of construction potential superintelligence. If we could build a
+superintelligence tomorrow, and it had a 10% chance of replacing the universe with paperclips,
+should we do it? What are the odds that humanity destroys itself, and no intelligent life ever comes
+back, like in [H.G. Wells' "Time Machine"](http://www.gutenberg.org/ebooks/35)? If our odds are
+better with the superintelligence, it would be the right thing to do. 
+
+(This is for the case where AI safety failure results in a dead universe, with no suffering. If the
+superintelligence might instead fill the universe with maximum suffering, then the decision becomes
+more tricky.)
+
+The third option is to use social sciences and maybe weaker artificial intelligence to control the
+systems that currently control us, for our collective and individual benefit. I think this is the
+idea of politics, but the usual route seems incredibly ineffective, and the system might learn
+immunities against activism. I believe this immunity mechanism might have happened in America:
+minimal contact with others in public, always busy working population, negative portrayal of
+effectiveness of protests, stigma around activism only being for certain kinds of people.
+
+As I can tell, these are our four paths: Malthusian prison, rule by uncontrolable systems forces,
+universe controlled by AI, and universe controlled by world controllers with advanced social
+sciences.  None of these are particularily promising, but the last two offer a shred of hope of
+preserving human values. 

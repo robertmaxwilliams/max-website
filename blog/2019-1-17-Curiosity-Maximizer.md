@@ -139,5 +139,9 @@ drag the prey a few inches away, it will repeat the ritual before moving the pre
 You can repeatedly move the prey every time the wasp enters the nest, trapping it in a loop like a
 simple robot. 
 
-The opposite of this quality is "antisphexishness", which 
+The opposite of this quality is "antisphexishness", which is an important quality to intelligent
+agents. The curiosity agent seems to have very high antisphexishness, but reveals its robotic nature
+when exposed to the simulated TV. Improved versions of the AI would show even lower levels of
+sphexishness, until human level antisphexishness become possible. It's even possible we could obtain
+super-human antisphexishness.
 

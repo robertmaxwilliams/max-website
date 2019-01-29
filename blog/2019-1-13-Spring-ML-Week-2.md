@@ -21,8 +21,6 @@ This paper is very long, I'm just reading over it without taking notes today.
 
 # Week 2 Wednesday 
 
-(okay maybe I actually did this on Thursday)
-
 [http://nzetc.victoria.ac.nz/tm/scholarly/tei-ButFir-t1-g1-t1-g1-t4-body.html](http://nzetc.victoria.ac.nz/tm/scholarly/tei-ButFir-t1-g1-t1-g1-t4-body.html)
 
 "Darwain Among the Machines"

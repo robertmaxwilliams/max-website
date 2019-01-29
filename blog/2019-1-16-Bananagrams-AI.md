@@ -3,9 +3,13 @@ layout: post
 title: Bananagrams AI!
 ---
 
-I just finished the code for my banangrams playing AI! I'll add it under "fun" as a place where you
-type in all of the letters you have and it returns an html table with the board you can play, or
-maybe just plaintext if I can find a good way to make it square ;)
+I just finished the code for my banangrams playing AI! I've added it under the "fun" tab.
+Type in all of the letters you have and it returns an html table with a board you can play.
+
+Try it out here:
+<br>
+[https://www.maxwilliams.us/fun/banana-gram-solver](https://www.maxwilliams.us/fun/banana-gram-solver)
+
 
 Bananagrams is played as a series of individual scrabble games, where you have a pile of letters
 that you need to organize into a valid board, as in scrabble, as fast as you can.
