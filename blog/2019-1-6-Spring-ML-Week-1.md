@@ -61,9 +61,10 @@ and more for each curve, all of these spatially oriented along the plane of visi
 disappointed when no neuron lit up for higher level shapes. There was no triangle neuron, or apple
 neuron. The speaker claimed it was due to the exponential growth of the amount of hardware needed,
 since having a plane of these neurons is increasingly spatially expensive as you have more shapes to
-map. Convnets seems to be an excellent model for the reductionable parts of the brain, but our
-models for the rest of the brain, where concepts exist in the lines between millions of neurons and
-patterns loop back around and stimulate themselves, is completely lacking.
+map. Convnets seems to be an excellent model for the reductionable (can be understood in a
+reductionist way) parts of the brain, but our models for the rest of the brain, where concepts exist
+in the lines between millions of neurons and patterns loop back around and stimulate themselves, is
+completely lacking.
 
 Curiosity driven AI have been attempted before. I remember a video of a robotic arm playing with
 blocks.
@@ -129,7 +130,7 @@ experimentation. What I really want to see is this agent play games that don't h
 Minecraft or Game of Life/[Lenia](https://chakazul.github.io/Lenia/JavaScript/Lenia.html). THAT
 would be exciting.
 
-One of the authors has a website with aditional content about the paper, and a follow up paper:
+One of the authors has a website with additional content about the paper, and a follow up paper:
 
 [https://people.eecs.berkeley.edu/~pathak/](https://people.eecs.berkeley.edu/~pathak/)
 
@@ -160,9 +161,9 @@ different goals.
 
 **Ethical Status**: An entity has ethical status if you believe it deserves consideration into
 ethical choices. For instance, most people agree that all humans have ethical status and deserve to
-live. Vegeterians choose to believe that animals have ethical status and deserve to not be
+live. Vegetarians choose to believe that animals have ethical status and deserve to not be
 systematically killed for their flesh. Vegans take this further and grant animals even higher
-ethical status by believing that animals lack the facualty to grant consent to take from them, and
+ethical status by believing that animals lack the faculty to grant consent to take from them, and
 thus taking milk from cows or eggs from chickens is unethical.
 
 **Mindcrime** (from Bolstrom): A crime that can be performed within ones own mind (which may or may not be a
@@ -183,7 +184,7 @@ they are in a simulation.  The simulation itself is ran by an AGI (artificial ge
 and the virtual environment is assumed to be "safe", meaning the AGI controlling everything is
 assumed to have some degree of human value alignment preventing it from putting everyone in eternal
 torture or reducing humanity for the sake of a poorly defined goal, such as maximizing happiness by
-filling the universe with tanks of seratonin. 
+filling the universe with tanks of serotonin. 
 
 I have some troubles with this, that aren't addressed completely in the paper:
 
@@ -202,24 +203,24 @@ If there's no freedom to opt-out or if the real world is really terrible or bori
 situation is more like an eternal prison, like The Matrix.
 
 In an accurate simulation of the world, you would have to simulate other people. The ethical
-status of simulated minds is a point of debate, but I expect the following possiblilities to be
-reasonable to anyone who rejects substrate cheavanism (like Bolstrom):
+status of simulated minds is a point of debate, but I expect the following possibilities to be
+reasonable to anyone who rejects substrate chauvinism (like Bolstrom):
 + The simulated minds are accurate simulations of humans. In this case, allowing a person in their ISU
   (individual simulated universe) to torture its inhabitants, or simply deleting unneeded simulated
-  minds, could amount to enourmous mindcrime. Any one "real" agent could dedicate all of the
+  minds, could amount to enormous mindcrime. Any one "real" agent could dedicate all of the
   computer resources to simulating minds being tortured.
 + The simulations are externally completely indistinguishable from humans but carefully designed not
   to have ethical status. I question whether this is remotely possible, and I personally tend to 
   believe that a functionally equivalent human has the same ethical status as a perfect simulation
   which has the same ethical status as a meat and bones human. 
 + The simulations are more like today's video game AI and aren't capable of general intelligence.
-  This would comprimise the believability of the simulation, and there comes a point where the
+  This would compromise the believability of the simulation, and there comes a point where the
   simulation are accurate enough that the "real" agent develops deep empathetic bonds with the
   "fake" agents and treats them as real. 
-+ **[Good idea]** Instead of dealing with the moral quandries of simulating lesser minds inside the
++ **[Good idea]** Instead of dealing with the moral quandaries of simulating lesser minds inside the
   ISU, the AGI that controls the universe could instead be like an actor in a play, simulating the
   characters within ISUs just as actors play the role as characters in a performance and no mind
-  crime is committed when the actor takes off the costume and the character disapears. 
+  crime is committed when the actor takes off the costume and the character disappears. 
   
   
 #### Issues with the idea of having the AGI be an "actor" to play the NPCs in everyone's ISU
@@ -231,7 +232,7 @@ assume everything else is the same as our own mind.
 
 Speculating about an AGI acting as a person inside of one of these ISUs, it seems there are many
 ways mindcrime could still be committed. It's very speculative, because I'm assuming it would use a
-human-like machanism for acting out the NPCs. Assuming that, the AGI would have a human-like
+human-like mechanism for acting out the NPCs. Assuming that, the AGI would have a human-like
 base personality mask, then specific masks for specific NPCs. If these "masks" are detailed enough,
 then they might have ethical status of their own.
 
@@ -273,7 +274,7 @@ as h approaches zero (actually it looks like varying `h` is on of the important 
 model)
 
 They describe various advantages of this, such as constant memory usage with depth, ability to
-tradeoff accuracy with resource consumption, reducing the number of parameters needed, something to
+trade off accuracy with resource consumption, reducing the number of parameters needed, something to
 do with change of variable and normalization, and the ability to process continuous time data.
 
 The key part of this method is the use of an "ODE solver" to compute the parameter updates. It is
@@ -288,9 +289,9 @@ They also introduce "continuous normalizing flows", where the differential equat
 network changes with time. Also they introduce a "gating mechanism" for each hidden unit, it seems
 to be another way of taking time as a parameter that tweaks the network parameters.
 
-#### Experiements
+#### Experiments
 
-The next section shows several experiements, including density plots showing the difference in
+The next section shows several experiments, including density plots showing the difference in
 learning a normalizing flow (NF) and continuous normalizing flow (CNF). The CNF is shown to be
 superior. They also show this distinction on the task of drawing two concentric circles, and talk
 about how the CNF learns to "rotate" the plane to draw the circles accurately. I have no idea how
@@ -299,9 +300,9 @@ that could work. They included a series of videos of the learned behavior:
 [http://www.cs.toronto.edu/~jessebett/nodes/playlist.html](http://www.cs.toronto.edu/~jessebett/nodes/playlist.html)
 
 And I see the rotating now, and the first few show the vector field, but I really don't understand
-what't going on. 
+what's going on. 
 
-The experiements with spirals are interesting, the RNN performs very poorly at extrapolation and has
+The experiments with spirals are interesting, the RNN performs very poorly at extrapolation and has
 a lot of sharp edges in its prediction, while the LNODE (Latent Neural Ordinary Differential 
 Equation) smoothly follows the path and extrapolates accurately. 
 
@@ -328,15 +329,15 @@ network at the bottom and being transformed by several layers, following a traje
 reaches the end of the network as output. In the ODE network, they same thing is done, but instead
 of adding something to the state at each layer, the field is a vector field defined at every point,
 and the ODE solver approximates the motion of a data sample through the network, sampling the
-function as nescassary. 
+function as necessary. 
 
-I think I have a sorface level understanding of it now. How this "network" is trained, however, is a
-mystery to my. They talk about using the "adjoint method". They cite a 1962 paper on optimimal processes:
+I think I have a surface level understanding of it now. How this "network" is trained, however, is a
+mystery to my. They talk about using the "adjoint method". They cite a 1962 paper on optimal processes:
 
 Lev Semenovich Pontryagin, EF Mishchenko, VG Boltyanskii, and RV Gamkrelidze. The mathematical
 theory of optimal processes. 1962.
 
-It's hard to find, but the method itself is on wikipedia:
+It's hard to find, but the method itself is on Wikipedia:
 
 [https://en.wikipedia.org/wiki/Adjoint\_state\_method](https://en.wikipedia.org/wiki/Adjoint_state_method)
 
@@ -353,7 +354,7 @@ At the mention of the curiosity driven AI paper, Dr. Yamposkiy sent us this pape
 [https://www.mitpressjournals.org/doi/pdfplus/10.1162/EVCO\_a\_00025](https://www.mitpressjournals.org/doi/pdfplus/10.1162/EVCO_a_00025)
 
 I would really like to make my own implementation of the curiosity reward signal, it seems fairly
-straighforward in it basic form and the official implementation isn't monumental in size. I wish
+straightforward in it basic form and the official implementation isn't monumental in size. I wish
 there was a better way to describe graphs in programming languages, like a text-based format with an
 interactive editor. Most object oriented programs are graphs as well, program source visualization
 seems to be very underutilized. 
@@ -373,37 +374,37 @@ reward and thus the stop button problem returns.
 We trailed off at "Neural Ordinary Differential Equations". Luke and I approached this one the same
 as the other two (by trying to understand it as best as possible) and got tangled in the details.
 Dr. Harrison reminded us that our final paper doesn't need to include summaries of all of the
-papers' contents, but instead on thier claims, support, impact, etc. A good thing to notice here
+papers' contents, but instead on their claims, support, impact, etc. A good thing to notice here
 would have been the apparent cherry-picking of toy problems they solved using their method. How
-could it perform on some varient of MNIST? I could search around for other studies on this method,
+could it perform on some variant of MNIST? I could search around for other studies on this method,
 and see if anyone has performed more experiments like MNIST or natural language processing.
 
 Dr. Yampolskiy also sent me some links to read, which I'll catalog here:
 
 [http://iopscience.iop.org/article/10.1088/0031-8949/90/1/018001](http://iopscience.iop.org/article/10.1088/0031-8949/90/1/018001)
 
-(Oooh html format, and very tastefully done.)
+(Ooh html format, and very tastefully done.)
 
 This paper reviews existing literature to review the possibility of catastrophic risk from AGI.
-Their references are a great pool of material for this indepentent study.
+Their references are a great pool of material for this independent study.
 
 [https://www.lesswrong.com/posts/a72owS5hz3acBK5xc/2018-ai-alignment-literature-review-and-charity-comparison](https://www.lesswrong.com/posts/a72owS5hz3acBK5xc/2018-ai-alignment-literature-review-and-charity-comparison)
 
-(Oh I love lesswrong! The stuff here tends to be a bit extreme but I guess I'm a bit of an extremist
+(Oh I love Lesswrong! The stuff here tends to be a bit extreme but I guess I'm a bit of an extremist
 in some domains, too. Also this html paper format is nicer than the other one.)
 
 I also like how they drop words like "infohazard", it makes me feel like I'm living in the SCP
-universe. Feeling like you're in a sci-fi tends to be a goal of "futurists", whatver implications
+universe. Feeling like you're in a sci-fi tends to be a goal of "futurists", whatever implications
 that has. 
 
 "Contemporaneous unemployment has more to do with poor macroeconomic policy and inflexible labour
 markets than robots."
 
 That's a bold statement, I'll have to start throwing that around when people are throwing around
-thier expert opinions on unemployment.
+their expert opinions on unemployment.
 
-The aithor also believes that UBI will not be helpful when there are a lot of emulated humans around
-claiming personhood. I don't think this is relavent to the UBI discussion at all. It also harks back
+The author also believes that UBI will not be helpful when there are a lot of emulated humans around
+claiming personhood. I don't think this is relevant to the UBI discussion at all. It also harks back
 to [Meditations on Moloch](https://slatestarcodex.com/2014/07/30/meditations-on-moloch/) which I
 appreciate greatly but find myself wondering about how applicable it is to the real world, with its
 many levels of living things and their interactions.

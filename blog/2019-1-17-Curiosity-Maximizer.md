@@ -44,11 +44,11 @@ Also, I think
 [this page](https://towardsdatascience.com/curiosity-driven-learning-made-easy-part-i-d3e5a2263359)
 probably explains it better, but their diagrams don't have the same charm.
 
-The effect of this "Intrensic Curiosity Model" is that features of the environment the the agent can
-affect or can affect the agent end up encdoed in the latent space representation, which the FDM must
+The effect of this "Intrinsic Curiosity Model" is that features of the environment the agent can
+affect or can affect the agent end up encoded in the latent space representation, which the FDM must
 learn to predict. The agent tried to maximize FDM loss, and tries to find novel dynamics to drive up
 the FDM's loss. In the paper they discuss the issue of it having a preference for harder to predict
-environments, but didn't observe it seeking out or causing chaos in any of their experiements.
+environments, but didn't observe it seeking out or causing chaos in any of their experiments.
 
 Note that extraneous noise is ignored, since the IDM doesn't include information about anything the
 agent can't control or can't affect the agent.
@@ -65,8 +65,8 @@ objects around.
 
 An interesting unsafe behavior to test for would be intentionally making the world harder to
 predict. Imagine this agent put in a coffee shop, and trying to learn how to prepare coffee using
-a robotic body. It might find stiring coffee extremely interesting, or maybe it would learn to
-antogonize customers for more unpredictable encounters. It may even thrash and throw things around
+a robotic body. It might find stirring coffee extremely interesting, or maybe it would learn to
+antagonize customers for more unpredictable encounters. It may even thrash and throw things around
 to observe interesting and unpredictable physics, and a police chase would certainly lead to a 
 very high curiosity reward signal. 
 
@@ -109,16 +109,16 @@ Some common paperclip-maximizer arguments are as follows:
   paperclips instead of manufacturing them. Still, it would destroy the universe to make more space
   for computers to do this imagining. 
 
-I don't belive the curiosity reward inherently cares about whether it's in a simulation or not. As
+I don't believe the curiosity reward inherently cares about whether it's in a simulation or not. As
 long as the agent is taking action and receiving sensory input, it will give the appropriate reward.
 The agent would happily play video games all day, or even create its own games that better maximize
 its reward.
 
 ## Compare to Humans
 
-A lot of the bad (and good) behaviors of this agent are eirily similar to human behaviors. We REALLY
+A lot of the bad (and good) behaviors of this agent are eerily similar to human behaviors. We REALLY
 enjoy gambling, where our actions seem to have an effect on mostly unpredictable outcomes. Also
-note that gambling is much more fun when it affects our extrensic reward. 
+note that gambling is much more fun when it affects our extrinsic reward. 
 
 Perhaps having the IDM try to predict the reward next step would make it pay attention to possibly
 rewarding dynamics, and make the agent better at seeking reward. I don't know if the authors of the
@@ -142,6 +142,6 @@ simple robot.
 The opposite of this quality is "antisphexishness", which is an important quality to intelligent
 agents. The curiosity agent seems to have very high antisphexishness, but reveals its robotic nature
 when exposed to the simulated TV. Improved versions of the AI would show even lower levels of
-sphexishness, until human level antisphexishness become possible. It's even possible we could obtain
+sphexishness until human level antisphexishness become possible. It's even possible we could obtain
 super-human antisphexishness.
 

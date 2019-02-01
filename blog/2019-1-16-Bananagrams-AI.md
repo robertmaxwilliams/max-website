@@ -3,7 +3,7 @@ layout: post
 title: Bananagrams AI!
 ---
 
-I just finished the code for my banangrams playing AI! I've added it under the "fun" tab.
+I just finished the code for my Banangrams playing AI! I've added it under the "fun" tab.
 Type in all of the letters you have and it returns an html table with a board you can play.
 
 Try it out here:
@@ -24,6 +24,6 @@ letters it has. Because the search space is to big, it never tries lifting up th
 are a few ways to solve this. The best is using `A*` search, but that would be a lot of word.
 Another would be a modified Monte Carlo, where it goes from the top all the way down to a random
 leaf (a filled in board, either a solution or somewhere where no more words can be played) and
-search aroud there, and give up after some time. I could also limit the number of iterations at each
+search around there, and give up after some time. I could also limit the number of iterations at each
 DFS iteration... Actually that would be a one line change! I'll experiment with that. I also need a
 way to limit search time so web use to prevent abuse or accidental non-terminating process creation.
