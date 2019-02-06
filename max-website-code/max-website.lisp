@@ -28,6 +28,8 @@ calls to define-url-fn"
 	  (create-prefix-dispatcher "/fun" 'controller-fun)
 	  (create-prefix-dispatcher "/about" 'controller-about)
 	  (create-regex-dispatcher "^/fun/*" 'controller-404)
+	  (create-folder-dispatcher-and-handler "/.well-known/acme-challenge/" 
+                                            "/home/private/.dehydrated/") ;; for dehydrated client
 	  (create-folder-dispatcher-and-handler "/images/" *images-dir*)
 	  (create-folder-dispatcher-and-handler "/files/" *files-dir*)
 	  (create-regex-dispatcher "^/principia-discordia/$" 'redirect-page-1)
