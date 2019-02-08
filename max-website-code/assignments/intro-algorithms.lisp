@@ -10,6 +10,109 @@
 
 (in-package cecs-419)
 
+(defmacro swap (place-a place-b)
+  (let ((temp (gensym)))
+    `(let ((,temp ,place-a))
+       (setf ,place-a ,place-b)
+       (setf ,place-b ,temp))))
+  
+
+(defun print-vec-inds (arr i j &optional (special ""))
+  (let ((foo (make-array (+ 6 (* 3 (length arr)))
+			 :element-type 'character
+			 :initial-element #\space)))
+    (setf (aref foo (* 3 i)) #\i)
+    (setf (aref foo (* 3 j)) #\j)
+    (format t "~a~%" (string foo)))
+  (print-vec arr special))
+
+(defun print-vec (arr &optional (special ""))
+  (format t "")
+  (iter (for x in-vector arr)
+	(format t "~2a " x))
+  (format t "  ~a~%" special))
+
+(print-vec #(0 1 2 3 4) 5 3)
+
+(defun pivot (arr)
+  (let ((pivot (first-elt arr))
+	(j 1)
+	(i 0))
+    (iter (while (< j (length arr)))
+	  ;;(print-vec-inds arr i j (if (< (aref arr j) pivot) "*" ""))
+
+
+	  (if (< (aref arr j) pivot)
+	      (progn
+		(incf i)
+		(swap (aref arr i) (aref arr j))))
+	      
+	  (incf j))
+	  ;;(print-vec arr))
+    (swap (aref arr 0) (aref arr i))
+    arr))
+
+(pivot #(16 1 29 22 12 8 15 10 11 7 24 5 9 14 0 0 0))
+
+(defclass heap ()
+  ((init-list
+    :initarg :init-list
+    :initform nil
+    :accessor init-list)
+   (arr
+    :initform nil
+    :accessor arr)))
+
+(defmethod init ((obj heap))
+  (setf (arr obj) (coerce (init-list obj) 'vector)))
+
+(defun next-power-of-two (n)
+  (expt 2 (ceiling (log n 2))))
+
+(next-power-of-two 5)
+
+;;https://lispcookbook.github.io/cl-cookbook/clos.html
+(defmethod is-leaf ((obj heap))
+  (>= (/ (length (arr obj)) 2)
+     
+
+(defmethod max-heapify ((obj heap))
+  (setf (arr obj)
+	(adjust-array (arr obj) (next-power-of-two (length arr))))
+  (if
+(defvar foo
+  (make-instance 'heap :init-list '(1 2 6 4)))
+(init-list foo)
+(arr foo)
+(init foo)
+
+(defun max-heap (ls)
+  " turn list into array
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; all garbage
+
 (let ((foo (list 1 2 3)))
   (setf (cdr foo) (cons 9 (cdr foo)))
   foo)
@@ -38,12 +141,6 @@
       (collect i))
 
 
-(defmacro swap (place-a place-b)
-  (let ((temp (gensym)))
-    `(let ((,temp ,place-a))
-       (setf ,place-a ,place-b)
-       (setf ,place-b ,temp))))
-  
 ;;(defun array-insertion-sort (seq &optional (comparison #'>))
 ;;  " insertion sort for arrays, n^2 time "
 ;;  (let ((out-array (make-array (list (length seq)))))
