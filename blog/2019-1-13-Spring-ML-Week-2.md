@@ -14,7 +14,7 @@ at the time of writing.
 
 "Responses to Catastrophic AGI Risk: a survey"
 <br>
-by Kaj Sotala1 and Roman V Yampolskiy2
+by Kaj Sotala1 and Roman V Yampolskiy
 
 This paper is very long, I'm just reading over it without taking notes today.
 
