@@ -4,6 +4,6 @@ TESTING
 *#
 .#*
 generated/*
-blog/code-data/*.dat
+blog/code-kata/*.dat
 
 
