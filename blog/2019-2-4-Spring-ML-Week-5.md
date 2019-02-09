@@ -5,6 +5,8 @@ title: Artificial Intelligence Safety And Security Independent Study Week 5
 
 # Week 4 Wednesday
 
+...
+
 I'm not sure what to read today, I found this:
 
 [Quantum Artificial Life in an IBM Quantum Computer](https://arxiv.org/abs/1711.09442v2) which was
