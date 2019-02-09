@@ -4,6 +4,7 @@ title: Artificial Intelligence Safety And Security Independent Study Week 4
 ---
 
 # Week 4 Monday 
+
 Monday, Luke and I had a meeting with Dr. Yampolskiy and Dr. Harrison, and each presented one paper.
 I presented
 
