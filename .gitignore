@@ -4,3 +4,6 @@ TESTING
 *#
 .#*
 generated/*
+blog/code-data/*.dat
+
+
