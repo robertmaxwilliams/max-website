@@ -3,6 +3,9 @@ layout: post
 title: Artificial Intelligence Safety And Security Independent Study Week 4
 ---
 
+We had another meeting this week, and started a trend on open ended exploration by evolution, and
+artificial life.
+
 # Week 4 Monday 
 
 Monday, Luke and I had a meeting with Dr. Yampolskiy and Dr. Harrison, and each presented one paper.

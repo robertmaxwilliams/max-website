@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Columnes Prose
+title: Column Prose
 ---
 
 I had the idea for a kind of restricted
@@ -28,22 +28,22 @@ task easier... maybe I'll start with a
 well known passage and twist it until
 it fits the mould.
 
-```
-           o                          
-         o o o                        
-           o                          
-According to all known laws of real
-true aviation, there is no way a bee or
-any flea should be able to fly.  Its
-wings are too small to get its fat
-small body off the ground.  The bee, of
-course, removed of humans, flies anyway
-possibly alone in not caring what
-humans do do know is impossible.
-           o                          
-         o o o                        
-           o                          
-```
+    ---
+               o                          
+             o o o                        
+               o                          
+    According to all known laws of real
+    true aviation, there is no way a bee or
+    any flea should be able to fly.  Its
+    wings are too small to get its fat
+    small body off the ground.  The bee, of
+    course, removed of humans, flies anyway
+    possibly alone in not caring what
+    humans do do know is impossible.
+               o                          
+             o o o                        
+               o                          
+    ---
 
 I think having multiple columns would
 also be impressive. I could place the
@@ -57,31 +57,30 @@ For instance,
 
 `grep -i "^.\{6\}i" *.txt`
 
-``
-According to all known laws of
-portraits, only informal demons would
-want livestock personally. Most of them
-abbreviate occupationally until little
-is antientropic. Properly, these
-specific foolish duos alone can be a 
-huge pill to unorthodoxly swallow or 
-sweetlip. Contributors lamely avoid
-contamination by promptly cutting all
-ties with possible ontological
-......i....o.......o...l
-......i....o.......o...l
-......i....o.......o...l
-      i    o       o   l
-      i    o       o   l
-      i    o       o   l
+    According to all known laws of
+    portraits, only informal demons would
+    want livestock personally. Most of them
+    abbreviate occupationally until little
+    is antientropic. Properly, these
+    specific foolish duos alone can be a 
+    huge pill to unorthodoxly swallow or 
+    sweetlip. Contributors lamely avoid
+    contamination by promptly cutting all
+    ties with possible ontological
+    ......i....o.......o...l
+    ......i....o.......o...l
+    ......i....o.......o...l
+          i    o       o   l
+          i    o       o   l
+          i    o       o   l
 
 
  
-AccordIng tO all knOwn Laws of
-portraIts, Only infOrmaL demons would
-want lIvestOck persOnalLy. Most of them
-abbrevIate OccupatiOnalLy until little
-is antIentrOpic. PrOperLy, these
-specifIc foOlish duOs aLone can be a 
-huge pIll tO unorthOdoxLy swallow or 
-sweetlIp. COntributOrs Lamely
+    AccordIng tO all knOwn Laws of
+    portraIts, Only infOrmaL demons would
+    want lIvestOck persOnalLy. Most of them
+    abbrevIate OccupatiOnalLy until little
+    is antIentrOpic. PrOperLy, these
+    specifIc foOlish duOs aLone can be a 
+    huge pIll tO unorthOdoxLy swallow or 
+    sweetlIp. COntributOrs Lamely

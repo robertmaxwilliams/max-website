@@ -51,11 +51,9 @@ Maybe my story is one that tells of someone who is likely to die young, or maybe
 be, but the lake incident made me into a cautious person, avoiding fate and taking harmless missteps
 instead of enormous deadly blunders.
 
-```
-Frozen water's chill
-Oh! So many carrettes.
-Another day the casket empty.
-```
+    Frozen water's chill
+    Oh! So many carrettes.
+    Another day the casket empty.
 
 I guess I'll just start writing and I'll hot glue it together later
 
@@ -87,7 +85,7 @@ after making it about half way to the gaping hole in the middle.
 And the ice under my feet collapsed. I hardly remember swimming, but the ice on the nearest shore
 was thin from being hit by the sun all morning and didn't block my way. I swam to the shore in my
 snow boots and heavy coats and picked myself up to see George almost to the shore a few feet away. I
-helped him up and, terrified and shaken, we ran back to the house to warm up and change clothes.\
+helped him up and, terrified and shaken, we ran back to the house to warm up and change clothes.
 
 [transition]
 

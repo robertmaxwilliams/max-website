@@ -3,9 +3,10 @@ layout: post
 title: Artificial Intelligence Safety And Security Independent Study Week 5
 ---
 
-# Week 4 Wednesday
+Coninuing the trend on artificial life, I found a quantum evolution experiment and the "Innovation
+Engines" paper.
 
-...
+# Week 4 Wednesday
 
 I'm not sure what to read today, I found this:
 
