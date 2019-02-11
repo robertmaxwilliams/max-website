@@ -5,6 +5,8 @@
       1
       (* n (fact (1- n)))))
 
+
+
 ;; inefficient but numerically safe
 (defun choose (n k)
   (assert (>= n k))
