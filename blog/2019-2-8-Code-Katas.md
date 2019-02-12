@@ -52,7 +52,33 @@ which the custom should expect to be three or four places accurate and rounding 
 quantity is a pretty good strategy. The Kata-Master suggests only going for this one bit by bit,
 sleeping on it a few times, so I'll leave this one to rest for now.
 
-TODO: hit this one at least 2 more days.
+#### Second Time Around
+
+I'll focus more on this question:
+
++ how do you keep an audit trail of pricing decisions (and do you need to)?
+
+I think it'd be nice if every price change of every item was stored in a huge database, as well as
+how much was bought. You could do some crazy analytics on that data, like seeing how raising and
+lowering prices changes purchases. If you had a unique identifier for each item, it shouldn't be too
+hard having a list of every price change, and if you wanted to change the price, just push a new
+pricing scheme to the top of the list. I guess I'm imagining a huge table with barcodes or product
+ids as keys, and a list of (pricing scheme, data added) pairs as values. You would also need a table
+of how the products are sold (by count, by pount) to check that the schemes match up with the kind
+of thing.
+
+Another issue that comes up is arbitrage. Not exactly arbitrage, since customers aren't selling to
+you. But if you sell small-bunch-celery for 2$ and big-bunch-celery for 4$, you should be sure they
+have about the same value per pound, or that the larger quantity provides a slightly better deal.
+I've seen at Kroger when 2 half gallons of milk is less than one whole gallon. It must have been
+something about their supply of each, or the expiration dates present in their supply. Expiration
+and limited inventory complicate pricing greatly. 
+
+If I have too much of something, I can benefit from selling it at a loss. Pricing decisions like
+that need to be handled carefully, ideally returning to normal once the old products are
+sold/discarded and new products arrive. 
+
+TODO: hit this one at least 1 more days.
 
 ## Kata02: Karate Chop
 
@@ -84,7 +110,84 @@ days.
         ((< el middle-val) ;; go to bottom half
          (binary-search el arr start middle))
         ((> el middle-val)
-         (binary-search el arr (1+ middle) end))))))
+         (binary-search el arr (1+ middle) end)))))) ;; this 1+ gave me some trouble
+
+
+The errors I came across in this one was mixing up the less-than and greater-than case, and
+off-by-one error on the case where I take the second half of the array. I would either chop off the
+element you want, or recur endlesly due to not chopping off enough.
+
+I also had to move the accessing-the-middle-element bit to after I checked if the list was
+non-empty. Index 0 of an empty array is an error... I could calculate middle differently... or do
+some hack inside of cond... or make a lazy accessor lambda... or a macrolet... so many options!
+#### Try 2
+
+I'm going to use "displaced arrays" this time... if I can figure them out. It should let me recur in
+a more functional way, but without duplicating the actual array.
+
+So I decided to use `ignore-errors` when accessing the middle element before checking if it's in the
+array. It's just simpler that way, even if it's ugly.
+
+So displaced arrays just know where the true array is, how long to be, and what index of the true
+array to treat as "0". I assume it'll do bounds checking at creation time to make sure you don't
+make one too long.
+
+The displaced arrays create the problem of doing to arithmetic on the way back up the stack, since
+low down function calls have no idea what the true index of the array is.
+
+Also, finding the length of the top and bottom half is a bit tricky, I could use a case on odd/even
+but using floor/ceil/1+/1- works well enough. It's bad for explainability, because I arrive at the
+equations for the length by tabulating on paper. Things like that tend to create nice terse
+algebraic expresions, ideal for using tacitely, like in `J`, the ultimate language.
+
+I just finished writing the code (about 20 minutes of writing, and some googling for offset arrays
+and dealing with errors). I didn't write it in smaller units, so I need to run it all at once for
+the first time now -  that always goes well.
+
+First wack: compile error, need to use `let*`, didn't realize I was using stuff from let forms in
+the others
+
+Now I misspelled middle as midde... and next forgot to close a cond form. 
+Okay, Now iit compiled.
+
+Uh oh... so when I add all the offsets to the answer as it comes up the stack, sometimes it returns
+-1 for not found, and that gets added... I need a way of returning an error symbol, that doesn't
+mind having stuff added to it.... hmm...
+
+Gersh dargnit. I had my `>` and `<` backwards again! How does this keep happening to me?
+
+All the tests pass... good riddance!
+
+    (defun binary-search-2 (el arr)
+      "similar to before, but using displaced arrays"
+      (let* ((len (length arr))
+         (middle (floor (length arr) 2))
+         (middle-el (ignore-errors (aref arr middle))))
+        (cond
+          ((= 0 (length arr)) ;; array is empty
+           -1)
+          ((= el middle-el) ;; found it!
+           middle)
+           ((< el middle-el) ;; if el > middle, we need to take bottom half
+        (binary-search-2
+         el
+         (make-array
+          (floor len 2) ;; length of bottom half
+          :displaced-to arr
+          :displaced-index-offset 0)))
+          ((> el middle-el) ;; if el > middle, we need to take top half
+           ;; displace output index same as array, since it starts higher
+           ;; up now. Also, have to check if negative
+           (add-if-positive
+        (1+ middle)
+        (binary-search-2
+         el
+         (make-array
+          (floor (1- len) 2) ;; length of top
+          :displaced-to arr
+          :displaced-index-offset (1+ middle))))))))
+
+
 
 
 

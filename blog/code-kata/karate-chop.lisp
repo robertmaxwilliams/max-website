@@ -1,9 +1,10 @@
 
 (ql:quickload :prove)
 (ql:quickload :iterate)
+(ql:quickload :alexandria)
 ; http://codekata.com/kata/kata02-karate-chop/
 (defpackage :karate-chop
-  (:use :cl :iterate))
+  (:use :cl :iterate :alexandria))
 (in-package :karate-chop)
 	    
 
@@ -51,6 +52,11 @@
 	((> el middle-val)
 	 (binary-search el arr (1+ middle) end))))))
 
+
+
+
+
+
 ;;(print (big-ol-array-maker 20))
 (defvar test-arr #(0 3 7 11 14 17 19 21 26 30 32 35 36 41 45 48 53 55 60 64))
 (iter (for k in-vector test-arr)
@@ -78,4 +84,76 @@
 ;;(ignore-outut (time (big-ol-array-maker (expt 10 7))))
 ;;(ignore-outut (time (big-ol-array-maker-optimized (expt 10 7))))
 ;;(big-ol-array-maker-optimized 20)
+
+;; try two: make a totally different algorithm for binary search
+
+
+ (setq a1 (make-array 5)) =>  #<ARRAY 5 simple 46115576>
+ (setq a2 (make-array 4 :displaced-to a1
+                        :displaced-index-offset 1))
+
+(aref #(1 2 3) 5)
+
+(defun add-if-positive (x n)
+  "adds x to n if n is an int and >=0, otherwise just returns n"
+  (if (and (numberp n) (>= n 0))
+      (+ n x)
+      n))
+
+(defun binary-search-2 (el arr)
+  "similar to before, but using displaced arrays"
+  (let* ((len (length arr))
+	 (middle (floor (length arr) 2))
+	 (middle-el (ignore-errors (aref arr middle))))
+    (cond
+      ((= 0 (length arr)) ;; array is empty
+       -1)
+      ((= el middle-el) ;; found it!
+       middle)
+       ((< el middle-el) ;; if el > middle, we need to take bottom half
+	(binary-search-2
+	 el
+	 (make-array
+	  (floor len 2) ;; length of bottom half
+	  :displaced-to arr
+	  :displaced-index-offset 0)))
+      ((> el middle-el) ;; if el > middle, we need to take top half
+       ;; displace output index same as array, since it starts higher
+       ;; up now. Also, have to check if negative
+       (add-if-positive
+	(1+ middle)
+	(binary-search-2
+	 el
+	 (make-array
+	  (floor (1- len) 2) ;; length of top
+	  :displaced-to arr
+	  :displaced-index-offset (1+ middle))))))))
+
+(binary-search-2 1 #(1 2 3 4 5 6 7))
+
+(defvar test-arr #(0 3 7 11 14 17 19 21 26 30 32 35 36 41 45 48 53 55 60 64))
+(iter (for k in-vector test-arr)
+      (prove:is (binary-search-2 k test-arr) (position k test-arr)))
+
+(prove:is (binary-search-2 1 #(0 2 3)) -1)
+(prove:is (binary-search-2 1 #(0 2 3 4)) -1)
+(prove:is (binary-search-2 -1 #(0 2 3 4)) -1)
+(prove:is (binary-search-2 9 #(0 2 3 4)) -1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
