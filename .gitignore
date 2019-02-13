@@ -7,3 +7,4 @@ generated/*
 blog/code-kata/*.dat
 
 
+notebooks/.ipynb_checkpoints/*
