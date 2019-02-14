@@ -29,4 +29,27 @@ expensive human studies, so once enought patients have been tested that the effi
 treatment is known to some degree of accuracy, recruiting more patients is a waste of resources.
 
 
+I really don't understand what the paper is talking about... I'm going to review inverse
+reinforcement learning and go from there. I started with this powerpoint (as a pdf):
 
+[https://people.eecs.berkeley.edu/~pabbeel/cs287-fa12/slides/inverseRL.pdf](https://people.eecs.berkeley.edu/~pabbeel/cs287-fa12/slides/inverseRL.pdf)
+
+
+# Wednesday Week 6
+
+I really want to make my curiosity bot implementation. I made a one-shot learning NN in Keras,
+available for viewing [here](https://www.maxwilliams.us/files/few-shot-mnist-1.html) and 
+[here](https://github.com/robertmaxwilliams/max-website/blob/master/notebooks/few-shot-mnist.ipynb).
+
+I need to tune it and compare it to a pixel-space distance based method, which should underperform
+the neural network.
+
+ALSO. I spend HOURS trying to figure out why it kept training to 50% accuracy. My first mistake was
+putting a relu layer before the sigmoid output. This meant the sigmoid function always took in a
+positive value, and always output a value greater than 0.5. The next issue was much more sneaky. I
+was using `binary_crossentropy` as the loss, and `accuracy` as the metric. Well it turns out that
+that metric was garbage for my task, and I wanted `binary_accuracy`. With that fixed it worked great
+:|
+
+I feel like this is the reason beginner DL is hard, it has a lot of black boxes and new concepts,
+and opaque APIs.

@@ -52,6 +52,7 @@ which the custom should expect to be three or four places accurate and rounding 
 quantity is a pretty good strategy. The Kata-Master suggests only going for this one bit by bit,
 sleeping on it a few times, so I'll leave this one to rest for now.
 
+
 #### Second Time Around
 
 I'll focus more on this question:
@@ -78,7 +79,30 @@ If I have too much of something, I can benefit from selling it at a loss. Pricin
 that need to be handled carefully, ideally returning to normal once the old products are
 sold/discarded and new products arrive. 
 
-TODO: hit this one at least 1 more days.
+TODONE: hit this one at least 1 more days.
+
+#### Third time around
+
+I'll address one more question and try to wrap up my thoughts on this.
+
++ if a shelf of 100 cans is priced using “buy two, get one free”, how do you value the stock?
+
+Looking to Kroger again, they often don't actually require you buy the right amount to get the deal.
+They have the "base price" and then the "member price" in yellow, which might be something like "buy
+one get one free" but really they're just halving the original price. Also, on a side note, their
+membership doesn't cost anything, so it's more of just a control thing, or to have an excuse for a 2
+level pricing scheme. The disadvantage with the "illusory buy and save" manuever is the customers
+won't feel pressured to buy more than they need (aka the whole point of America) if they realized
+what was going on. I think even people who know this are still subconciously influenced by the
+apparent good deal, that whether or not you actually have to buy two is irrelevant. I think this is
+a good solution, keeps the math easy while still subtley manipulating your customers.
+
+The other option is to have or guess at statistics on how often people buy an even amount, and
+calcuate an expected value, maybe even something with a normal distribution... but the programmers
+won't like having to deal with expected value of a product having a standard deviation... or maybe
+they will, you never know. Your expected profits could be some probability function or something.
+Programmers love that.
+
 
 ## Kata02: Karate Chop
 
@@ -120,6 +144,7 @@ element you want, or recur endlesly due to not chopping off enough.
 I also had to move the accessing-the-middle-element bit to after I checked if the list was
 non-empty. Index 0 of an empty array is an error... I could calculate middle differently... or do
 some hack inside of cond... or make a lazy accessor lambda... or a macrolet... so many options!
+
 #### Try 2
 
 I'm going to use "displaced arrays" this time... if I can figure them out. It should let me recur in
@@ -188,27 +213,131 @@ All the tests pass... good riddance!
           :displaced-index-offset (1+ middle))))))))
 
 
+#### Try 3
+
+I'm not really sure what to do now... I guess I could use a loop instead of recursion. By tomorrow
+I'll be using gotos and symbol-macro-only computation.
+
+I'm using a distinctly algol-like programming method. I thought for a second "this is a really
+convenient way to implement these algorithms then I realized two things:
+
++ Algol style programming is good to the kinds of algorithms you find in freshman Computer Science
+  classes, and become less attractive after that.
++ The fact that common lisp easily supports this style of programming is another reason to see it as
+  superior
+
+One thing I can't quite figure out is how to do chained if-else statements. I think for that, `cond`
+is much more clear.
+
+It took me forever to realize I had forgotten to add this line inside iter:
+
+`(setf middle (floor (+ start end) 2))`
+
+Hmmm so the testing loop shows it's only finding every third element... weird.
+
+So I had the exit condition (the thing that compares start and end and returns -1) and now the only
+thing it's missing is finding the last element. 
+
+Okay so I changed it to -1 and it works now... oh except not that condition never trips.
+
+Hmm... writing algol style in Lisp creates a lot of visual noise... Python is better.
+
+So it seems like I just can't catch that last element. I'll try adding a special case for it.
+
+OKAY All tests pass for real this time. This sucks.
 
 
+
+    ;; using iter this time
+    ;; and Cee style programming, with returns and such
+    (defun binary-search-3 (el arr)
+      (block main
+        (if (zerop (length arr))
+        (return-from main -1))
+        (let* ((start 0)
+           (len (length arr))
+           (end (1- len))
+           (middle (floor len 2))
+           (middle-el nil))
+          (iter (repeat 100)
+            (setf middle (floor (+ start end) 2)) ;; forgot this for 10 minutes!
+            (setf middle-el (aref arr middle))
+            (cond ;; returning forms can be placed outside cond if desired
+              ((= el middle-el) (return-from main middle))
+              ((> el middle-el) ;; check top half
+               (setf start (1+ middle)))
+              ((< el middle-el) ;; check bottom hal
+               (setf end middle))
+              (t (print "that shouldnt happen")))
+            ;; special case for last element
+            (if (<= (- end start) 1) (return-from main
+                           (cond ((= el (aref arr start))
+                              start)
+                             ((= el (aref arr end))
+                              end)
+                             (t -1))))
+            ;; terminating condition
+            (if (<= (- end start) 0) (return-from main -1))
+            (finally (return-from main 'bad))))))
+
+
+I really couldn't figure out what the bug was. I started off thinking looping would be much simpler
+but I had trouble with off by one errors that I couldn't debug. It should be the same as
+recursion... I guess I'm just not very good at this.
 
 ## Kata03: How Big? How Fast?
 
-I'm going to copy in the questions and answer them as I go. Not today, though.
+From the past: I'm going to copy in the questions and answer them as I go. Not today, though.
+
+So today is the day! I'll try to do these as fast as I can, and as roughly as possible with no
+complex calculations or internet.
 
 
     roughly how many binary digits (bit) are required for the unsigned representation of:
 
-    1,000
-    1,000,000
-    1,000,000,000
-    1,000,000,000,000
-    8,000,000,000,000
+    1. 1,000 (10^3)
+    2. 1,000,000 (10^6)
+    3. 1,000,000,000 (10^9)
+    4. 1,000,000,000,000 (10^12)
+    5. 8,000,000,000,000
+
+Umm so I know there's something with log, but I also know that these are powers of two:
++ 1
++ 2
++ 4
++ 8
++ 16
++ 32
++ 64
++ 128
++ 256
++ 512
++ 1024
+
+Notice that they grow linearly, as is the nature of doubling numbers written in a base notation.
+Using counting, it turns out that 2^10 is about 10^3, so we can use 10 powers of 2 for every power
+of 10. 
+
+Also have an extra bit, just in case.
+
+So #1 is 11 bits, #2 is 21 bits, #3 is 31 bits, #4 is 41 bits, and number 5 is three more powers of
+two, to let's say 44.
 
     My town has approximately 20,000 residences. How much space is required to store the names,
     addresses, and a phone number for all of these (if we store them as characters)?
 
+So those first and last names should be on average like 10 characters apiece, address should be like
+50 chars or so, and 10 chars for phone number, right? So 10+10+50+10 = 80 bytes.l
+
     I’m storing 1,000,000 integers in a binary tree. Roughly how many nodes and levels can I expect
     the tree to have? Roughly how much space will it occupy on a 32-bit architecture?
+
+So using 32 bit integers... so like a heap, where each node is (value, left-pointer, right-pointer)
+or like a tree where all the leaves are integers? It sounds like the latter. So 2^20 is about that
+many, so we need like 20 or 21 layers. So like 2^20 bytes for pointers. Oh, the tree part should be
+the same size as the data part, if it's fairly balanced, so let's say the final answer is 2,000,000
+32 bit data cells (either pointers or ints).
+
 
 ## Kata04: Data Munging
 
