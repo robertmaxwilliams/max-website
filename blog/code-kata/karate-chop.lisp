@@ -141,19 +141,112 @@
 (prove:is (binary-search-2 9 #(0 2 3 4)) -1)
 
 
+(defun barr (x)
+  (block nil 
+    (if (= x 2)
+	(return 'two))
+    (if (= x 3)
+	(return 'three))
+    (return 'none)
+    'nile))
+
+(barr 4)
+
+;; using iter this time
+;; and Cee style programming, with returns and such
+;; I started off with several if's, in true algol tradition,
+;; then wished I had if-else, then realized that cond is if-else
+;; but better
+(defun binary-search-3 (el arr)
+  (block main
+    (if (zerop (length arr))
+	(return-from main -1))
+    (let* ((start 0)
+	   (len (length arr))
+	   (end (1- len))
+	   (middle (floor len 2))
+	   (middle-el nil))
+      (iter (repeat 100)
+	    (setf middle (floor (+ start end) 2)) ;; forgot this for 10 minutes!
+	    (setf middle-el (aref arr middle))
+	    (cond ;; returning forms can be placed outside cond if desired
+	      ((= el middle-el) (return-from main middle))
+	      ((> el middle-el) ;; check top half
+	       (setf start (1+ middle)))
+	      ((< el middle-el) ;; check bottom hal
+	       (setf end middle))
+	      (t (print "that shouldnt happen")))
+	    ;; special case for last element
+	    (if (<= (- end start) 1) (return-from main
+				       (cond ((= el (aref arr start))
+					      start)
+					     ((= el (aref arr end))
+					      end)
+					     (t -1))))
+	    ;; terminating condition
+	    (if (<= (- end start) 0) (return-from main -1))
+	    (finally (return-from main 'bad))))))
+
+(binary-search-3 7 #(1 2 3 4 5 6 7))
+
+(defvar test-arr #(0 3 7 11 14 17 19 21 26 30 32 35 36 41 45 48 53 55 60 64))
+(iter (for k in-vector test-arr)
+      (prove:is (binary-search-3 k test-arr) (position k test-arr)))
+
+(prove:is (binary-search-3 1 #(0 2 3)) -1)
+(prove:is (binary-search-3 1 #(0 2 3 4)) -1)
+(prove:is (binary-search-3 -1 #(0 2 3 4)) -1)
+(prove:is (binary-search-3 9 #(0 2 3 4)) -1)
+
+
+;;
+
+(defun average (a b)
+  (floor (+ a b) 2))
+
+
+;; doing a strictly goto based program.
+;; Additional restriction: branches of `if` function can ONLY BE GOTOs
+(defun binary-search-4 (el arr)
+  (let (start len end middle middle-el)
+    (tagbody
+       (setf start 0)
+       (setf len (length arr))
+       (setf end len)
+     tag-start
+       ;; no more remaining values, return -1
+       (if (= 0 (- end start)) (go tag-failure))
+       (setf middle (average start end))
+       (setf middle-el (aref arr middle))
+       (if (= middle-el el) (go tag-found-el))
+       (if (< middle-el el) (go tag-bottom-half))
+       (if (> middle-el el) (go tag-top-half))
+     (error "trap reached")
+
+     tag-found-el
+       (go tag-end)
+     tag-bottom-half
+       (setf start (1+ middle))
+       (go tag-start)
+     tag-top-half
+       (setf end middle)
+       (go tag-start)
+     tag-failure
+       (setf middle -1)
+       (go tag-end)
+     tag-end)
+    middle))
 
 
 
+(binary-search-4 4 #(1 2 3 4 5 6 7))
 
+(defvar test-arr #(0 3 7 11 14 17 19 21 26 30 32 35 36 41 45 48 53 55 60 64))
+(iter (for k in-vector test-arr)
+      (prove:is (binary-search-4 k test-arr) (position k test-arr)))
 
-
-
-
-
-
-
-
-
-
-
+(prove:is (binary-search-4 1 #(0 2 3)) -1)
+(prove:is (binary-search-4 1 #(0 2 3 4)) -1)
+(prove:is (binary-search-4 -1 #(0 2 3 4)) -1)
+(prove:is (binary-search-4 9 #(0 2 3 4)) -1)
 
