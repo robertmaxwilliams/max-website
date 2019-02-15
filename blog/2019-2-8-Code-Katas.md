@@ -338,6 +338,67 @@ many, so we need like 20 or 21 layers. So like 2^20 bytes for pointers. Oh, the 
 the same size as the data part, if it's fairly balanced, so let's say the final answer is 2,000,000
 32 bit data cells (either pointers or ints).
 
+#### Try 4
+
+I thought I would run out of ideas, but it turns out that this language has pretty much every
+feature except good gui stuff, good concurrency, and erlang-style message passing.  I'm not sure
+whether I should do something with the conditioning system (a generalization of error, aka reap and
+sow) or gotos. I'll do gotos, I think next I'll make something using conditioning system.
+
+I'm going to be more careful this time about off-by-one-errors. I'm going to run through this on
+paper to make sure what I'm doing makes sense and there aren't any edge cases.
+
+I realize I set the upper bound to (1- length) last time, I think using a non-inclusive upper bound
+would be better.
+
+So the gotos are actaully pretty nice. To crank it up a notch, I forbade using `if` to do anything
+but going to a tag.
+
+On the first run, I only found the middle element, meaning I **reversed the greater-than and
+less-than AGAIN**. I'll never be able to get that right on the first try. 
+
+Now I'm missing every third, I should check the termination condition.
+
+Hey! That fixed it. Huh, this algorithm is pretty elegant. That was really easy. I think the hardest
+kind was structured-non-recursive. Recursive and goto are both pretty easy and it's easy to fudge
+out the off-by-one errors. 
+
+Or maybe I'm not giving iteration a fair shot. That was also the only one where I decided to use
+(1- length) as the ending index, which created that weird special case and a lot of frustration. 
+
+Anyway, this is pretty nice. Gotos aren't evil... everyone loves them!
+
+
+    (defun binary-search-4 (el arr)
+      (let (start len end middle middle-el)
+        (tagbody
+           (setf start 0)
+           (setf len (length arr))
+           (setf end len)
+         tag-start
+           ;; no more remaining values, return -1
+           (if (= 0 (- end start)) (go tag-failure))
+           (setf middle (average start end))
+           (setf middle-el (aref arr middle))
+           (if (= middle-el el) (go tag-found-el))
+           (if (< middle-el el) (go tag-bottom-half))
+           (if (> middle-el el) (go tag-top-half))
+         (error "trap reached")
+
+         tag-found-el
+           (go tag-end)
+         tag-bottom-half
+           (setf start (1+ middle))
+           (go tag-start)
+         tag-top-half
+           (setf end middle)
+           (go tag-start)
+         tag-failure
+           (setf middle -1)
+           (go tag-end)
+         tag-end)
+        middle))
+
 
 ## Kata04: Data Munging
 
@@ -347,3 +408,12 @@ data file, and copied the prompt to do in tomorrow's session:
     Download this text file, then write a program to output the day number (column one) with the
     smallest temperature spread (the maximum temperature is the second column, the minimum the third
     column).
+
+## Kata Luke Invented: Infinite Gomoku
+
+
+    Design a two-player game called Infinite Gomoku. Each turn, a player will place a stone at one
+    point on an infinite grid. (Natural numbers squared.) The first player to get 5 stones in a row
+    (vertically, diagonally, or horizontally) anywhere on the board wins.
+
+    Bonus points: Make an AI that beats you.
