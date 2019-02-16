@@ -387,6 +387,7 @@ versa. That's what I did here.
 
 
 <a id="zen-of-cl"></a>
+
 #### The Zen of Common Lisp
 
 Beautiful is better than ugly.
