@@ -6,8 +6,8 @@ title: Computer Generated Dessert
 A cake recipe based on analysis of [GP-2](https://blog.openai.com/better-language-models/)'s output!  
 
 The AI is truly amazing, but its creators refuse to share it.  They tempt us with text samples. One
-of these text samples is completions of a recipe, but not the whole thing. I seek to recreat the
-true recipe, and prepare it every anniverary of the creation of the first wave of robot overlords.
+of these text samples is completions of a recipe, but not the whole thing. I seek to recreate the
+true recipe, and prepare it every anniversary of the creation of the first wave of robot overlords.
 
 It was prompted with the following passage:
 
@@ -40,7 +40,7 @@ you make this cake and you won’t have to wait on it as your egg whites sit on 
 mixing bowl.
 
 You want the egg whites whipped to stiff peaks? Then put your cake dish over a pot of simmering
-water and heat it up until it’s just barely warm. It doesn’t take more than 3-5 minutes; just enough
+water and heat it up until it’s just barely warm. It doesn't take more than 3-5 minutes; just enough
 to get it started
 
 #### Analysis
@@ -80,9 +80,9 @@ transition.
 Ignoring the lack of continuity, it claims that when buying raw sugar it has to be cooled down. I
 don't know where it's buying its sugar but that never happens to me. And I can't imagine why you
 would put a teaspoon of sugar on top of it. Maybe something to do with inundating it with the old
-batch, like some people do with fry oil or like how dough starters are transfered. 
+batch, like some people do with fry oil or like how dough starters are transferred. 
 
-The second point seems to be a general rule, don't use substitutions from the iternet. That's
+The second point seems to be a general rule, don't use substitutions from the internet. That's
 alright I guess. I'll keep that rule in mind when making this recipe.
 
 When it says "like this", I really don't know what "this" is... nope no idea. And then the cute
@@ -114,9 +114,9 @@ a bad idea, but that would run) and topping with chopped chocolate and drizzling
 It's a variety of chocolate cake, so "but a nice change from chocolate cake" makes sense.
 
 It switches from from the author's name into the first ingredient. I'm going to assume it meant to
-put a newline before "For". This might actually be an artifact of misformatted text in the training
-data, where the html for the authors name didn't get a line break after it. Given that, the author's
-name is "Momma Made Ingredients", a great bit of info!
+put a newline before "For". This might actually be an artifact of badly formatted text in the
+training data, where the html for the authors name didn't get a line break after it. Given that, the
+author's name is "Momma Made Ingredients", a great bit of info!
 
 The ingredients also have some formatting errors, fixed up in the ingredients list at the bottom.
 
@@ -189,9 +189,9 @@ Chocolate Buttermilk Layer Cake with Peppermint Jo **Joes**
 
 #### Analysis 
 
-A tart pan is a thin metal pan with about 1 inch tall ruffled edges, like a giant shallow Reces cup.
-Oh I'm really confused about what it's describing. This thing has no mind's eye or intutive physics
-to guide it; this is mechanical gibberish.
+A tart pan is a thin metal pan with about 1 inch tall ruffled edges, like a giant shallow Reece's
+cup.  Oh I'm really confused about what it's describing. This thing has no mind's eye or intuitive
+physics to guide it; this is mechanical gibberish.
 
 Here's my best attempt at explaining it: Bake the 3 main 8-inch cake rounds normally, and bake an
 8-inch round in a tart pan. Slice the thin tart pan cake into 4 layers. Now you have 3 big circles
@@ -260,7 +260,7 @@ Mix right into the cake batter
 + Whip to stiff peaks, easier to do if you preheat the mixing bowl in warm water 3-5 minutes
 + Let raw sugar cool down, and put half a teaspoon of sugar on it
 + NO SUBSTITUTIONS
-+ Main cake is 3 8" layeers
++ Main cake is 3 8" layers
 + Also make one extra layers in an 8" tart pan, to slice into 4 pieces sandwich between the layers.
 
 <a id="recipe"></a>
@@ -273,7 +273,7 @@ Mix right into the cake batter
 
 ## NO SUBSTITUTIONS
 
-Remember: let raw sugar cool down, and put half a teaspoon of sugar on it befor using
+Remember: let raw sugar cool down, and put half a teaspoon of sugar on it before using
 
 ### Make into cookie batter:
 
@@ -301,7 +301,7 @@ Mix until smooth:
 
 Part 2:
 
-Seperately, blend until smooth to make chocolate sauce:
+Separately, blend until smooth to make chocolate sauce:
 + 6 ounces semisweet chocolate chips, melted
 + Peppermint-Jojo
 + 1 1/4 cups powdered sugar
@@ -314,7 +314,7 @@ Seperately, blend until smooth to make chocolate sauce:
 
 Set aside half of the chocolate sauce for later.
 
-Combine remaining chocoalte sauce with part 1 to make the cake stuffing stuff.
+Combine remaining chocolate sauce with part 1 to make the cake stuffing stuff.
 
 ### Cake
 
