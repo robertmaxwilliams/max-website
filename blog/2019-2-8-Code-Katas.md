@@ -386,9 +386,9 @@ versa. That's what I did here.
 
 
 
+<a id="zen-of-cl"></a>
 #### The Zen of Common Lisp
 
-<a id="zen-of-cl"></a>
 Beautiful is better than ugly.
 <br>Explicit is better than implicit.
 <br>Simple is better than complex.
