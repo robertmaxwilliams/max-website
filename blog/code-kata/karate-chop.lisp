@@ -54,6 +54,18 @@
 
 
 
+(defun binary-search-multiple (el arr)
+  (labels ((collect-until-not-equal (el arr i fun)
+	     (if (eql (ignore-errors (aref arr i)) el)
+		 (cons i (collect-until-not-equal
+			  el arr (funcall fun i) fun)))))
+    (let ((i (binary-search el arr)))
+      (if (= i -1)
+	  -1
+	  (append (reverse (cdr (collect-until-not-equal el arr i #'1-)))
+		  (collect-until-not-equal el arr i #'1+))))))
+
+(binary-search-multiple 3 (vector 1 2 3 3 3 4 5))
 
 
 

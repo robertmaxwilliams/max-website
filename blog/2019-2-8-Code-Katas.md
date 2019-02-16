@@ -1,14 +1,17 @@
 ---
 layout: post
-title: Code Katas?
+title: Code Katas!
 ---
 
-Today Luke sent me a link to a page with some "code Katas", which are like Euler problems except
+Luke sent me a link to a page with some "code Katas", which are like Euler problems except
 focused on software design and extensibility. I figured I might as well try out the first few, even
 if I get bored and forget about it before I make any progress.
 
 [http://codekata.com/](http://codekata.com/)
 
+Now we're doing it as a 20 minute per day challenge, for a month. If one day is missed, a punishment
+must be payed. The punishment for this challenge is taking a video of yourself sitting still for 20
+minutes. Not a bad punishment, but still inconvenient and a challenge in itself.
 
 ## Kata01: Supermarket Pricing
 
@@ -285,59 +288,6 @@ I really couldn't figure out what the bug was. I started off thinking looping wo
 but I had trouble with off by one errors that I couldn't debug. It should be the same as
 recursion... I guess I'm just not very good at this.
 
-## Kata03: How Big? How Fast?
-
-From the past: I'm going to copy in the questions and answer them as I go. Not today, though.
-
-So today is the day! I'll try to do these as fast as I can, and as roughly as possible with no
-complex calculations or internet.
-
-
-    roughly how many binary digits (bit) are required for the unsigned representation of:
-
-    1. 1,000 (10^3)
-    2. 1,000,000 (10^6)
-    3. 1,000,000,000 (10^9)
-    4. 1,000,000,000,000 (10^12)
-    5. 8,000,000,000,000
-
-Umm so I know there's something with log, but I also know that these are powers of two:
-+ 1
-+ 2
-+ 4
-+ 8
-+ 16
-+ 32
-+ 64
-+ 128
-+ 256
-+ 512
-+ 1024
-
-Notice that they grow linearly, as is the nature of doubling numbers written in a base notation.
-Using counting, it turns out that 2^10 is about 10^3, so we can use 10 powers of 2 for every power
-of 10. 
-
-Also have an extra bit, just in case.
-
-So #1 is 11 bits, #2 is 21 bits, #3 is 31 bits, #4 is 41 bits, and number 5 is three more powers of
-two, to let's say 44.
-
-    My town has approximately 20,000 residences. How much space is required to store the names,
-    addresses, and a phone number for all of these (if we store them as characters)?
-
-So those first and last names should be on average like 10 characters apiece, address should be like
-50 chars or so, and 10 chars for phone number, right? So 10+10+50+10 = 80 bytes.l
-
-    I’m storing 1,000,000 integers in a binary tree. Roughly how many nodes and levels can I expect
-    the tree to have? Roughly how much space will it occupy on a 32-bit architecture?
-
-So using 32 bit integers... so like a heap, where each node is (value, left-pointer, right-pointer)
-or like a tree where all the leaves are integers? It sounds like the latter. So 2^20 is about that
-many, so we need like 20 or 21 layers. So like 2^20 bytes for pointers. Oh, the tree part should be
-the same size as the data part, if it's fairly balanced, so let's say the final answer is 2,000,000
-32 bit data cells (either pointers or ints).
-
 #### Try 4
 
 I thought I would run out of ideas, but it turns out that this language has pretty much every
@@ -399,6 +349,118 @@ Anyway, this is pretty nice. Gotos aren't evil... everyone loves them!
          tag-end)
         middle))
 
+#### Try 5
+
+Okay I only need to think of one more of these stupid things. The algorithm is the same, regardless
+of what medium I'm doing it in. Is there another actually different way to do it? I could also make
+a variation that uses `sort` and `binary-search` as subroutines for finding elements in unsorted
+arrays... or I could make the variation that returns __all__ instances of the desired element, not
+just the first one it finds. I think I'll do the multiple solutions thing. 
+
+I'm going to copy the first one that I made - it's superior anyway. 
+
+Oh so that was really easy. Since same numbers will all be in a row, I just had to collect numbers
+as long as they were the same. I used an `flet`'d function to do that, in a similar way as I checked
+runs of 5 for infinite gomoku. I also had the same kind off-by-one issue. Say I'm collecting runs of
+1's starting from the bold '1' in the following string: "00011**1**1100". I can make my collection
+function always collect the bold one and everything to its left (and then right) or collect
+everything to its left/right but NOT including the bold '1'. When I combine them, I'll
+have either one extra duplicate of the bold '1' or it will be missing. I think inserting the missing
+'1' is the easiest path, as long as you confirm it's there before you check for the rest of the run.
+The other option is to collect it, and remove it from the left list but not the right list, or vice
+versa. That's what I did here.
+
+
+    (defun binary-search-multiple (el arr)
+      (labels ((collect-until-not-equal (el arr i fun)
+             (if (eql (ignore-errors (aref arr i)) el)
+             (cons i (collect-until-not-equal
+                  el arr (funcall fun i) fun)))))
+        (let ((i (binary-search el arr)))
+          (if (= i -1)
+          -1
+          (append (reverse (cdr (collect-until-not-equal el arr i #'1-)))
+              (collect-until-not-equal el arr i #'1+))))))
+
+    (binary-search-multiple 3 (vector 1 2 3 3 3 4 5))
+
+
+
+<br>Beautiful is better than ugly.
+<br>Explicit is better than implicit.
+<br>Simple is better than complex.
+<br>Complex is better than complicated.
+<br>Nested is better than flat.
+<br>Sparse is better than dense.
+<br>Readability counts... for nothing!
+<br>Special cases are special enough to break the code.
+<br>Practicality beats purity:
+<br>Errors should pass never silently.
+<br>Unless caught in a web of handlers.
+<br>In the face of ambiguity, guess!
+<br>There should be many-- oh, so many! --obvious way to do it.
+<br>Although some ways may not be obvious at first unless you're Dutch.
+<br>Now is better than never.
+<br>And \*right\* now is even better than that!
+<br>If the implementation is hard to explain, it's a good idea.
+<br>If the implementation is easy to explain, it's not worth your time.
+<br>Symbol Macros are one honking great idea -- let's do more of those!
+<br>
+
+
+
+## Kata03: How Big? How Fast?
+
+From the past: I'm going to copy in the questions and answer them as I go. Not today, though.
+
+So today is the day! I'll try to do these as fast as I can, and as roughly as possible with no
+complex calculations or internet.
+
+
+    roughly how many binary digits (bit) are required for the unsigned representation of:
+
+    1. 1,000 (10^3)
+    2. 1,000,000 (10^6)
+    3. 1,000,000,000 (10^9)
+    4. 1,000,000,000,000 (10^12)
+    5. 8,000,000,000,000
+
+Umm so I know there's something with log, but I also know that these are powers of two:
++ 1
++ 2
++ 4
++ 8
++ 16
++ 32
++ 64
++ 128
++ 256
++ 512
++ 1024
+
+Notice that they grow linearly, as is the nature of doubling numbers written in a base notation.
+Using counting, it turns out that 2^10 is about 10^3, so we can use 10 powers of 2 for every power
+of 10. 
+
+Also have an extra bit, just in case.
+
+So #1 is 11 bits, #2 is 21 bits, #3 is 31 bits, #4 is 41 bits, and number 5 is three more powers of
+two, to let's say 44.
+
+    My town has approximately 20,000 residences. How much space is required to store the names,
+    addresses, and a phone number for all of these (if we store them as characters)?
+
+So those first and last names should be on average like 10 characters apiece, address should be like
+50 chars or so, and 10 chars for phone number, right? So 10+10+50+10 = 80 bytes.l
+
+    I’m storing 1,000,000 integers in a binary tree. Roughly how many nodes and levels can I expect
+    the tree to have? Roughly how much space will it occupy on a 32-bit architecture?
+
+So using 32 bit integers... so like a heap, where each node is (value, left-pointer, right-pointer)
+or like a tree where all the leaves are integers? It sounds like the latter. So 2^20 is about that
+many, so we need like 20 or 21 layers. So like 2^20 bytes for pointers. Oh, the tree part should be
+the same size as the data part, if it's fairly balanced, so let's say the final answer is 2,000,000
+32 bit data cells (either pointers or ints).
 
 ## Kata04: Data Munging
 
