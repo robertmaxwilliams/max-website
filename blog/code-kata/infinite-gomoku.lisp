@@ -127,3 +127,22 @@
   (make-move foo 4 0 'b)
   (make-move foo 5 0 'b)
   (make-move foo 6 0 'b))
+;;;:INVALID-ARRAY-INDEX-ERROR
+
+(defun foo (x) (+ x 5))
+
+(flet ((foo (x) (1+ x))
+       (bar (x) (1- x)))
+  (defun some-foo (x)
+    (+ (foo x) (bar x))))
+
+(some-foo 1)
+;;=> 2
+
+(flet ((bar (x) (1- x)))
+  (defun some-foo2 (x)
+    (+ (foo x) (bar x))))
+
+(some-foo2 1)
+;;=> 6
+

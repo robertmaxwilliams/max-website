@@ -409,6 +409,49 @@ data file, and copied the prompt to do in tomorrow's session:
     smallest temperature spread (the maximum temperature is the second column, the minimum the third
     column).
 
+(Doing this Friday)
+
+
+Shoot, so I was getting pretty good into the data parser then I realized that some of the columns
+are missing. I was using words to parse it, by whitespace delimiting. Now, it looks like the columns
+are whitespace aligned, using many spaces. Ugh. 
+
+So it looks like the end of each word in the header is the same index as the end of each data cell.
+
+So here's the idea:
+
+Read the header in as a stream, record indexes where it transitions from non-space to space and do
+the same thing, chomping out strings to be converted to numbers.
+
+Oh, no, the rule is "one before the start of each word". Also it has those dang astrices... I'll
+just replaces those with spaces as a preprocessing step.
+
+My first attempt at this was a very general method, that takes in a file with a header, and creates
+a dict-like accessor that you give a row number and header column string and it gets you that value.
+This was a good idea for a general purpose task, but there's an important lesson here. This file has
+a lot of weird things about it, and I only have one of them. My parser for
+column-aligned-data-with-headers is nice, but it's already 99% of the way to being a single-time-use
+tool. Instead of the 100 lines and couple of hours I spent debugging this complex tool I could have
+just manually picked out the right indices for taking out the data I needed. So, here is the final
+product, completely single-use and also tightly bundled into a single function for terseness.
+
+    (ql:quickload :parse-float)
+    (ql:quickload :str)
+    (defun data-munge-dumb ()
+      (let* ((lines (uiop:read-file-lines "weather.dat"))
+         (data-lines (mapcar
+                  (lambda (str) (substitute #\space #\* str))
+                  (cddr lines))))
+        (labels ((day-str (data) (str:trim (subseq data 0 4)))
+             (spread (data) (- (parse-float:parse-float (subseq data 6 10))
+                       (parse-float:parse-float (subseq data 10 16))))
+             (spread-day (data) (list (spread data) (day-str data)))
+             (max-car (a b) (if (> (car a) (car b)) a b)))
+          (reduce #'max-car (mapcar #'spread-day data-lines)))))
+    (data-munge-dumb)
+        
+
+
 ## Kata Luke Invented: Infinite Gomoku
 
 
@@ -417,3 +460,10 @@ data file, and copied the prompt to do in tomorrow's session:
     (vertically, diagonally, or horizontally) anywhere on the board wins.
 
     Bonus points: Make an AI that beats you.
+
+    I made this game, and a (buggy) text repl for it. I'm not sure how to do interactive graphics in
+    2019... SDL is nice, but a pain to install. I think I'm going to make something javascript and
+    SVG based, where you pipe SVG to a browser window or something. At some point. For now, forget
+    about it.
+
+
