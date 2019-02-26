@@ -517,6 +517,26 @@ product, completely single-use and also tightly bundled into a single function f
     (data-munge-dumb)
         
 
+#### Data Mundging Part 2: Soccer Teams
+<br>
+Feb 18
+
+    The file football.dat contains the results from the English Premier League for 2001/2. The
+    columns labeled ‘F’ and ‘A’ contain the total number of goals scored for and against each team
+    in that season (so Arsenal scored 79 goals against opponents, and had 36 goals scored against
+    them). Write a program to print the name of the team with the smallest difference in ‘for’ and
+    ‘against’ goals.
+
+Now that I have my general purpose parser, this should be pretty easy. It also follows the pattern
+of "one before the header" for the location of the break points in the data cells. The complications
+it adds are: 
+
+1. A line of only dashes. Easily removes as a preprocessing step
+1. A number column. I should manually add in a column name for it, so the parser works the same.
+
+
+Ahh so this is getting confusing... I'm going to rewrite the parser bit so that it makes everything
+into a "table", which is a list of alists that all share the same keys. 
 
 ## Kata Luke Invented: Infinite Gomoku
 
