@@ -1,0 +1,86 @@
+
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-style: italic">;; Programming section of USC (University of south California)</span>
+<span style="color: #008800; font-style: italic">;; ISI (information science institute)</span>
+<span style="color: #008800; font-style: italic">;; interview with Ryan</span>
+
+(ql:quickload <span style="color: #0000FF">:iterate</span>)
+(use-package <span style="color: #0000FF">:iterate</span>)
+(ql:quickload <span style="color: #0000FF">:str</span>)
+(use-package <span style="color: #0000FF">:str</span>)
+
+
+<span style="color: #008800; font-style: italic">;; the example production rules</span>
+<span style="color: #008800; font-style: italic">;; first of a rule is the key, the rest is the value</span>
+<span style="color: #008800; font-style: italic">;; strings are terminal elements, symbols are non-terminal</span>
+(defvar foo
+  &#39;((s np v p)
+    (s s <span style="color: #0000FF">&quot;but&quot;</span> s)
+    (np dt n)
+    (dt <span style="color: #0000FF">&quot;the&quot;</span>)
+    (dt <span style="color: #0000FF">&quot;a&quot;</span>)
+    (n <span style="color: #0000FF">&quot;dog&quot;</span>)
+    (n <span style="color: #0000FF">&quot;cat&quot;</span>)
+    (vp v np)
+    (v <span style="color: #0000FF">&quot;ate&quot;</span>)
+    (v <span style="color: #0000FF">&quot;chased&quot;</span>)))
+
+<span style="color: #008800; font-style: italic">;; pick random element from list</span>
+<span style="color: #008800; font-style: italic">;; (random-choice nil) is nil, for simplicity</span>
+(defun random-choice (ls)
+  (<span style="color: #000080; font-weight: bold">if</span> (null ls)
+      nil
+      (nth (random (length ls)) ls)))
+
+<span style="color: #008800; font-style: italic">;; the heart of the expand function:</span>
+<span style="color: #008800; font-style: italic">;; iterate through the production rules, keep the value</span>
+<span style="color: #008800; font-style: italic">;; (the cdr of the rule) if the key (the car of the rule)</span>
+<span style="color: #008800; font-style: italic">;; matches &quot;top&quot;, which is the first element of the input</span>
+<span style="color: #008800; font-style: italic">;; list, which is getting expanded</span>
+(random-choice
+ (<span style="color: #000080; font-weight: bold">let</span> ((top <span style="color: #0000FF">&#39;s</span>))
+  (iter (for (key . value) in foo)
+	(<span style="color: #000080; font-weight: bold">if</span> (eql key top)
+	    (collect value)))))
+
+(defun expand (ls grammar)
+  (<span style="color: #000080; font-weight: bold">let</span> ((top (car ls)))
+    (cond
+      <span style="color: #008800; font-style: italic">;; if out of symbols, terminate</span>
+      ((null ls) nil)
+      <span style="color: #008800; font-style: italic">;; if it&#39;s a terminal symbol, recur down</span>
+      ((stringp top) (cons top (expand (cdr ls) grammar)))
+      <span style="color: #008800; font-style: italic">;; otherwise, expand top and recur on produced list</span>
+      (t
+       (expand
+	(append
+	 (random-choice
+	  (iter (for (key . value) in grammar)
+		(<span style="color: #000080; font-weight: bold">if</span> (eql key top)
+		    (collect value))))
+	 (cdr ls))
+	grammar)))))
+
+<span style="color: #008800; font-style: italic">;; call expand with start token and the example production rules</span>
+(expand &#39;(s) foo)
+
+<span style="color: #008800; font-style: italic">;; post-interview: here&#39;s some samples. Almost passes Turing test?</span>
+(str:unwords (expand &#39;(s) foo))
+<span style="color: #0000FF">&quot;a dog chased&quot;</span> 
+<span style="color: #0000FF">&quot;a cat chased&quot;</span> 
+<span style="color: #0000FF">&quot;a dog chased but the dog chased but a dog ate but a dog chased&quot;</span> 
+<span style="color: #0000FF">&quot;a dog chased&quot;</span> 
+<span style="color: #0000FF">&quot;the dog chased&quot;</span> 
+<span style="color: #0000FF">&quot;the dog ate but the dog ate but the cat chased&quot;</span> 
+<span style="color: #0000FF">&quot;the cat chased&quot;</span> 
+<span style="color: #0000FF">&quot;a dog chased but a cat ate but a cat ate&quot;</span> 
+<span style="color: #0000FF">&quot;the dog ate&quot;</span> 
+<span style="color: #0000FF">&quot;a dog ate but a cat ate but a cat ate but a dog chased but the dog chased but the cat ate&quot;</span> 
+<span style="color: #0000FF">&quot;a dog ate&quot;</span> 
+<span style="color: #0000FF">&quot;the cat chased but a dog ate&quot;</span> 
+<span style="color: #0000FF">&quot;a cat chased but a dog chased but a dog ate&quot;</span> 
+<span style="color: #0000FF">&quot;the dog ate but the cat ate&quot;</span> 
+<span style="color: #0000FF">&quot;the cat chased but the cat ate but a dog chased but the dog chased but the dog ate but the dog ate&quot;</span> 
+<span style="color: #0000FF">&quot;a cat ate&quot;</span> 
+<span style="color: #0000FF">&quot;a dog ate&quot;</span> 
+<span style="color: #0000FF">&quot;the dog ate but the cat chased but a cat ate but the cat ate but the cat ate but the cat chased but a cat ate but a cat ate but a cat chased but a cat ate but a cat chased but the cat chased but the cat chased but the cat chased but a cat chased but a dog chased but a cat chased but a dog chased but the cat ate but a cat chased but the dog ate but the dog ate but a dog ate but a dog ate but the cat chased but a dog chased but a cat chased but a dog ate but the dog chased but a cat chased but a cat ate but a dog ate but a dog ate but the dog ate but the cat ate but a dog chased but the dog ate but the cat chased but a dog chased but a dog chased but the cat chased but the cat chased but a cat chased but the cat chased but a cat ate but a dog chased but the cat chased but the dog chased but a dog chased but the dog chased but a dog chased but a dog chased but a dog ate but a cat chased&quot;</span> 
+</pre></div>
