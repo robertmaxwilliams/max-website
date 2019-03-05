@@ -12,6 +12,35 @@
 (ql:quickload :str)
 (use-package :iterate)
 
+
+(defun normal-pdf (x)
+  (let ((mean 0)
+	(stdev 1))
+    (*
+     (/ 1
+	(expt (* 2 3.1412 stdev) 0.5))
+     (exp (- (/ (expt (- x mean) 2)
+		(* 2 stdev)))))))
+
+(defun normal-cff(x)
+
+(flet ((foo (stdev) 
+	 (/ (- 75.75 65.5) stdev)))
+  (let ((a (/ 2.5 (expt 6 0.5)))
+	(b (/ 2.5 (expt 49 0.5))))
+    (list a b (foo a) (foo b))))
+
+(/ (- 75.75 65.5)
+   (/ 2.5 (expt 6 0.5)))
+
+(p (/ 0.4 (expt 50 0.5)))
+
+(p (normal (/ (- 12.5 12.1)
+	      (/ 0.4 (sqrt 50)))))
+(normal -7.07)
+(p (/ (- 12.5 12.1)
+      (/ 0.4 (sqrt 50))))
+
 ;; standard newline constant
 (defvar *n* (format nil "~%"))
 
@@ -108,15 +137,15 @@
      processes*)
     pid))
 
+(defun get-process (pid)
+  (cdr (assoc pid processes*)))
+
 (defmessenger bar
     ((x 1)
      (y 2))
   ((foo (lambda (a) (incf x a)))
    (bar (lambda (a b) (incf x a) (decf y b)))))
 
-
-(defun get-process (pid)
-  (cdr (assoc pid processes*)))
 
 (defvar some-pid (spawn 'bar))
 (@ (get-process some-pid) 'send 'foo 1)

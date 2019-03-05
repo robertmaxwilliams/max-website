@@ -80,19 +80,19 @@
   (if (> (spread day-max-min-1) (spread day-max-min-2))
       day-max-min-1 day-max-min-2))
 
-(defun table-p (table)
-  (flet ((extract-keys (alist)
-	   (mapcar #'car (alist))))
-    (let ((cannon-keys (extract-keys (car table))))
-      (iter (for row in table)
-	    (iter (
+;;(defun table-p (table)
+;;  (flet ((extract-keys (alist)
+;;	   (mapcar #'car (alist))))
+;;    (let ((cannon-keys (extract-keys (car table))))
+;;      (iter (for row in table)
+;;	    (iter (
 
 (defun file-to-table (filename)
   " turns a tabular text file to list of alist (aka table)"
   (let* ((lines (uiop:read-file-lines filename))
 	 (header (car lines))
 	 (data-lines (cddr lines))
-	 (parser (first-line-to-parser header))
+	 (parser (first-line-to-parser header)))))
 
 (defun data-munge (filename)
   " get day with highest temp spread"
@@ -162,7 +162,7 @@
 	    (iter (for data-str in data-lines)
 		  (collect (funcall parser data-str '("Team" "F" "A"))))))
       (reduce #'football-keep-maximum-spread day-max-mins)
-      (day-max-mins)))
+      (day-max-mins))))
 
 (football-munge)
 (print "")
@@ -190,4 +190,3 @@
 
 (parse-float-or-string " a  ")
 
-parse-float 

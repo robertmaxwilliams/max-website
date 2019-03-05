@@ -538,6 +538,34 @@ it adds are:
 Ahh so this is getting confusing... I'm going to rewrite the parser bit so that it makes everything
 into a "table", which is a list of alists that all share the same keys. 
 
+## Scap that, started over.
+<br>
+Feb 27
+
+This task is pretty frustrating. I've got all the data parsed, time to calculate the solutions
+again.
+
+So I did both of them... and the final challenge: 
+
+### Part Three: DRY Fusion
+    Take the two programs written previously and factor out as much common code as possible, leaving
+    you with two smaller programs and some kind of shared functionality.
+
+I already that! AHhhhhhh!
+
+### Kata Questions
+
++ To what extent did the design decisions you made when writing the original programs make it easier
+or harder to factor out common code?
+    - I already factored everything out, so completely.
++ Was the way you wrote the second program influenced by writing the first?
+    - Yes, I resused pretty much everything
++ Is factoring out as much common code as possible always a good thing? Did the readability of the
+programs suffer because of this requirement? How about the maintainability?
+    - My "general" solution is pretty much a complete tool, but is also 153 lines as opposed to like
+      thirty for the manual slicing version. __I seriously over-generalized here.__ 
+
+
 ## Kata Luke Invented: Infinite Gomoku
 
 
@@ -553,3 +581,25 @@ into a "table", which is a list of alists that all share the same keys.
     about it.
 
 
+## How big is Python
+
+Luke asked me to guess how many lines were in python. My initial guess is 5,000 for the main
+language and 50,000-200,000 for the standard library. I am allowed to look at 
+[the list of standard library modules](https://docs.python.org/3/library/) and now I think that
+might have been on the low side.
+
+If I remember correctly, the core of MastML (a summer project) in the rewrite was about a thousand
+lines or so. 1,000 lines seems like a reasonable amount of code for some complicated and nitpicky
+task.  Now there are 300 lines in the page listing the standard modules, assuming each is about as
+complex as MastML gets 300,000. 
+
+### Answer: 
+
+Luke ran the numbers:
+    ~/D/cpython 21:08:59 $ cat **.py | wc -l
+    => 776703
+    ~/D/cpython 21:09:06 $ cat **.c | wc -l
+    => 407520
+
+So 78,000 lines of python and 40,000 lines of C. I was about half an order of magnitude short, not
+bad.
