@@ -8,6 +8,51 @@
   "this kills the server!"
   "goodbye moon")
 
+(define-url-fn (random-numbers)
+  "returns random numbers in json list"
+  (let* ((n-numbers (parse-integer (or (parameter "n") "1")))
+	 (rands (loop repeat n-numbers collect (random 10))))
+    (json:encode-json-to-string rands)))
+
+(define-url-fn (show-random-numbers-ajax)
+  "uses random-numbers as an api endpoint to do stuff"
+  (standard-page (:title "Uses xmlhttprequest to do stuff")
+    (:pre (:p :id "foo" ""))
+    (:script
+"
+var foo = document.getElementById('foo')
+
+var xmlhttp; // create global
+function getStuff() {
+    xmlhttp = new XMLHttpRequest(); //global
+    xmlhttp.open('GET', '/fun/random-numbers?n=10', true);
+
+
+    xmlhttp.onreadystatechange = function() {
+	if (xmlhttp.readyState == 4) {
+	    if(xmlhttp.status == 200) {
+		var obj = JSON.parse(xmlhttp.responseText);
+		console.log(obj)
+		foo.innerHTML += String(obj)
+		foo.innerHTML += '\\n'
+
+		var countryList = obj.countrylist;
+	    }
+	}
+    };
+
+    xmlhttp.send(null);
+}
+
+getStuff();
+
+setInterval(getStuff, 500);
+
+")))
+
+
+
+
 (define-url-fn (pascal)
   "Pascal triangle, big-big"
   (standard-page (:title "Fun!")
