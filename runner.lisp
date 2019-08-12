@@ -36,7 +36,6 @@
 (ql:quickload :banana-grams)
 ;;(ql:uninstall :banana-grams)
 
-
 ;;(asdf:component-pathname (asdf:find-component :foo '("bar" "baz")))
 ;;(asdf:component-pathname (asdf:find-component :max-website "package"))
 
