@@ -74,10 +74,12 @@ recompiles *dispatch-table*."
 (defun controller-index ()
  (standard-page (:title "Max Williams")
    (:h1 "Robert Max Williams")
-   (:img :src "/images/face.jpg"
-	 :alt "Max Williams"
-	 :class "logo"
-	 :style "center;")
+   (:a 
+     :href "/files/cv-max-williams.pdf"
+     (:img :src "/images/face.jpg"
+           :alt "Max Williams, click for resume"
+           :class "logo"
+           :style "center;"))
    (markdown (truename #p"bio.md") :stream html-stream)))
 
 (defun controller-about ()
