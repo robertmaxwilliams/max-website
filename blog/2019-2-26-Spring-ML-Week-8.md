@@ -66,6 +66,4 @@ create any more influential or memetic ideas than an average writer. Because I'v
 [SCP](http://www.scp-wiki.net/) I feel suspicious about wandering text and "word soup" text as being
 a [cognitohazard](http://www.scp-wiki.net/forum/t-578967/memetic-vs-cognitohazard-vs-infohazard) or
 some sort of memetic threat, but those things are mostly fiction at present so I guess that's just
-me being paranoid about new technology. If memetics ever earns itself the status of a real science,
-I think computer generated text would be an important area of research. Maybe it is already, or
-maybe I should make it so. Although Richard Dawkins is a real jerk.
+me being paranoid about new technology. I wish memetics was a real science

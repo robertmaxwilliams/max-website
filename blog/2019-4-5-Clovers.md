@@ -44,9 +44,9 @@ clovers to look at, and you assume one in five thousand clovers have four leaves
 the optimal strategy? 
 
 Also note that you can change your sensitivity (I think that's actually the technical term) to 4
-leafs, and decrease false negatives at the cost of increasing false negatives. This can be done to a
-classifier by adding biases to the outputs, but how the human mind does this through act of will is
-a mystery as far as I know.
+leafs, and decrease false negatives at the cost of increasing false positives or something. This can
+be done to a classifier by adding biases to the outputs, but how the human mind does this through
+act of will is a mystery as far as I know.
 
 My intuition about the values of my own confusion matrix led me to a strategy of looking at clovers
 very quickly, hardly pausing on one before the other, or even skimming around many at once without
@@ -94,6 +94,10 @@ from it never to return. Try to keep a little bit of distance from places you've
 bring friends - the number of person hours spent is also important, so long as you can avoid looking
 in the same place twice, or you can look in the same place and exhaust it sooner.
 
+Once you find a single four leaf clover, or a weird leaf mutation, comb the area for a few feet
+around. Four-leafedness correlates with other traits, so if for instance your four leaf clover has
+red splotches, then look at nearby clovers that have red splotches.
+
 # An AI gridworld
 
 There is a 6x8 grid of clover tiles, except for one starting tile for the agent and one randomly
@@ -107,6 +111,3 @@ you would never trample a tile that might contain the four leaf clover, and you 
 that you haven't just happened to miss it no matter how many times you check.
 
 This actually relates to safe exploration - the topic of my AI safety independent study.
-
-
-

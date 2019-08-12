@@ -11,6 +11,18 @@ digits. Now performs Cantor's diagonalization on this list. You must get a numbe
 and yet it seems that we just described a computer program to compute this number. There are 4
 possibilities: 
 
+#### Update:
+
+> It seems that the list of all computable numbers (which I try to approach using the set D, below)
+> is incomputable. I would like to prove this, maybe another time. For now, **don't bother reading
+> this blog post.**, it's garbage.
+
+Also, read this:
+
+[THE LIMITS OF REASON](https://web.archive.org/web/20170830004923/https://www.cs.auckland.ac.nz/~chaitin/sciamer3.html)
+
+
+
 1. That number is somehow hiding in the list (this one is actually false, guarenteed by the
    diagonalization process.
 2. The list of computable programs is uncountable. The list of all finite programs is countable, so
@@ -41,6 +53,7 @@ for 1 tick. At 10 top-level ticks, the number of ticks for each program would be
 - P3: 2
 - P4: 1
 - P5: 0
+
 
 As the number of top-level ticks approaches infinity, the number of ticks spent on any particular
 program also approaches infinity.
@@ -91,12 +104,14 @@ the prints **at least** one digit. This process is continued for the first progr
 (programs already added to D are not considered) and 3 digits and so on. Now D contains a listing of
 a subset of P. D conatins many "bad" programs, which happened to print a few digits but were never
 checked long enough to notice that they don't produce additional digits. Will all well-behaved
-programs in P end up in D? I think so, email me a proof if you think of one. I'll take it as a
-conjecture for now.
-
+programs in P end up in D? I think so, email me a proof if you think of one. Actually, I think
+that's false. A proof for that would also be nice.
 
 So now we have D, which is fit for diagonizable, but has many programs where the take-next-digit
 process would never halt. So D has at least one program for every computable number, and lots of
 programs that end up stuck in loops. If we diagonalize D, we get a new number not in D. 
+
+So, my conclusion is that the set of all computable numbers is incomputable, just like the set of
+all programs that halt. QED?
 
 
