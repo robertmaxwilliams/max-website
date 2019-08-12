@@ -2,7 +2,7 @@
 Hi! I'm Max Williams. I program computers, sometimes they even do things. I think the most
 beneficial thing to do with my life is contribute to AI safety/AI alignment research. The most 
 interesting (and most harmful) thing I could do is to research AI technology with no regard to
-safety. 
+safety. It sure is fun, though, and everyone is paying for it. 
 
 # Current Stuff
 
@@ -12,23 +12,17 @@ I'm studying Computer Engineering and Computer Science, with a Math minor.  Whil
 more from my own projects rather than the curriculum, I also know I wouldn't be able to do it without the
 scheduled and mandated learning environment filled with deadlines and skilled professors. 
 
-## Research Project 
+## Current Projects
 
-I'm currently working on the topic of "Adversarial Examples Transfer from Recurrent Neural Networks
-to Finite State Automata". Recurrent Neural Networks (RNNs) can be made to misclassify a sequence
-with very small input perturbations, analogous to 
-[adversarial examples for image classification](https://blog.openai.com/adversarial-example-research/).
-Some adversarial examples also 
-[transfer to humans](https://arxiv.org/abs/1802.08195). From this, I make the hypothesis that given
-some real-world or simulated system of any kind that performs a task, a neural network proxy can be
-made to approximate it. Correctly crafted, inputs that cause a failure of the proxy should
-have a similar effect on the real system. Exactly what kind of systems this is possible for and how
-to go about making proxies that give useful adversarial examples is the challenge here.
-
-I'm working on an RNN that emulates a spring-mass system, and determining whether the standard way
-of creating adversarial input will discover how to make a sine wave at resonance to maximize
-displacement. This is starting to sound like a poor substitute for reinforcement learning, but I
-need to actually do experiments before I can know anything.
+Since the [ES](https://arxiv.org/abs/1703.03864) paper came out, I've made a single core version
+which solves cart pole, and learns degenerative behavior for the spider walking environment. It's
+not a simple as the authors make it out to be, there are a lot of nuances in the rank ordering
+scheme that they glance over in the paper. It also doesn't address exploration, adding an explicit
+exploration scheme is needed for rare reward environments without good reward proxies. I am working
+on a distributed version, after I found out the you can run 1000 instances for an hour for under
+$10 on Google Cloud. That's crazy! It makes sense, though, since that's less than two months of
+compute. So cheap! I can't wait to train state of the art reinforcement learners that usually take
+days on a GPU.
 
 ## Lisp
 
@@ -40,7 +34,7 @@ I'm also working on some DSP stuff, [here](https://www.youtube.com/watch?v=CjsbY
 of my first attempt. Maybe I'll make more, with some percussion and more interesting virtual
 instruments.
 
-## Internship Hunting
+## Career Hunting
 
 Like many people my age, I have grand ideas about what I want to do with my life but I have trouble
 visualizing exactly what they would look like. I really enjoyed programming robots in high school, 
@@ -55,6 +49,12 @@ coding standards or development paradigms; they get the job done but aren't left
 useful for others. A lot of work is wasted doing the same tasks over and over again. Almost
 all software I used in the bioinformatics world was hacky and under-documented.
 
+At PNNL, I also got to write useful software in a self-directed way to solve some nebulous research
+task. This was difficult in a good way, and is something I could see myself doing as a career. Also,
+the work environment was very healthy, encouraging steady progress and goals, not the burnout cycle
+of some (__cough__ Google __cough cough__ Microsoft) software dev shops. Overall, being a
+non-academic researcher felt like a good fit for me, especially the practical focus of the work.
+
 My dream is to do actual good for the AI safety community, but it's such a turbulent field and can
 be hard to tell what skills will be useful. Will being a better programmer make me more useful, or
 is general programming skill too general to be genuinely useful? Worse still, my experience with
@@ -64,6 +64,16 @@ state of software engineering, I am committed to doing what I can to contribute 
 most slippery, impossible, and important issue humanity will ever face.
 
 # Past Stuff
+
+## PNNL Summer internship
+
+Summer of 2019, I worked on few-shot image classification for Pacific Northwest National Lab. I
+enjoyed the work, and I worked with people skilled in all aspects of deep learning. There were other
+groups there that did statistical and principled computing, such as bayes inverse problem solving
+and other scary stuff like that. It seems very practical, and solved problems in ways that seem
+impossible with deep learning. Maybe the whole "throw your principles out the window and compute"
+paradigm isn't always the best. Overall, I'm fluent in PyTorch now, which is so much better than
+TensorFlow for writing research code. I can make whatever deep learning model I want from scratch.
 
 ## MAST-ML
 
