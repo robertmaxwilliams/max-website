@@ -21,7 +21,7 @@
     (defparameter *testing* t))
   (progn
     (print "Deployment mode")
-    (defparameter *max-website-dir* "/home/public/max-website/")
+    (defparameter *max-website-dir* "/root/max-website/")
     (defparameter *testing* nil)))
 
 ;;(ql:register-local-projects)

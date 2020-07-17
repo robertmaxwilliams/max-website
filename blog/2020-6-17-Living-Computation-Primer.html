@@ -85,21 +85,69 @@ just the default type, like the vacuum of space. RES will just float around like
 atom of hydrogen. All the code is rough pseudocode, but later we'll look at a functioning
 (and fast, and extensible) C implementation.
 
+
 <pre style="  white-space: pre-wrap; word-break: keep-all">
 <code>
 def update(cell, neighbors):
   case BLANK:
-    return
+    pass
   case RES:
      swap(cell, random(neighbors))
-  else:
+</pre>
+</code>
+
+If we run this in some fixed size, say 100 by 100, and have mostly BLANK cells with a few RES, then as
+we run updates occassionally one of the updates will hit a res and it will hop around. Speed up the scale, 
+and we'll see all the RES bobbing around like gas in brownian motion.
+
+Let's add another type, WALL. I know, none of this seems very computery, we'll get to that I promise. We also add
+a condition that if the type is unrecognized or someone has an error, then we zero out the cell and its data.
+
+<pre style="  white-space: pre-wrap; word-break: keep-all">
+<code>
+def update(cell, neighbors):
+  case BLANK:
+    pass
+  case RES:
+    swap(cell, random(neighbors))
+  case WALL:
+    pass
+  else or error:
      cell.type = BLANK
      memset(cell.data, 0)
 </pre>
 </code>
 
-If we run this in some fixed size, say 100 by 100, and have mostly BLANK cells with a few RES, then as
-we run updates occassionally one of the updates will hit a res.
+Since each of these bits of code might have an error, or maybe a bit got flipped by a cosmic ray since we last looked at it, 
+we need to handle this by resetting the cell back to BLANK. This is the "hide and heal" paradigm coming into play: errors happen
+and we should shove them under the rug and hope we were robust enough.
+
+In fact, being able to deal with unexpected errors is at the heart of robustness. We can force our deisgns to be robust by introducing
+noise. One way is to simulate these gamma rays on our computer by occasionally randomly flipping bits. Another is to introduce software
+elements which scramble things around. A very elegant way of doing this is with an atom that Ackley calls the "dynamic regulator" or
+DREG. A DREG, left to its own, will fill space sparsely with RES, occassionally reproduce, and convert pieces of anything it runs into into
+RES. 
+
+<pre style="  white-space: pre-wrap; word-break: keep-all">
+<code>
+  ...
+  case DREG:
+    neigh = random(neighbors)
+    if neigh is BLANK:
+      (chance 1/10) neigh = RES         // make new res
+      (chance 9/10) swap(neigh, cell)   // move self around in empty space
+    else if neigh is RES:
+      (chance 1/500) neigh = copy(cell) // reproduce, consume a res
+      (chance 499/500) neig = BLANK     // destroy a res
+    else if neigh is DREG:
+      (chance 1/10) neigh = BLANK       // destroy a dreg
+    else:
+      (chance 1/2) neigh = RES          // replace anything else with res
+  ...
+</pre>
+</code>
+
+If you leave a single DREG in an enclosed space, it will eventually reach an equilibrium with about 0.1% DREG and 10% RES. 
 
 <p><a href="https://www.mitpressjournals.org/doi/abs/10.1162/isal_a_00149">Building a survivable protocell for a corrosive digital environment(2019)</a>
 <p><a href="https://www.mitpressjournals.org/doi/pdf/10.1162/978-0-262-33027-5-ch097">Artificial life programming in the robust-first attractor (2015)</a>
