@@ -1,0 +1,108 @@
+---
+layout: post
+title: Living Computation (aka Indefinitly Scable Computing) Primer
+---
+
+(incomple, unedited and mostly incoherent)
+
+<h2>Background</h2>
+
+<p>Over the past decade, David H. Ackely and his students have been working on an
+idea: use artificial life as a computation medium. This has a few
+repurcussions:
+
+<ol>
+<li>The design of the "physics" of this medium allows it to be scaled
+indefinitley: there is no global synchronization, pointers, or identifiers.
+Thus we can turn this computer on before we're finished building it and the
+program need never stop even if large amounts of the hardware fails. </li>
+<li>By designing for a noisy and spread out world, the kind of programs you
+create end up resembling living things more than computer programs. This poses
+a huge engineering challenge, but the payoff is huge and we will learn new
+things about computation along the way. </li>
+</ol>
+
+<p>By being indefinitely scalable we lose three things essential for "normal"
+programming: global constant time addressing (like pointers), global
+synchronization, and guarenteed correctness. The first two are fairly obvious -
+signals can only travel at the speed of light, so as other parts of the
+computer get arbitrarily far away, latency increases until the computer can no
+longer function.  Guarenteed corectness however, is a bit weirder. Every time
+you tell your computer to add 2+2, you will get 4.  This is because computer
+absolutely rely on correctness - most of the energy usage of a processor is for
+error corrections.  Now consider if you have the same computation running on a
+million computers, or a billion. At some point, one will make an uncorrectable
+error and say 2+2=5, and all your assumptions are thrown out the window. This
+is way Robust First computing throws correctness out the window from the start.
+
+<p>Now with just this, there are so many directions you can run. Is this like a
+bunch of servers networked together and I write my programs as usual but
+duplicate them and pass data around in some complex way? Or is it like trying
+to make a computer in game of life? While both of these are possible
+interpretatins (with the caveat the your network would need to be modified so
+computers can only talk to physically adjacent ones and the Game of Life needs
+to be anynchronous to remove the need for a global clock), neither of these if
+where we want to go.  The big server style of ISC (Indefinitely Scalable
+Computing) is already practiced somewhat out there in the world, albiet not in
+a way which meets any of the criteria of the previous paragraph. And people
+have done compution of all sorts in the Game of Life, but they rely on
+correctness and global synvhronization. Miss one update or flip one bit and the
+entire creation falls apart. GoL is just too difficult to scrape computation
+out of, there's no room for robustness.
+
+<p>So how should we compute if we want to be indefinitely scalable and robust first?
+Introducting the Moveable Feast Machine. The MFM is made up of "tiles", which could 
+be implemented on standard computers of any kind networked into a grid, where
+information can be sent between adjacent tiles. Each tile has a grid of 
+"atoms" which each store their state. An update function takes an atoms and its
+neighbors within some radius (3 or 4 is typical) and returns the atom and its
+nieghbors' states which are put back. This update function is not synchronous, 
+each tile runs its update function at a random location as fast as it can, and
+the atoms along the edge of the tile are synchronized between tiles. For the programmer, 
+the exact implementation details shouldn't matter. From a software perspective, the system 
+provides random uniform updates on a huge grid of atoms and all the programmer needs to 
+worry about is writing that local update function.
+
+<p>The update function has access to the entire neighborhood, so it can swap
+around atoms and change anything it wants within that tiny universe. 80 or so
+bits is a typical amount of state for one atom, making the design space
+absolutely huge compared to a normal cellular automata.  They also must be
+terminating - an atom that fails to halt will stall that tile, so precautions
+need to be taken, either by using a language that is in a class lesser than
+Turing complete or by putting a timer on each run of the function.
+
+<p>The final design choice we need to set straight before entering the world of
+robust first computing is that some amount of the state is called the "type" of
+an atom  while the rest is the "data". The update function is broken up into
+one smaller function for each type, so there is an update function for type 0
+and type 1 and  so on. This is important because we will be defining a few
+special atoms to serve as the basis of our computer.
+
+<h2>Hello infinite world</h2>
+
+Let's go ahead and work a small example. We'll have two type: BLANK and RES. BLANK is
+just the default type, like the vacuum of space. RES will just float around like an
+atom of hydrogen. All the code is rough pseudocode, but later we'll look at a functioning
+(and fast, and extensible) C implementation.
+
+<pre style="  white-space: pre-wrap; word-break: keep-all">
+<code>
+def update(cell, neighbors):
+  case BLANK:
+    return
+  case RES:
+     swap(cell, random(neighbors))
+  else:
+     cell.type = BLANK
+     memset(cell.data, 0)
+</pre>
+</code>
+
+If we run this in some fixed size, say 100 by 100, and have mostly BLANK cells with a few RES, then as
+we run updates occassionally one of the updates will hit a res.
+
+<p><a href="https://www.mitpressjournals.org/doi/abs/10.1162/isal_a_00149">Building a survivable protocell for a corrosive digital environment(2019)</a>
+<p><a href="https://www.mitpressjournals.org/doi/pdf/10.1162/978-0-262-33027-5-ch097">Artificial life programming in the robust-first attractor (2015)</a>
+<p><a href="https://www.aaai.org/ocs/index.php/AAAI/AAAI16/paper/download/11987/12203">Indefinite Scalability for Living Computation (2016)</a> </p>
+<p><a href="https://www.mitpressjournals.org/doi/abs/10.1162/ARTL_a_00117">Bespoke physics for living technology (2013)</a>
+
