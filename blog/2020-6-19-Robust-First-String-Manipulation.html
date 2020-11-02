@@ -1,0 +1,51 @@
+---
+layout: post
+title: Robust First String Manipulation
+---
+
+(read Living Computation Primer first)
+
+<h2>Representing Strings</h2>
+
+<p>How can we represent a string in a way that's robust and useful in the dynamic regulation
+paradigm? The letters are easy to store in an atom - that just takes one byte. You could even 
+store a few letters in one letter atom, no trouble. But lets say we want 256 length strings, 
+what then? We could have them all lined up like ducks in a row, but if they get scrambled then
+the string is damaged. And that's not easy to move around. So each letter in the string gets 
+its own atom, and that atom stores that letter as a byte and the letter's position as another
+byte. For example, the string "Hello" converts to:
+<ul>
+	<li> ('H', 0)
+	<li> ('e', 1)
+	<li> ('l', 2)
+	<li> ('l', 3)
+	<li> ('o', 4)
+</ul>
+
+<p>Now the string can get shuffled around all you want, no trouble. But what if you have 
+multiple strings? It'd be easy to get them mixed up. So let's give each string a random 
+identifier. A byte is probably enough. Now if we have two strings:
+
+<ul>
+	<li> (54, 'H', 0)
+	<li> (54, 'e', 1)
+	<li> (54, 'l', 2)
+	<li> (54, 'l', 3)
+	<li> (54, 'o', 4)
+	<li> (39, 'B', 0)
+	<li> (39, 'y', 1)
+	<li> (39, 'e', 2)
+</ul>
+
+<p>We can shuffle them around all we want and still easily recover "Hello" and "Bye" as two different strings.
+If an atom goes missing or gets corrupted, then only one letter is missing and the rest of the string if fine.
+
+<h2>Robustification by Duplication</h2>
+
+<p>If we make many copies of each atom of a string, the odds of losing too many letters is reduced. This is what I 
+designed my "string isolator" for: it "imprints" on the ID of the first string atom it encounters and then goes around
+creating copies of any string atom with that ID (consuming res in the process) and destroys any other string atoms (creating res).
+
+<p>I made another atom type, "string copier", that assigns itself a unique ID when created, imprints on the ID of the
+first string that it encounters, and starts attempting to make a copy of the string with a different ID, making a new string with
+the same contents as the original.
