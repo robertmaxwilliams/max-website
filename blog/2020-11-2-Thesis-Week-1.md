@@ -100,5 +100,6 @@ or system with learned components.
   complicated system that you do not have the tools to analyze. Avoid this.
 - If your AI changes how people interact (social media, content suggestion algorithms), it will
   change how people talk, think, and live.
+- Your AI most likely has defense applications
 
 
