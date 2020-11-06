@@ -101,5 +101,7 @@ or system with learned components.
 - If your AI changes how people interact (social media, content suggestion algorithms), it will
   change how people talk, think, and live.
 - Your AI most likely has defense applications
+- Robots and automated machinery should be physically isolated from humans. Enormous engineering
+  effort is required to do this well enough to be considered safe. 
 
 
