@@ -6,23 +6,27 @@ safety. It sure is fun, though, and everyone is paying for it.
 
 # Current Stuff
 
-## Undergraduate at UofL
+## Master's degree in Computer Science & Engineering at UofL
 
-I'm studying Computer Engineering and Computer Science, with a Math minor.  While I tend to learn
-more from my own projects rather than the curriculum, I also know I wouldn't be able to do it without the
-scheduled and mandated learning environment filled with deadlines and skilled professors. 
+I've finished my CSE undergrad with a math minor and now I'm getting my master's. My courses are
+very project heavy, which is exactly the kind of work I enjoy. I'm doing my thesis on AI failures
+in the conext of AI safety. Keeping on track with my thesis is difficult but my
+advisor has been very helpful, as he is passionate about the topic. As I've been formulating the
+thesis, I vary between feeling hopeless as the open and unknowable maw of the future waiting to
+consume everything of value that could ever exist, and feeling like maybe there's a winning situation
+and humans are capable of getting there as long as we do some good thinking.
 
 ## Current Projects
 
-Since the [ES](https://arxiv.org/abs/1703.03864) paper came out, I've made a single core version
-which solves cart pole, and learns degenerative behavior for the spider walking environment. It's
-not a simple as the authors make it out to be, there are a lot of nuances in the rank ordering
-scheme that they glance over in the paper. It also doesn't address exploration, adding an explicit
-exploration scheme is needed for rare reward environments without good reward proxies. I am working
-on a distributed version, after I found out the you can run 1000 instances for an hour for under
-$10 on Google Cloud. That's crazy! It makes sense, though, since that's less than two months of
-compute. So cheap! I can't wait to train state of the art reinforcement learners that usually take
-days on a GPU.
+I'm working on a small project called "Undeletable," where you can write small posts like twitter, 
+except you cannot delete them and you can't even hit backspace while typing. It'll be ready for 
+user pretty soon, it'll be the next big thing once it's done.
+
+I've also learned a lot about "Indefinitely Scalable Computing," pioneered by David Ackley. When
+doing ISC, you design programs that run on thousands of tiny internlinked computers (in a simulator 
+or with actual ISC hardware). The style of programming most benificial to this is very organic and
+borrows ideas frequently from biology. It's a long way from being of practical value, but putting in
+the work to understand it has greatly opened my mind to the boundary between software and living things.
 
 ## Lisp
 
@@ -40,7 +44,7 @@ Like many people my age, I have grand ideas about what I want to do with my life
 visualizing exactly what they would look like. I really enjoyed programming robots in high school, 
 I also like doing math stuff for fun and exploring math things using programming. The corporate
 software development world looks soulless and unproductive, like a big hamster wheel that consumes
-man hours and keeps alive the collective conciousness of the business. Maybe I'm wrong, and making
+person hours and keeps alive the collective conciousness of the business. Maybe I'm wrong, and making
 software for Microsoft would actually be really enjoyable. 
 
 My summer internship working on MAST-ML made me think that making software for researchers is a

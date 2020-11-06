@@ -1,0 +1,54 @@
+---
+layout: post
+title: Robust First String Matching 
+---
+
+<p>Since writing the last post I've made a lot of new operations on string -
+reversal, eqality testing, splitting on spaces. I've learned two things:
+operating on a string without knowing its length requires way too long and
+risks truncating the string, and waiting around for the i'th element of a
+string to diffuse into the right place takes far too long. To correct this,
+I've added length to strings (which might have been a mistake because it
+complicates things greately) and I've come up with a "frozen string", which is
+just a string that doesn't move where letters that are adjacent to each other
+in the original string are adjacent in physical space. This makes some
+operations much faster but feels like it isn't in the spirit of robust first,
+as these kinds of systems, especially when length is added into the picture,
+are not robust to losing letters. 
+
+<p>So I'm trashing all that hard work (but not the lessons I've learned along
+the way) to build the first iteration of my simple scripting language that
+operates entirely within my simulator, which needs a name. 
+
+<h2>The language</h2>
+
+<p>This thing is going to be extremely basic and procedural, and doesn't even
+get a name. It can only store these "strings" and has a limited set of
+operators and no way to compose them or define procedures or functions. In the
+future, numerical types and function definition will be added somehow but yet.
+This thing is going to be so basic as to be basically useless, for a good
+reason.  This stuff is <em>hard</em>.
+
+<p>This version will only have two commands: <code>store</code> and
+<code>retrieve</code>. <code>store</code> is called with two arguments: an
+identifier under which to store, and the string to be stored. It looks like
+this: <code>store foo "some string"</code>. <code>retrieve</code> takes one
+argument, an identifier, and goes out, copies it, and brings it to a specific
+location.
+
+<h2>The Implementation</h2>
+
+<p>A string comes in and everything before the first space is extracted and 
+matched against "store" and "retrieve". Here's the first draft of this machine,
+which only copies the string and checks it against "store" and retrieve". The
+checkers remain in their yellow "maybe" state until a mismatched letter comes in, upon which they
+change to a red "no".
+
+
+<br> <br> <img src="/images/machine1.png" alt="A machine which checks a string" width="400"/>
+
+<p>Once this machine was working, it needed to be improved by adding first word extraction and a way
+to channel the rest of the string to different machines depending on what the first word matched.
+
+<p> First word extraction has an elegant fast solution, where the workers find the lowest space character and destroy everything
+after it. Getting the rest of the word is more difficult, since its indices need to be shifted correctly.

@@ -109,7 +109,7 @@ def update(cell, neighbors):
   case BLANK:
     pass
   case RES:
-    swap(cell, random(neighbors))
+    (chance 1/6) swap(cell, random(neighbors, radius = 1, shape = square))
   case WALL:
     pass
   else or error:
@@ -118,11 +118,17 @@ def update(cell, neighbors):
 </pre>
 </code>
 
-Since each of these bits of code might have an error, or maybe a bit got flipped by a cosmic ray since we last looked at it, 
+<p>Now is we draw a wall with some res in it, and make the event rate high enough that we get an 
+average of 6 events per site per second (AER = 6), we can see the res bouncing around in the box
+
+<br> <br>
+<img src="/images/res-in-wall.gif" alt="The word entropy being destroyed by dreg" width="400"/>
+
+<p>Since each of these bits of code might have an error, or maybe a bit got flipped by a cosmic ray since we last looked at it, 
 we need to handle this by resetting the cell back to BLANK. This is the "hide and heal" paradigm coming into play: errors happen
 and we should shove them under the rug and hope we were robust enough.
 
-In fact, being able to deal with unexpected errors is at the heart of robustness. We can force our deisgns to be robust by introducing
+<p>In fact, being able to deal with unexpected errors is at the heart of robustness. We can force our deisgns to be robust by introducing
 noise. One way is to simulate these gamma rays on our computer by occasionally randomly flipping bits. Another is to introduce software
 elements which scramble things around. A very elegant way of doing this is with an atom that Ackley calls the "dynamic regulator" or
 DREG. A DREG, left to its own, will fill space sparsely with RES, occassionally reproduce, and convert pieces of anything it runs into into
@@ -132,7 +138,7 @@ RES.
 <code>
   ...
   case DREG:
-    neigh = random(neighbors)
+    neigh = random(neighbors, radius = 3, shape = diamond)
     if neigh is BLANK:
       (chance 1/10) neigh = RES         // make new res
       (chance 9/10) swap(neigh, cell)   // move self around in empty space
@@ -147,7 +153,52 @@ RES.
 </pre>
 </code>
 
-If you leave a single DREG in an enclosed space, it will eventually reach an equilibrium with about 0.1% DREG and 10% RES. 
+<p>If you leave a single DREG in an enclosed space, it will eventually reach an equilibrium with about 0.1% DREG and 10% RES. 
+Here this is shown at an AER of 600. (RES is dark green and DREG is red)
+
+<br> <br>
+<img src="/images/dreg-to-equilibrium.gif" alt="a DREG going to equilibrium by filling space with dreg and res" width="400"/>
+
+<p>The DREG's purpose can be seen here, tearing down a non-equilibrium structure and converting it to RES.
+
+<br> <br>
+<img src="/images/entropy.gif" alt="The word entropy being destroyed by dreg" width="400"/>
+
+<p>Under the Dreg Paradigm, other atoms must follow specific rules:
+<ol>
+	<li>Conservation of mass: to create an atom (as opposed to moving or changing one), a res must be simultaniously destroyed.</li>
+	<li>Conservation of mass Part 2: an atom cannot be destroyed, only converted to res. (this one may be broken if you like)</li> 
+	<li>Indestructability of Dreg: No atom besides dreg can do anything with a dreg except move it.</li>
+</ol>
+
+<p>Now I will show two structures which follow this paradigm: box and robust wall.
+
+<p>Box tries to draw a box and robust wall tries to maintain whatever shape it was drawn in.
+
+<p>Here a single atom of box is placed, then the rest grows be capturing res and using it to build. Dreg damages the box several times, 
+but it easily recovers.
+
+<br> <br>
+<img src="/images/box.gif" alt="A box building itself from res" width="400"/>
+
+<p>When part of the box is erased, the rest recovers.
+
+<br> <br> <img src="/images/box2.gif" alt="A box being damaged and repairing itself" width="400"/>
+
+<p>Box is cool, but limited. All the information needed to rebuild it is in a
+single atom, so it acts like a polyp or something, which grows back from a
+single cell as long as resource are available. But it can't be used to make anything except box, 
+and making new shapes requires reprogramming. So robust wall was created to provide a way to make 
+arbitrary connected shapes that self repair using res. Each atom of robust wall checks its eight
+adjacent atoms, and records if each of them is another robust wall. Then, if one of those robust wall atoms is ever anything else, 
+it tries to find a res to use to rebuild it. This way, the way maintains its shape as long as only a few atoms are destroyed at a time.
+
+<p>Here a square of wall (left) and robust wall (right) are shown in a dynamically regulated environment. The wall is quickly torn apart, 
+but the robust wall persists and even flashes back after losing most of its mass.
+
+<br> <br> <img src="/images/robust-box.gif" alt="A box being damaged and repairing itself" width="400"/>
+
+<p>Here's some of the papers:
 
 <p><a href="https://www.mitpressjournals.org/doi/abs/10.1162/isal_a_00149">Building a survivable protocell for a corrosive digital environment(2019)</a>
 <p><a href="https://www.mitpressjournals.org/doi/pdf/10.1162/978-0-262-33027-5-ch097">Artificial life programming in the robust-first attractor (2015)</a>
