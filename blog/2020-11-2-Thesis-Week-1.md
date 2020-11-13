@@ -103,5 +103,3 @@ or system with learned components.
 - Your AI most likely has defense applications
 - Robots and automated machinery should be physically isolated from humans. Enormous engineering
   effort is required to do this well enough to be considered safe. 
-
-
