@@ -5,6 +5,7 @@ TESTING
 .#*
 generated/*
 blog/code-kata/*.dat
+*.DS_Store
 
 
 notebooks/.ipynb_checkpoints/*
