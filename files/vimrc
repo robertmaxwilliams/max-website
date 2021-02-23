@@ -1,0 +1,15 @@
+set et
+set sw=4
+set tw=100
+set cc=101
+set ts=4
+set autoindent
+set hlsearch
+set smarttab
+set autochdir
+set clipboard=unnamed
+
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
