@@ -175,6 +175,7 @@ Okay so I thought my system was bad but it's actually coming along well. What I 
 pretty basic and naive, but lays the groundwork for a more thought out system to be build over it.
 
 <code>
+<pre style="  white-space: pre-wrap; word-break: keep-all">
 
 
 \section{AI Safety Evaluation}
@@ -247,4 +248,5 @@ human-ish actuated movements)
 Level 3 (danger): The AI can be mistaken for a human even with unrestricted communication (may be
 text-only, voice, or in person)
 
+</pre>
 </code>
