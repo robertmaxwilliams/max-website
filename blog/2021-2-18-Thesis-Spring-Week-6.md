@@ -96,8 +96,8 @@ Formulas, diagrams, bulleted lists. The amount of content is greatly exaggerated
 
 Here are the newline, word, and byte counts for all the theses I downloaded:
 
-<code>
 <pre style="  white-space: pre-wrap; word-break: keep-all">
+<code>
   1133  19148 112613 An explainable sequence-based deep learning predictor with applic.txt
    350   8009  55157 Automatic IQ estimation using stylometry methods..txt
   1227  13818  81274 Clustering heterogeneous autism spectrum disorder data..txt
@@ -108,8 +108,8 @@ Here are the newline, word, and byte counts for all the theses I downloaded:
   1713  13366  92154 Maintainability analysis of mining trucks with data analytics..txt
   1584  13520  80094 Modeling and counteracting exposure bias in recommender systems..txt
   1881  15139  86039 Robust fuzzy clustering for multiple instance regression..txt
-</pre>
 </code>
+</pre>
 
 Word (middle column) being what I'm interested in. If I do the same to my pdf (or my tex) then I get
 about 3,000 words. So apparently I'm anywhere from 3/8ths of the amount of content I need to 1/5th or
