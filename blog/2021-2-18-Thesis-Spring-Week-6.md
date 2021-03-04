@@ -20,7 +20,7 @@ expectation is higher.
 
 Now I wish I was doing this on ISC. I could totally write a thesis about that. But alas, indecision
 and regret are both fatal so instead I'll dream about that as being my PhD thesis someday. I can do
-150 pages worth of research about indefinitely scalable computing, escpecially with the hardware to
+150 pages worth of research about indefinitely scalable computing, especially with the hardware to
 scale it up, an electrical engineer to make hardware work, and an undergraduate assistant to pair
 program with. But alas, that's a far off dream and right now it's just a distraction from the stress
 of my current, real thesis.
@@ -37,8 +37,8 @@ Work log:
     - 11:30-12: Making the motivation structure and schedule.
     - (no afternoon work bc. singing lessons)
 Friday:
-    - 10-12: 30 mins Evaluating the 2018-2019 thesi, an hour writing outline
-    - 1-3: Working on reviewing high reliablity theory and NAT-HRT synthesis that will be central to
+    - 10-12: 30 mins Evaluating the 2018-2019 theses, an hour writing outline
+    - 1-3: Working on reviewing high reliability theory and NAT-HRT synthesis that will be central to
       my related works section. Not espectially good generation but getting a better understanding
       of shivastave2009normal will help my get out of the pessimism holding my back from building
       the guideline of how to react to risk factors. NAT is pretty pessimistic and rare.
@@ -92,9 +92,9 @@ doubles the pages count.
 This paper, being machine learning, has a lot of background that every single other ML paper has
 along with borrowed low-res images from educational material.
 
-Formulas, diagrams, bulleted lists. The amount of content is greatly exagerated by the page count.
+Formulas, diagrams, bulleted lists. The amount of content is greatly exaggerated by the page count.
 
-Here are the newline, word, and byte counts for all the thesi I downloaded:
+Here are the newline, word, and byte counts for all the theses I downloaded:
 
   1133  19148 112613 An explainable sequence-based deep learning predictor with applic.txt
    350   8009  55157 Automatic IQ estimation using stylometry methods..txt
@@ -108,7 +108,7 @@ Here are the newline, word, and byte counts for all the thesi I downloaded:
   1881  15139  86039 Robust fuzzy clustering for multiple instance regression..txt
 
 Word (middle column) being what I'm interested in. If I do the same to my pdf (or my tex) then I get
-about 3,000 words. So aparently I'm anywhere from 3/8ths of the amount of content I need to 1/5th or
+about 3,000 words. So apparently I'm anywhere from 3/8ths of the amount of content I need to 1/5th or
 3/20.
 
 That feels about right. I'm ready to get to work now.
