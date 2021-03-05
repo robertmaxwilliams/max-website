@@ -31,8 +31,8 @@ calls to define-url-fn"
 	  (create-prefix-dispatcher "/fun" 'controller-fun)
 	  (create-prefix-dispatcher "/about" 'controller-about)
 	  (create-regex-dispatcher "^/fun/*" 'controller-404)
-	  (create-folder-dispatcher-and-handler "/.well-known/acme-challenge/" 
-                                            "/home/public/.well-known/acme-challenge/") ;; for dehydrated client
+	  ;;(create-folder-dispatcher-and-handler "/.well-known/acme-challenge/" 
+          ;;                                  "/home/public/.well-known/acme-challenge/") ;; for dehydrated client
 	  (create-folder-dispatcher-and-handler "/images/" *images-dir*)
 	  (create-folder-dispatcher-and-handler "/files/" *files-dir*)
 	  (create-regex-dispatcher "^/principia-discordia/$" 'redirect-page-1)
@@ -43,8 +43,9 @@ calls to define-url-fn"
 	  (create-regex-dispatcher "^/$" 'controller-index) ;; order matters?? TF I don't udnerstand thita
 	  (create-regex-dispatcher "^/*" 'controller-404)
 	  (create-regex-dispatcher "^/hello" 'controller-hello))
-	 (if (not *testing*) ;; optionally included Let's Encrypt challenge dir on real server
-	   (create-folder-dispatcher-and-handler "/.well-known/" "/home/public/.well-known/")))))
+	 ;;(if (not *testing*) ;; optionally included Let's Encrypt challenge dir on real server
+	 ;;  (create-folder-dispatcher-and-handler "/.well-known/" "/home/public/.well-known/"))
+	 )))
 
 (defun redirect-page-1 ()
   "rediercting to page 1"

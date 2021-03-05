@@ -3,6 +3,6 @@ while true
 do
     #touch *
     #touch max-website-code/*
-    #git -C ./ pull
+    git -C ./ pull
     sbcl --load runner.lisp
 done
