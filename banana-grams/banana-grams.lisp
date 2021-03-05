@@ -208,7 +208,7 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 	       (remove-if-not
 		(lambda (string)
 		  (find extra-char string))
-		(possible-words (str:concat (normalize-string letters) (list extra-char))))
+		(possible-words (str:concat (normalize-string letters) (format nil "~a" extra-char))))
 	       #'length>))))
 (sort (possible-words "nncieuafte") #'length>)
 (sort (build-on-word "acute" "finne") #'caadr-length>)

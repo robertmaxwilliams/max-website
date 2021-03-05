@@ -18,9 +18,9 @@ a few pages of related works.
     - 10-12: writing AI safety stuff into paper
     - 1-3: same
 - Thursday: ()
-    - 10-12:
-- Friday: ()
-    - x
+    - 10-12: added AI safety danger levels
+- Friday: (Peppermint tea)
+    - 10-12: work on AI safety section
     - x
 
 # Monday
@@ -174,9 +174,8 @@ classifies that as a "Shriek").
 Okay so I thought my system was bad but it's actually coming along well. What I have so far is
 pretty basic and naive, but lays the groundwork for a more thought out system to be build over it.
 
-<pre style="  white-space: pre-wrap; word-break: keep-all">
-<code>
 
+```
 
 \section{AI Safety Evaluation}
 
@@ -248,5 +247,27 @@ human-ish actuated movements)
 Level 3 (danger): The AI can be mistaken for a human even with unrestricted communication (may be
 text-only, voice, or in person)
 
-</code>
-</pre>
+```
+
+Hmm that didn't format exactly right. Any way, I ended up doing some actual work today! But it's
+quittin' time (20 minutes past, actually). Bye!
+
+# Friday
+
+I think I had a dream that I configured this website to use pandoc for the markdown formatting.
+Weird. Anyway I'm here totally on time today! Although I do have a bagel in the toaster I'm going to
+go and prepare and eat here in a minute.
+
+Well that was a solid 10 minute procrastinate.
+
+I've added a little bit but I'm just not working that well today. I'll read some Perrow instead to
+make the best of this unfocused day.
+
+So far, "Normal Accident Theory" is intersting but not especially relavent to my thesis as it
+focuses so heavily on nuclear power plants. They make decent metaphors for use cases of AI, but only
+in a very abstract way.
+
+Lunch Break
+
+I'm back. I think I'm going to work on the blog code rendering issue, because I am having trouble
+focusing on work and reading Perrow doesn't feel especially productive.

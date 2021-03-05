@@ -126,7 +126,8 @@ recompiles *dispatch-table*."
 	    (unused pathname)
 	    (htm (:h3 :class "nobottommargins" (:a :href (str:join "" (list "/blog/" name))
 			  (str title)))
-		 (str (str:join "-" (blog-name-date-extractor name)))
+		 (str (str:join "-" (mapcar (lambda (n) (format nil "~a" n)) 
+                             (blog-name-date-extractor name))))
 		 (:p (str preview)))))))
 
 (defun controller-blog-a-blog ()
