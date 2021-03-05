@@ -254,7 +254,7 @@ quittin' time (20 minutes past, actually). Bye!
 
 # Friday
 
-I think I had a dream that I configured this website to use pandoc for the markdown formatting.
+I think I had a dream that I configured this website to use Pandoc for the markdown formatting.
 Weird. Anyway I'm here totally on time today! Although I do have a bagel in the toaster I'm going to
 go and prepare and eat here in a minute.
 
@@ -263,7 +263,7 @@ Well that was a solid 10 minute procrastinate.
 I've added a little bit but I'm just not working that well today. I'll read some Perrow instead to
 make the best of this unfocused day.
 
-So far, "Normal Accident Theory" is intersting but not especially relavent to my thesis as it
+So far, "Normal Accident Theory" is interesting but not especially relevant to my thesis as it
 focuses so heavily on nuclear power plants. They make decent metaphors for use cases of AI, but only
 in a very abstract way.
 
@@ -271,3 +271,20 @@ Lunch Break
 
 I'm back. I think I'm going to work on the blog code rendering issue, because I am having trouble
 focusing on work and reading Perrow doesn't feel especially productive.
+
+Hey I did it! I set up the site to run on my desktop (sbcl, quicklisp) and had to make some changes
+(for some reason the string library was being more strict about types it would accept). Then I
+changed the bit of code that used cl-markdown to instead use a system call to pandoc, and fixed a
+bug I had with the header chomping eating up a bunch more text than it was supposed to and
+everything worked! For doing software maintenance on something I made like 2 or 3 years ago, that
+was surprisingly fast and easy. I guess lisp is just magic like that.
+
+Oof okay I still need to work. I don't know what to write. I guess I could start on another case
+study, maybe a fictional one.
+
+Well HAL-9000 turned out to be pretty good for analyzing in my system. The AI safety section was
+especially applicable because Space Odyssey 2001 is mostly about an aligned issue of a human-level
+AI.
+
+Time to spellcheck, checkout and push changes and I'll be done for the week. And a quick status
+update to Dr. Yampolskiy.
