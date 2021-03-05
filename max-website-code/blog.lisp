@@ -23,7 +23,16 @@
       (unused (take-n-lines stream 4))
       (cond 
         ((str:ends-with-p ".md" (namestring pathname))
-         (second-value (markdown (stream-get-contents stream) :stream nil)))
+         ;;(second-value (markdown (stream-get-contents stream) :stream nil)))
+         ;; What I need is stream | pandoc -f markdown -t html | string
+         (let ((foo
+                (uiop:run-program (list "pandoc" "-f" "markdown" "-t" "html")
+                 :input stream
+                 :output :string)))
+                (format t "HTML:~%~a~%~%" foo)
+                foo))
+
+
         ((str:ends-with-p ".html" (namestring pathname))
          (stream-get-contents stream))))))
 

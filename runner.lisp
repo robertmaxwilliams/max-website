@@ -17,7 +17,7 @@
 (if (probe-file "TESTING")
   (progn 
     (print "Testing mode")
-    (defparameter *max-website-dir* "/Users/max/Repos/website/")
+    (defparameter *max-website-dir* "/home/max/Repos/max-website/")
     (defparameter *testing* t))
   (progn
     (print "Deployment mode")
