@@ -19,22 +19,13 @@
 
 (defun blog-page (pathname)
   (with-open-file (stream pathname)
-    (progn
-      (unused (take-n-lines stream 4))
-      (cond 
-        ((str:ends-with-p ".md" (namestring pathname))
-         ;;(second-value (markdown (stream-get-contents stream) :stream nil)))
-         ;; What I need is stream | pandoc -f markdown -t html | string
-         (let ((foo
-                (uiop:run-program (list "pandoc" "-f" "markdown" "-t" "html")
-                 :input stream
-                 :output :string)))
-                (format t "HTML:~%~a~%~%" foo)
-                foo))
-
-
-        ((str:ends-with-p ".html" (namestring pathname))
-         (stream-get-contents stream))))))
+   (cond 
+    ((str:ends-with-p ".md" (namestring pathname))
+     (uiop:run-program (list "pandoc" "-f" "markdown" "-t" "html")
+      :input stream :output :string))
+    ((str:ends-with-p ".html" (namestring pathname))
+     (progn (take-n-lines stream 4)
+      (stream-get-contents stream))))))
 
 (print "ooooooooooooooOOOOOoooooooooooooooooooooooOOO")
 ; takes in filepath, returns (title preview)
