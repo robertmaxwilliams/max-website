@@ -21,7 +21,7 @@ a few pages of related works.
     - 10-12: added AI safety danger levels
 - Friday: (Peppermint tea)
     - 10-12: work on AI safety section
-    - x
+    - 1-3: Work on a case study
 
 # Monday
 
