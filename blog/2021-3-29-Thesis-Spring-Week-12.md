@@ -374,7 +374,7 @@ due to my book-finishing induced sleep deprivation.
 
 I'm 10 minutes late because I was engrossed in reading "House of Leaves",
 
-(spoilers, hover to read) <span style="color: black; background: black; span:hover { color: white}">
+(spoilers, hover to read) <span class=spoiler2>
 a confusing and disturbing multi-leveled narrative that is at once the story of
 the rapid deterioration of sanity of the editor, a review of an imaginary film,
 "The Davidson Record" and a telling of that film in complete detail. The editor
