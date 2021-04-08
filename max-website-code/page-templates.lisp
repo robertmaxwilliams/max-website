@@ -25,6 +25,9 @@
 	     (:link :type "text/css"
 		    :rel "stylesheet"
 		    :href "/css/index.css")
+	     (:link :type "text/css"
+		    :rel "stylesheet"
+		    :href "/css/obnoxious.css")
 	     ,(loop for filename in extra-style-sheets
 		 collect `(:htm (:link
 				 :type "text/css"

@@ -11,10 +11,10 @@ a few pages of related works.
 
 # Work log:
 
-- Monday: (300 mg Adrafinil, 200mg L-theanine w/ orange and spice herbal tea)
+- Monday: (200mg L-theanine w/ orange and spice herbal tea)
     - 10-12: Finding AI safety research and reading through it to prepare for integration
     - 1-3: finished reading, obtained citations, and copied pdfs from laptop
-- Tuesday: (300 mg Adrafinil)
+- Tuesday: ()
     - 10-12: writing AI safety stuff into paper
     - 1-3: same
 - Thursday: ()
