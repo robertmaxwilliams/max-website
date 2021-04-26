@@ -15,8 +15,9 @@ title: Thesis Week 13 (Spring)
 - Thursday: ()
     - 10-12: proofreading
 - Friday: ()
-    - 10-12:
-    - 1-3: 
+    - 10-12: formatting
+    - 1-5: proofreading and some writing
+    - 6-7: finish proofreading
 
 # Monday
 
@@ -206,4 +207,57 @@ missing half an hour here.
 
 # Thursday
 
-Proofreading is going much slower than I expected.
+Proofreading is going much slower than I expected, this paper is LONG.
+
+I'm only on page 30, this goes on forever. It's quitting time already, and I need to be ready for my singing lesson. And
+I'm getting a headache for no reason. Ugh.
+
+# Friday
+
+I started doing final formatting today. I have a few paragraphs to write, the abstract and intro need some work, I need
+to do at least one more case study, and I still need to finish proofreading the whole thing. I'm going to work all day
+today, I have that big crunch energy.
+
+Short break for lunch, I'm only going to take like a 20 minute lunch break today.
+
+Just kidding. The avoidant stress got the better of me so I took a +15 minute lunch break. Back to work!
+
+Okay it's 2:55 and I am satisfied with the formatting. Also I realized I need a conclusion! Oops lol. I'm going to read
+the rest of my thesis out loud to finish proffreading. Starting at the bottom of page 12 at 3pm, I'll check in and
+extrapolate when I'm expected to be finished. 
+
+It's 3:25 and I've made it 3 pages. I have 36 pages to go (but they get sparser), so at this reate it'll take 6 hours. I
+can speed up a little bit, too. So 4 hours. Oof. It soooo long. Yike.
+
+Oh shoot, I still haven't written "robustness to distributional change". It only needs to be a few sentences and is
+doing little more than summarizing the section of the same name in that other paper.
+
+I'm on page 18 at 3:56, so that's only 6 pages in an hour. I keep having to track down citations, and writing a few
+sentences (barely a few, really) took way longer than I thought. I will speed up, though.
+
+I took a break from 5 to 6. At 5 I was at page 30, with 20 pages to go. Those pages are mostly lists and tables though
+so I think the rest will only take an hour! 
+
+It's 7:15 and I'm done proofreading! Time to eat dinner, then I'll come back and write the intro and conclusion.
+
+8:30, done with dinner. Time to write that intro! (oof)
+
+Huh, so the intro was actually basically fine.
+
+Drat, I finished everything else and I just can't think of any more case studies. Eh, I have enough.
+
+9:30, checking out. Final work count checks in at 13,000. Pretty good. My blog posts for the thesis total over 20,000
+words, which is even more astounding.
+
+# Next Week
+
+- contact thesis committee members
+- pick defense date
+- add CV to thesis
+- submit application to graduate or something
+- find out if I should have my defense in person
+- make presentation (slides)
+- practice presentation
+- send final copy to Dr. Yampolskiy
+- distribute copies to thesis committee members (should they be in print?)
+- figure out when and how commencement will work
