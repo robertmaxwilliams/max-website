@@ -7,11 +7,13 @@ Went backpacking over the weekend, now to get through commencement
 
 - Monday: clean up day
 - Tuesday: at mom's, not a work day either
+- Wednesday: Scrapbooking
 - Thursday:
-    - 10-12:
+    - 10-12: ???
+    - 1-3: got cap and gown, and singing lesson
 - Friday: 
-    - 10-12:
-    - 1-3:
+    - 10-12: Finished reading "Interface", gardening
+    - 1-4:30: submit paper to MDPI, learn freeCAD
 
 # Monday
 
@@ -43,3 +45,21 @@ hobbies I have going. I'm going to list them:
 - Taking singing lessons and practicing enough during the week
 
 The first 4 are things I hope to finish this month. 
+
+# Friday
+
+This hasn't been an office work sort of week, but next week and the week after will be, so I can
+accompish my software-related goals. Commencement is tommorrow, I think that's as real as it gets
+for being done (for now).
+
+Whew, using that paper template was a nightmare. It broke my bibliography, mangles links so they get
+forwarded through a broken .gov website, and just looks pretty ugly with its line numbers and huge
+margins. What a pain. Not as bad as reformatting a paper in word, though, by a long shot.
+
+I feel really anxious, like there's something I need to do. Commencement tomorrow is stressful, but
+it's more than that. Isn't today something important? I think it's because I haven't had a deadline
+in a week I feel like I'm probably failing some class. It's weird that this whole summer I don't
+have any deadlines.
+
+I finished the submission, and stayed on overtime to learn to use freeCAD. I have a top secret
+project that's going to require it.
