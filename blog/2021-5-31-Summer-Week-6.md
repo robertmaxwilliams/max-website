@@ -21,3 +21,7 @@ visual interactive board things.
 Oh, I also crammed the last 5 weeks into one blog post, since they were pretty scattered and
 inconsistent due to me doing lots of non-computer stuff most of the time.
 
+# Friday
+
+We did it! We have a minimum working product, and next week will be a lot more fun because we'll be
+doing graphics stuff. Check it out at <splashcall.com>!
