@@ -1,7 +1,7 @@
 
 
 (defsystem max-website
-  :name "maxs-website"
+  :name "max-website"
   :serial t ;; makes sure each file depends on the other in series
   ;; and force recompile of everything if, for instance, a page template macro changes.
   :version "0.0.1"
@@ -20,7 +20,8 @@
                (:file "pascals-triangle")
                (:file "undecide")
                (:file "visjs-helpers")
-	       (:file "tubes-game")
+               (:file "tubes-game")
+               (:file "color-test")
                (:file "url-funs")))
 
 

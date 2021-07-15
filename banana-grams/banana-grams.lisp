@@ -78,8 +78,8 @@
      return nil
        finally (return t)))
 
-(prove:is (spells-p "pasdfat" "fart") nil)
-(prove:is (spells-p "pasdfrat" "fart") t)
+;;(prove:is (spells-p "pasdfat" "fart") nil)
+;;(prove:is (spells-p "pasdfrat" "fart") t)
 
 (defun possible-words (letters)
   (setf letters (normalize-string letters))
@@ -102,7 +102,7 @@
 
 
 
-(prove:is (ls->str '(#\F #\o #\o)) "FOO" :test #'string=)
+;;(prove:is (ls->str '(#\F #\o #\o)) "FOO" :test #'string=)
 
 
 ;;freqencies from:
@@ -186,7 +186,7 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 	     (cdr (assoc x letter-to-score))
 	     (n-repeates->score (n-occurences x letters-list)))))))
    
-(prove:ok (word-score "qfoo" "qffrtw"))
+;;(prove:ok (word-score "qfoo" "qffrtw"))
 
   
 ;; most of this isn't needed but keeping around anyway
@@ -210,10 +210,10 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 		  (find extra-char string))
 		(possible-words (str:concat (normalize-string letters) (format nil "~a" extra-char))))
 	       #'length>))))
-(sort (possible-words "nncieuafte") #'length>)
-(sort (build-on-word "acute" "finne") #'caadr-length>)
-(build-on-word "cute" "nie")
-(print (sort (possible-words "datusesnrntnogtrqiror") #'length>))
+;;(sort (possible-words "nncieuafte") #'length>)
+;;(sort (build-on-word "acute" "finne") #'caadr-length>)
+;;(build-on-word "cute" "nie")
+;;(print (sort (possible-words "datusesnrntnogtrqiror") #'length>))
 
 (defun print-board (board)
   (format t "~%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<~%")
@@ -228,9 +228,9 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 	      (format t "|~a|~%" line))))
   (format t ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>~%"))
 
-(print-board (make-array '(3 5) :initial-contents '((#\B #\O #\C #\B #\B)
-							      (#\  #\  #\  #\  #\ )
-							      (#\B #\B #\B #\B #\B))))
+;;(print-board (make-array '(3 5) :initial-contents '((#\B #\O #\C #\B #\B)
+;;							      (#\  #\  #\  #\  #\ )
+;;							      (#\B #\B #\B #\B #\B))))
 
 (defun place-word (word coords board is-vertical)
   (destructuring-bind (ii jj) coords
@@ -243,7 +243,7 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 (defun word-to-regex (word)
   (str:concat ".*" (str:replace-all " " "." (str:trim word)) ".*"))
 
-(prove:is (word-to-regex "   FN D      ") ".*FN.D.*" :test #'string=)
+;;(prove:is (word-to-regex "   FN D      ") ".*FN.D.*" :test #'string=)
 
 ;; the naive way to do this is to try all scramblings of extra-chars and
 ;; slide across the line... but way too expensive. Instead, search through
@@ -269,7 +269,7 @@ or letters that you have a lot of. This is critical to the functioning of the AI
   (index nil :type integer)
   score) ;; returned by fill-line
 
-(print (make-banana-line :row-or-col 'row :seq "FOO  BAR" :index 7))
+;; (print (make-banana-line :row-or-col 'row :seq "FOO  BAR" :index 7))
 	    
 (defstruct move
   (line-played nil :type banana-line)
@@ -287,10 +287,10 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 	    (finally (return t)))))
 
 
-(prove:is (match-strings-ignore-whitespace "FO B R" "FOOBAR") t)
-(prove:is (match-strings-ignore-whitespace "FO BR " "FOOBAR") nil)
-(prove:is (match-strings-ignore-whitespace "      " "FOOBAR") nil) ;; fix floating word bug
-(prove:is-error (match-strings-ignore-whitespace "FOBR" "FOOBAR") 'simple-error)
+;;(prove:is (match-strings-ignore-whitespace "FO B R" "FOOBAR") t)
+;;(prove:is (match-strings-ignore-whitespace "FO BR " "FOOBAR") nil)
+;;(prove:is (match-strings-ignore-whitespace "      " "FOOBAR") nil) ;; fix floating word bug
+;;(prove:is-error (match-strings-ignore-whitespace "FOBR" "FOOBAR") 'simple-error)
 
 (defun fill-letters (holey-word full-word letters)
   "returns what letters are left after using the ones 
@@ -320,10 +320,10 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 	    (setf (aref parent i) (aref child (- i index)))))
   parent)
 
-(prove:is (paste-string "lunch with friends" "wins" 6) "lunch wins friends" :test #'string=)
+;;(prove:is (paste-string "lunch with friends" "wins" 6) "lunch wins friends" :test #'string=)
 
-(prove:is (fill-letters " RA GE" "ORANGE" "OLNL") "LL")
-(prove:is (fill-letters " RA GE" "ORANGE" "LNL") 'failure)
+;;(prove:is (fill-letters " RA GE" "ORANGE" "OLNL") "LL")
+;;(prove:is (fill-letters " RA GE" "ORANGE" "LNL") 'failure)
 
 (defun slide-match (real-word word letters)
   " takes in a word from dict and a 'word' with holes in it to be filled in
@@ -346,10 +346,10 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 		       (paste-string word real-word i)
 		       fill-letters-result))))))))
 
-(prove:is
- (slide-match "JUNGLE" "    JU  LE    " "FUNGJE")
- '("    JUNGLE    " "FUJE") :test #'equal)
-(prove:is (slide-match "JUNGLE" "    JU  LE    " "FE") nil)
+;;(prove:is
+;; (slide-match "JUNGLE" "    JU  LE    " "FUNGJE")
+;; '("    JUNGLE    " "FUJE") :test #'equal)
+;; (prove:is (slide-match "JUNGLE" "    JU  LE    " "FE") nil)
 
 (if-let ((x (nth (random 3) '(yes no))))
   x
@@ -377,11 +377,11 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 ;;(if (spells-p (str:concat (remove-spaces word) letters) real-word)
 
 ;; returns list of possible moves given a line and letters
-(prove:ok (fill-line (make-banana-line
-	    :row-or-col 'row
-	    :seq "   WO  N  " 
-	    :index 7)
-	   "MFAOFLE"))
+;; (prove:ok (fill-line (make-banana-line
+;;	    :row-or-col 'row
+;;	    :seq "   WO  N  " 
+;;	    :index 7)
+;;	   "MFAOFLE"))
 
 
 (defstruct board-letters ;; I really need to work on my struct skills
@@ -456,18 +456,19 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 				(member word *dict* :test #'string=))))))))
 
 
-(let ((bl (make-board-letters
-	   :board (make-array '(30 80) :initial-element #\Space)
-	   :letters "foo")))
-  ;; plays the starting word
-  (place-word
-   "BUTTS"
-   '(15 10) (board-letters-board bl) nil)
-  (place-word
-   "BURN"
-   '(15 10) (board-letters-board bl) t)
-  (print-board (board-letters-board bl))
-  (validate-board (board-letters-board bl)))
+;; this is a test
+;; (let ((bl (make-board-letters
+;; 	   :board (make-array '(30 80) :initial-element #\Space)
+;; 	   :letters "foo")))
+;;   ;; plays the starting word
+;;   (place-word
+;;    "BUTTS"
+;;    '(15 10) (board-letters-board bl) nil)
+;;   (place-word
+;;    "BURN"
+;;    '(15 10) (board-letters-board bl) t)
+;;   (print-board (board-letters-board bl))
+;;   (validate-board (board-letters-board bl)))
 
 (defun copy-board-letters (bl)
   (make-board-letters
@@ -483,7 +484,7 @@ or letters that you have a lot of. This is critical to the functioning of the AI
 (defparameter *debug-print* nil)
 
 
-(print "=================")
+;; (print "=================")
 
 (defun limited-calls (&optional (max-calls 10))
   (let ((n 0))

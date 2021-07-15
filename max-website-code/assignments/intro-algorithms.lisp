@@ -32,7 +32,7 @@
 	(format t "~2a " x))
   (format t "  ~a~%" special))
 
-(print-vec #(0 1 2 3 4) 5 3)
+;;(print-vec #(0 1 2 3 4) 5 3)
 
 (defun pivot (arr)
   (let ((pivot (first-elt arr))

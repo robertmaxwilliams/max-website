@@ -1,8 +1,6 @@
 #!/bin/sh
-while true
-do
+#sbcl --non-interactive --load runner.lisp
+sbcl --load runner.lisp
     #touch *
     #touch max-website-code/*
     #git -C ./ pull
-    sbcl --load runner.lisp
-done

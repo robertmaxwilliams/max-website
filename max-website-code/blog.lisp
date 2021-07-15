@@ -27,7 +27,7 @@
      (progn (take-n-lines stream 4)
       (stream-get-contents stream))))))
 
-(print "ooooooooooooooOOOOOoooooooooooooooooooooooOOO")
+;; (print "ooooooooooooooOOOOOoooooooooooooooooooooooOOO")
 ; takes in filepath, returns (title preview)
 (defun blog-title-and-preview (file-pathname) ;; 
   (with-open-file (stream file-pathname) 
@@ -56,8 +56,8 @@
 ;;(mapcar #'cadr (blog-files))
 ;;(mapcar #'blog-name-date-extractor (mapcar #'cadr (blog-files)))
 
-(defun remove-tags (s)
-  (mapcar #'(lambda (s) (car (str:split "<" s))) (str:split ">" s)))
+;;(defun remove-tags (s)
+;;  (mapcar #'(lambda (s) (car (str:split "<" s))) (str:split ">" s)))
 
 (defun blog-name-date-extractor (namestring)
   (mapcar #'parse-integer (subseq (str:split "-" namestring) 0 3)))

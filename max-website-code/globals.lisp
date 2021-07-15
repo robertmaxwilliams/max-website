@@ -27,7 +27,8 @@
     (merge-pathnames #p"favicon.ico" *document-root*))
   (defparameter *principia-dir* 
     (merge-pathnames #p"principia-discordia/book/" *document-root*))
-  (format t "Dirs: ~A~% ~A~% ~A~% ~A~% ~A~%" *blog-dir* *images-dir* *css-dir* *favicon-file* *files-dir*))
+  ;;(format t "Dirs: ~A~% ~A~% ~A~% ~A~% ~A~%" *blog-dir* *images-dir* *css-dir* *favicon-file* *files-dir*)
+  )
 
 
 ;; default value, set to reduce number of warnings.

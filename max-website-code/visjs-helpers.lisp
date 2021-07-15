@@ -22,6 +22,7 @@ Does not acknowledge lisp2, aka all symbols are fair game."
 	 (fun-names ;; list of just the names
 	  (maplb (car it) flatfuns)))
     ;; for each flatfun, produce a list containing its cdr with only fun-names members in it
+    (format t "Funnames ~a~%" fun-names)
     (mapfor (flatfun in flatfuns)
 	    (list
 	     (car flatfun)

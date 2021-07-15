@@ -93,16 +93,16 @@
 (max-heapify #(0 1 2 3 4 5 6 7 8) 0)
 
 (defvar foo #(0 1 2 5 4 2 5 3))
-(tree-print-heap foo)
-(tree-print-heap (build-max-heap foo))
-(tree-print-heap (build-max-heap-2 foo))
-(tree-print-heap (setf foo (max-heap-insert foo (random 10))))
+;;(tree-print-heap foo)
+;;(tree-print-heap (build-max-heap foo))
+;;(tree-print-heap (build-max-heap-2 foo))
+;;(tree-print-heap (setf foo (max-heap-insert foo (random 10))))
 
 (length foo)
-(print foo)
+;;(print foo)
 (heap-parent 8)
 (aref foo 8)
-(tree-print-heap (setf foo (max-heapify foo 4)))
-(tree-print-heap foo)
+;;(tree-print-heap (setf foo (max-heapify foo 4)))
+;;(tree-print-heap foo)
 
 	

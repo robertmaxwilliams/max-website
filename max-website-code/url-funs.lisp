@@ -1,10 +1,10 @@
 (in-package :max-website)
 
-(define-url-fn (hello)
+(define-url-fn (hello :is-unlisted t)
   "This is the docstring"
   "hello world")
 
-(define-url-fn (goodbye)
+(define-url-fn (goodbye :title "Gooood bye")
   "this kills the server!"
   "goodbye moon")
 
@@ -50,18 +50,14 @@ setInterval(getStuff, 500);
 
 ")))
 
-
-
-
 (define-url-fn (pascal)
-  "Pascal triangle, big-big"
+  "Standard Pascal Triangle, very large sizes available."
   (standard-page (:title "Fun!")
     (:h1 "Pascal's triangle, left-justified, with odds colored pink")
     (loop for n in '(5 10 20 50 100)
        do (htm (:a :class "button" :href (format nil "/fun/pascal?n=~A" n) (str (format nil "n=~a" n)))))
 
     (2d-table-from-list html-stream (n-iterations-pascal-triangle (parse-integer (default-value "5" (parameter "n")))))))
-
 
 (define-url-fn (negative-pascal)
   "Pascal triangle, with the SECRET negative part"
@@ -101,7 +97,7 @@ setInterval(getStuff, 500);
 	(cons cur-val (recur-until fun next end-val)))))
 
 ;; example:
-(recur-until #'1+ 1 4)
+;;(recur-until #'1+ 1 4)
 
 (defmacro simple-form (url variable-name default-value)
   "form that sends a single variable (input as a STRING) to a url by GET"
@@ -155,7 +151,6 @@ setInterval(getStuff, 500);
 	(:a :href "" :onclick (ps (greeting-callback))
 	    "Hello World")))))
 
-
 ;;;; vis js is fun, too!
 ;;(define-url-fn (dependency-graph)
 ;;    "dependency graph of the main file of this website"
@@ -184,9 +179,6 @@ setInterval(getStuff, 500);
 						"max-website-code/pascals-triangle.lisp"
 						"max-website-code/url-funs.lisp")))))))
 
-
-
-
 (define-url-fn (collatz-graph)
   "graph of how all numbers lead back to unity"
   (standard-page (:title "Collatz Graph" :include-vis t)
@@ -206,7 +198,6 @@ setInterval(getStuff, 500);
 			      "click"
 			      (lambda (params) (add-inverses-to-graph
 						(aref (@ params 'nodes) 0)))))))))
-
 
 (define-url-fn (minsky-register-machine-sim)
     "probably a vunerability"
@@ -231,7 +222,7 @@ This machine only has two instructions: `inc` and `branch`. They take the follow
 is greater than zero. If it is, it decrements that integer and jumps to `<codepoint a>`. Otherwise, it
 jumps to `<codepoint b>` without decrementing the memory cell's value.
 
-Examples (the first line goes in the data input box, the rest goes in the line numbered code box:
+Examples (the first line goes in the data input box, the rest goes in the line numbered code box):
 TODO handle nils correctly
 
     0 0 1 0
@@ -263,7 +254,6 @@ result: `#(2 1 0 1 0)`
 	       (:br)
 	       (:textarea :cols 50 :rows 100 :name "code" (str codestring))))))
 
-;;
 
 (find-package :banana-foo)
 
@@ -284,16 +274,22 @@ result: `#(2 1 0 1 0)`
 	       (htm (:h1 "banana grams no loaded. Contact dev.")))
 	   (htm (:h1 "no letters supplied")))))))
 
-(define-url-fn (tubes-game)
+(define-url-fn (tubes-game :title "Tubes Game")
   "Alchemy game"
   (standard-page (:title "Tubes Game" 
                          :extra-style-sheets (list "/css/tubes.css") 
                          :draggable-viewport nil)
-    (:h1 "Drag things into tube to get more things. Win by")
+    (:h1 "Drag things into tube to get more things. Win by getting all 19 objects.")
 
     (:script :type "text/javascript" (str (tubes-js)))))
 
+(define-url-fn (color-test)
+  "Test your color perception!"
+  (standard-page (:title "Color Test" 
+                         :draggable-viewport nil)
+    (:h1 "(Under development) Test how well you can see color using uniformly spaced hues.")
+    (:p "THIS IS UNDER DEVELOPMENT NOT READY YET")))
 
 
-(tubes-game)
+;;(tubes-game)
 ;;(in-package :max-website)

@@ -123,7 +123,7 @@ go to instruction I_n2 .
     (branch 1 4 6)
     (inc 5)))
 
-(eval (minsky-register-machine adder-program #(2 3 0 0 0 0)))
+;;(eval (minsky-register-machine adder-program #(2 3 0 0 0 0)))
 
 (defun adder-program-writer (a b result ln)
   " ln mean linenum "
@@ -249,13 +249,13 @@ go to instruction I_n2 .
 		 (unread-char char stream)
 		 (cons (read-symbol stream) (trivial-read stream))))))))
 
-(trivial-read "     fooo 0 1 2")
+;;(trivial-read "     fooo 0 1 2")
 
 
-(mapcar #'trivial-read (str:lines " branch 0 1 3
-inc 1
-branch 4 0 0
-inc 4 "))
+;;(mapcar #'trivial-read (str:lines " branch 0 1 3
+;;inc 1
+;;branch 4 0 0
+;;inc 4 "))
 ;;(with-input-from-string (s "(foo
 ;;
 ;;   bar (bar 32 foo) bar)")
@@ -290,7 +290,7 @@ inc 4 "))
   (let ((name-to-sym (pairlis (mapcar #'symbol-name symbols) symbols)))
     (recursive-symbol-swap-helper ls name-to-sym)))
 
-(safe-aref #(0 2 3) 0)
+;;(safe-aref #(0 2 3) 0)
 
 
 (defun recursive-symbol-swap-helper (ls str->sym)
@@ -316,23 +316,23 @@ inc 4 "))
 	 (code-symbols (recursive-symbol-swap code '(inc branch))))
     (assert (every #'integerp data))
     (setf data (cons 'list data))
-    (format t "[COMPOLED]~%~a~%~%" (minsky-register-machine code-symbols data))
+    ;;(format t "[COMPOLED]~%~a~%~%" (minsky-register-machine code-symbols data))
     (eval (minsky-register-machine code-symbols data))))
 
-(read-eval-mrm "4 0 0 0 0"
-	       " branch 0 1 3
-		inc 1
-		branch 4 0 0
-		inc 4 ")
+;; (read-eval-mrm "4 0 0 0 0"
+;; 	       " branch 0 1 3
+;; 		inc 1
+;; 		branch 4 0 0
+;; 		inc 4 ")
 
-(coerce (caadr (mapcar #'trivial-read
-	(str:lines "    branch 0 1 3
-		inc 1
-		branch 4 0 0
-		inc 4 "))) 'list)
-(trivial-read (car (str:lines "   basr 4
-     unbu 1 2")))
-(trivial-read "      fobor")
+;;(coerce (caadr (mapcar #'trivial-read
+;;	(str:lines "    branch 0 1 3
+;;		inc 1
+;;		branch 4 0 0
+;;		inc 4 "))) 'list)
+;;(trivial-read (car (str:lines "   basr 4
+;;     unbu 1 2")))
+;;(trivial-read "      fobor")
 ;;(defun read-eval-mrm (data-string code-string)
 ;;  (let ((codestring
 ;;	 (with-output-to-string (codestream)

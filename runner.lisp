@@ -28,7 +28,7 @@
 (pushnew (truename *max-website-dir*) ql:*local-project-directories*)
 ;;(pushnew (truename "/Users/max/Repos/website/max-website-code") ql:*local-project-directories*)
 (ql:register-local-projects)
-(print ql:*local-project-directories*)
+(format t "ql local project dirs: ~a~%" ql:*local-project-directories*)
 
 ;;(ql:quickload :max-website)
 ;;(ql:uninstall :max-website)
