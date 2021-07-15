@@ -1,4 +1,3 @@
-
 ;; Functions used in the vis js stuff, such as manipulating graph like data
 ;; or reading defuns from files
 
@@ -22,7 +21,6 @@ Does not acknowledge lisp2, aka all symbols are fair game."
 	 (fun-names ;; list of just the names
 	  (maplb (car it) flatfuns)))
     ;; for each flatfun, produce a list containing its cdr with only fun-names members in it
-    (format t "Funnames ~a~%" fun-names)
     (mapfor (flatfun in flatfuns)
 	    (list
 	     (car flatfun)
@@ -39,8 +37,6 @@ Does not acknowledge lisp2, aka all symbols are fair game."
     (list
      (mapcar #'car graphguy)
      (alist-to-edges graphguy))))
-
-
 
 ;; TODO my alists are not dotted, is that bad style?
 (defun vis-nodes (nodes)
@@ -64,8 +60,14 @@ Does not acknowledge lisp2, aka all symbols are fair game."
 	 `(defvar *options* (create))
 	 `(defvar *network* (new ((@ vis *network) *container* *data* *options*)))))
 
-;; TODO this is repeated code from the server-side code, how
-;; to define exactly once? Not too sure.
+
+(defun inverse-collatz (n)
+  "returns a list with one or two values that collatz to n"
+  (cons (* 2 n)
+	(let ((other-result (/ (- n 1) 3)))
+	  (if (and (integerp other-result) (not (zerop other-result)))
+	      (list other-result)
+	      nil))))
 
 (defun vis-js-inverse-collatz ()
   (ps (defun integerp (x)

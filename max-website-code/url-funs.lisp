@@ -18,6 +18,7 @@
   "uses random-numbers as an api endpoint to do stuff"
   (standard-page (:title "Uses xmlhttprequest to do stuff")
     (:pre (:p :id "foo" ""))
+    ;; TODO move to external file
     (:script
 "
 var foo = document.getElementById('foo')
@@ -56,7 +57,6 @@ setInterval(getStuff, 500);
     (:h1 "Pascal's triangle, left-justified, with odds colored pink")
     (loop for n in '(5 10 20 50 100)
        do (htm (:a :class "button" :href (format nil "/fun/pascal?n=~A" n) (str (format nil "n=~a" n)))))
-
     (2d-table-from-list html-stream (n-iterations-pascal-triangle (parse-integer (default-value "5" (parameter "n")))))))
 
 (define-url-fn (negative-pascal)
@@ -71,12 +71,11 @@ setInterval(getStuff, 500);
 
 (defmacro number-table-row (number-strings)
   "takes a list of strings and makes a <tr> for them"
-  `(htm 
+  `(htm
    (:tr
     :align "right"
     (loop for x in ,number-strings
 	 do (htm (:td :class "blackborder" (:pre (str x))))))))
-
 
 (defmacro base-table (ls)
   "html table of each element of the list"
@@ -89,21 +88,23 @@ setInterval(getStuff, 500);
 				   (write-to-string x :base  2)
 				   (write-to-string x :base  3)))))))
 
+(defmacro simple-form (url variable-name default-value)
+  "form that sends a single variable (input as a STRING) to a url by GET"
+  `(htm (:form :action ,url
+	  (:input :type "text" :name ,variable-name :value (str (format nil "~a" ,default-value)))
+	  (:input :type "submit" :value "Go"))))
+
+(defun next-collatz (n)
+  (if (evenp n)
+      (/ n 2)
+      (+ 1 (* 3 n))))
+
 (defun recur-until (fun cur-val end-val)
   " trivial consing recur on numeric function until reaches end val"
   (let ((next (funcall fun cur-val)))
     (if (= next end-val)
 	(list cur-val next)
 	(cons cur-val (recur-until fun next end-val)))))
-
-;; example:
-;;(recur-until #'1+ 1 4)
-
-(defmacro simple-form (url variable-name default-value)
-  "form that sends a single variable (input as a STRING) to a url by GET"
-  `(htm (:form :action ,url
-	  (:input :type "text" :name ,variable-name :value (str (format nil "~a" ,default-value)))
-	  (:input :type "submit" :value "Go"))))
 
 (define-url-fn (collatz-bases)
   "Find collatz sequence of a number"
@@ -116,6 +117,16 @@ setInterval(getStuff, 500);
       (:h1 (str (format nil "Collatz of ~a" parameter-n)))
       (base-table
        (recur-until #'next-collatz parameter-n 1)))))
+
+(defun oddiate (n)
+  "divide n by two until odd"
+  (if (oddp n)
+      n
+      (oddiate (/ n 2))))
+
+(defun shortcut-collatz (n)
+  "divides by 2 until odd, then return 3n+1"
+  (oddiate (+ 1 (* 3 (oddiate n)))))
 
 (define-url-fn (shortcut-collatz-bases)
   "Find collatz sequence of a number using the powers of two shortcut"
@@ -133,7 +144,7 @@ setInterval(getStuff, 500);
 (define-url-fn (update-server)
   "dies so the run script does a git pull and runs the server again"
   (cl-user::exit) ;; todo why do I have to use cl-user?
-  "this should not be seen because the server was supposed to exit")
+  "This should not be seen because the server was supposed to exit. Good job if you're reading this.")
 
 ;; some parenscript fun
 (define-url-fn (parenscript-hello)
@@ -151,16 +162,6 @@ setInterval(getStuff, 500);
 	(:a :href "" :onclick (ps (greeting-callback))
 	    "Hello World")))))
 
-;;;; vis js is fun, too!
-;;(define-url-fn (dependency-graph)
-;;    "dependency graph of the main file of this website"
-;;    (standard-page (:title "Vis Dot Jay Ess" :include-vis t)
-;;	(:style :type "text/css"
-;;			   "#mynetwork { width: 600px; height: 400px; border: 1px solid lightgray; }")
-;;	(:h1 "vis.js is fun ;)")
-;;	(:div :id "mynetwork")
-;;	(:script :type "text/javascript"
-;;		 (str (vis-js-graph (function-graph-nodes-edges '("max-website-code/max-website.lisp")))))))
 
 (define-url-fn (website-dependency-graph)
     "dependency graph of all lisp files of this website"
@@ -191,7 +192,7 @@ setInterval(getStuff, 500);
 		 (:script :type "text/javascript"
 			  (str (vis-js-graph '((1 2 4) ((2 1) (4 2) (1 4)))))
 			  (str (vis-js-inverse-collatz))
-			  
+
 			  (str
 			   (ps
 			     ((@ *network* on)
@@ -208,10 +209,11 @@ setInterval(getStuff, 500);
 	   (oa-as-string (format nil "~a" output-array)))
       (standard-page (:title "Minsky Machine")
 	(:h1 "Minsky Register Machine Simulator")
+    ;; TODO move this markdown to an external file
 	(htm (markdown "
 ## How To Use This Machine
 
-This machine has two parts: an array of integers (the memory) 
+This machine has two parts: an array of integers (the memory)
 and a list of instructions (the code)
 
 This machine only has two instructions: `inc` and `branch`. They take the following arguments:
@@ -254,9 +256,6 @@ result: `#(2 1 0 1 0)`
 	       (:br)
 	       (:textarea :cols 50 :rows 100 :name "code" (str codestring))))))
 
-
-(find-package :banana-foo)
-
 (define-url-fn (banana-gram-solver)
   "Shows you how to arrange letters to win scrabble-style game, \"bananagrams\""
   (let ((parameter-letters (default-value nil (parameter "letters"))))
@@ -276,20 +275,18 @@ result: `#(2 1 0 1 0)`
 
 (define-url-fn (tubes-game :title "Tubes Game")
   "Alchemy game"
-  (standard-page (:title "Tubes Game" 
-                         :extra-style-sheets (list "/css/tubes.css") 
+  (standard-page (:title "Tubes Game"
+                         :extra-style-sheets (list "/css/tubes.css")
                          :draggable-viewport nil)
     (:h1 "Drag things into tube to get more things. Win by getting all 19 objects.")
-
     (:script :type "text/javascript" (str (tubes-js)))))
 
 (define-url-fn (color-test)
   "Test your color perception!"
-  (standard-page (:title "Color Test" 
+  (standard-page (:title "Color Test"
                          :draggable-viewport nil)
     (:h1 "(Under development) Test how well you can see color using uniformly spaced hues.")
     (:p "THIS IS UNDER DEVELOPMENT NOT READY YET")))
-
 
 ;;(tubes-game)
 ;;(in-package :max-website)

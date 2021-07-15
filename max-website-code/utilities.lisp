@@ -2,6 +2,11 @@
 
 ;; some utilties. Most everyone depends on this file,
 ;; and it depends on nothing local
+
+(defun remove-alist-duplicate-string-keys (alist)
+  (delete-duplicates alist :test #'string-equal :key #'car :from-end t))
+
+
 (defmacro alias (to fn)
     `(setf (fdefinition ',to) #',fn))
 (defmacro m-alias (to fn)
