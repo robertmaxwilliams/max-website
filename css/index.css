@@ -105,3 +105,26 @@ textarea {
 .spoiler2:hover { 
   background-color:white; 
   }
+
+div.not-full-size{
+      width: auto;
+      height: 400px;
+  }
+
+button.float-top-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+div.full-size{
+    height: 100%;
+    position: absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    overflow:hidden;
+}
+

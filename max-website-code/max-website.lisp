@@ -68,7 +68,7 @@
        (push (create-prefix-dispatcher ,url ',name)
              *fun-dispatch-table*)
        ,(if (not is-unlisted)
-          `(push (list (string-downcase (string ',title)) (documentation #',name t))
+          `(push (list (string-downcase (string ',name)) ',title (documentation #',name t))
                  *fun-index*))
        (remove-alist-duplicate-string-keys *fun-index*))))
 
@@ -107,8 +107,8 @@
   "s is the html stream, puts list of titles and descriptions into s"
   (with-html-output (s nil :indent t)
     (loop for name-docstring in *fun-index*
-       do (db (name docstring) name-docstring
-	    (htm (:h3 :class "nobottommargins" (:a :href (format nil "/fun/~A" name) (str name))) (str docstring))))))
+       do (db (name title docstring) name-docstring
+	    (htm (:h3 :class "nobottommargins" (:a :href (format nil "/fun/~A" name) (str title))) (str docstring))))))
 
 (defun controller-demos ()
   (standard-page (:title "Demos")

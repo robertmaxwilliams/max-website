@@ -9,27 +9,47 @@
 	 (loop until (not (listen file-stream))
 	    collect (read file-stream nil '())))))
 
+(defun strip (thing)
+  (if (listp thing)
+    (car thing)
+    thing))
+
+;; TODO DO finish
+(defun get-fun-names (tree)
+  (append
+    (cond
+      ((atom tree) nil)
+      ((and (listp tree) (listp (cdr tree)) 
+            (symbolp (cadr tree)) (cadr tree) (not (eql (char (string (cadr tree)) 0) #\,))
+            (member (car tree) (list 'defun 'defmacro 'define-url-fn)))
+       (list (cons (strip (cadr tree)) (alexandria:flatten tree))))
+      (t nil))
+    (if (and tree (listp tree)) (get-fun-names (car tree)) nil)
+    (if (and tree (listp tree)) (get-fun-names (cdr tree)) nil)))
+
+(defun match-em-up (nameso)
+  (let ((fun-names (mapcar #'car nameso)))
+    (loop for (name . contents) in nameso
+          collect (cons name
+                        (loop for x in contents
+                              when (and (not (equal x name)) (member x fun-names))
+                              collect x)))))
+
+
+;;(format t "List those fun namess:~%~%")
+;;(let ((list-o-sexps (read-files '("max-website-code/visjs-helpers.lisp"))))
+;;  (format t "Hm: ~a~%" (get-fun-names list-o-sexps))
+;;  (format t "Yes: ~a~%" (mapcar #'remove-duplicates (match-em-up (get-fun-names list-o-sexps)))))
+(defun remove-duplicate-keys (alist)
+  (let ((new-keys (remove-duplicates (mapcar #'car alist))))
+    (mapcar (lambda (key) (assoc key alist)) new-keys)))
 
 (defun collect-defuns (filenames)
-  " Returns list of pairs of (function-name (functions-it-calls1 ...))
-Does not acknowledge lisp2, aka all symbols are fair game."
-  (let* ((list-o-sexps (read-files filenames))
-	 (flatfuns ;; lists of defuns by (name all other symbols flattened)
-	  (remove nil (maplb (if (member (car it) '(defun defmacro define-url-fn))
-				 (alexandria:flatten (cdr it)))
-			     list-o-sexps)))
-	 (fun-names ;; list of just the names
-	  (maplb (car it) flatfuns)))
-    ;; for each flatfun, produce a list containing its cdr with only fun-names members in it
-    (mapfor (flatfun in flatfuns)
-	    (list
-	     (car flatfun)
-	     (remove-if-not #'(lambda (sym) (member sym fun-names))
-			    (remove-duplicates (cdr flatfun)))))))
+  (remove-duplicate-keys (mapcar #'remove-duplicates (match-em-up (get-fun-names (read-files filenames))))))
 
 (defun alist-to-edges (list-alist)
   " Takes in list of (thing (other things)) to (thing other) (thing things) "
-  (if list-alist (append (mapfor (to-item in (cadar list-alist)) (list (caar list-alist) to-item))
+  (if list-alist (append (mapfor (to-item in (cdar list-alist)) (list (caar list-alist) to-item))
 			 (alist-to-edges (cdr list-alist)))))
 
 (defun function-graph-nodes-edges (filenames)
@@ -38,7 +58,9 @@ Does not acknowledge lisp2, aka all symbols are fair game."
      (mapcar #'car graphguy)
      (alist-to-edges graphguy))))
 
-;; TODO my alists are not dotted, is that bad style?
+(format t "yesss ~A~%" (function-graph-nodes-edges '("max-website-code/visjs-helpers.lisp")))
+
+;; NOTE these alists are not dotted
 (defun vis-nodes (nodes)
   " returns quoted parenscript for nodes var for vis.js graph"
   `(array ,@(loop for node in nodes

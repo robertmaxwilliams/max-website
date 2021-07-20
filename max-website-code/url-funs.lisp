@@ -1,73 +1,38 @@
 (in-package :max-website)
 
-(define-url-fn (hello :is-unlisted t)
-  "This is the docstring"
-  "hello world")
 
-(define-url-fn (goodbye :title "Gooood bye")
-  "this kills the server!"
-  "goodbye moon")
-
-(define-url-fn (random-numbers)
-  "returns random numbers in json list"
-  (let* ((n-numbers (parse-integer (or (parameter "n") "1")))
-	 (rands (loop repeat n-numbers collect (random 10))))
-    (json:encode-json-to-string rands)))
-
-(define-url-fn (show-random-numbers-ajax)
-  "uses random-numbers as an api endpoint to do stuff"
-  (standard-page (:title "Uses xmlhttprequest to do stuff")
-    (:pre (:p :id "foo" ""))
-    ;; TODO move to external file
-    (:script
-"
-var foo = document.getElementById('foo')
-
-var xmlhttp; // create global
-function getStuff() {
-    xmlhttp = new XMLHttpRequest(); //global
-    xmlhttp.open('GET', '/fun/random-numbers?n=10', true);
-
-
-    xmlhttp.onreadystatechange = function() {
-	if (xmlhttp.readyState == 4) {
-	    if(xmlhttp.status == 200) {
-		var obj = JSON.parse(xmlhttp.responseText);
-		console.log(obj)
-		foo.innerHTML += String(obj)
-		foo.innerHTML += '\\n'
-
-		var countryList = obj.countrylist;
-	    }
-	}
-    };
-
-    xmlhttp.send(null);
-}
-
-getStuff();
-
-setInterval(getStuff, 500);
-
-")))
-
-(define-url-fn (pascal)
+(define-url-fn (pascal :title "Pascal's Triangle")
   "Standard Pascal Triangle, very large sizes available."
   (standard-page (:title "Fun!")
-    (:h1 "Pascal's triangle, left-justified, with odds colored pink")
+    (:h1 "Pascals Triangle")
+    (:p "This is Pascal's Triangle, left justified in order to fit nicely into a table. Odd numbers are colored pink to show the pattern they form.")
     (loop for n in '(5 10 20 50 100)
-       do (htm (:a :class "button" :href (format nil "/fun/pascal?n=~A" n) (str (format nil "n=~a" n)))))
+          do (link-button html-stream
+                          (format nil "/fun/pascal?n=~A" n)
+                          (format nil "n=~a" n)))
     (2d-table-from-list html-stream (n-iterations-pascal-triangle (parse-integer (default-value "5" (parameter "n")))))))
 
-(define-url-fn (negative-pascal)
-  "Pascal triangle, with the SECRET negative part"
+(defun link-button (stream link text)
+    (with-html-output (stream)
+      (:form :style "display: inline-block;" :method "POST" :action link (:button :type "submit" (str text)))))
+
+
+;; <form>
+;;   <button type="submit" formaction="https://www.freecodecamp.org/">freeCodeCamp</button>
+;; </form>
+
+(define-url-fn (negative-pascal :title "Negative Pascal's Triangle")
+  "Pascal triangle, with the SECRET negative part."
   (let ((parameter-n (safety-cap 1000  5 (parse-integer (default-value "5" (parameter "n"))))))
     (standard-page (:title "||SECRET||")
-      (:h1 "What math people don't want you to know")
-      (loop for button-n in '(5 10 20 50 100)
-	 do (htm (:a :class "button" :href (format nil "/fun/negative-pascal?n=~A" button-n)
-		     (str (format nil "n=~a" button-n)))))
-      (2d-table-from-array html-stream (array-pascal parameter-n)))))
+     (:h1 "Negative Pascals Triangle")
+     (:p "By making a few assumptions, we can work Pascal's triangle backwards and get some mathy-nonsense (or perhaps it does make sense?)")
+     (:p "\"What math people don't want you to know\"")
+     (loop for button-n in '(5 10 20 50 100)
+	 do (link-button html-stream
+                     (format nil "/fun/negative-pascal?n=~A" button-n)
+                     (format nil "n=~a" button-n)))
+     (2d-table-from-array html-stream (array-pascal parameter-n)))))
 
 (defmacro number-table-row (number-strings)
   "takes a list of strings and makes a <tr> for them"
@@ -106,14 +71,15 @@ setInterval(getStuff, 500);
 	(list cur-val next)
 	(cons cur-val (recur-until fun next end-val)))))
 
-(define-url-fn (collatz-bases)
-  "Find collatz sequence of a number"
+(define-url-fn (collatz-bases :title "Collatz")
+  "Find collatz sequence of a number."
   (let ((parameter-n (default-value 5
 			 (parse-integer (default-value "" (parameter "n")) :junk-allowed t))))
     (standard-page (:title "Collatz")
-      (:h2 "Take the collatz of any sequence")
+      (:h2 "Collatz")
+      (:p "Show the Collatz sequence from any number back down to 1.")
       (simple-form *my-url "n" parameter-n)
-      (:a :class "button" :href (format nil "~a?n=~a" *my-url (1+ (random 500))) "random")
+      (link-button html-stream (format nil "~a?n=~a" *my-url (1+ (random 500))) "random")
       (:h1 (str (format nil "Collatz of ~a" parameter-n)))
       (base-table
        (recur-until #'next-collatz parameter-n 1)))))
@@ -128,7 +94,7 @@ setInterval(getStuff, 500);
   "divides by 2 until odd, then return 3n+1"
   (oddiate (+ 1 (* 3 (oddiate n)))))
 
-(define-url-fn (shortcut-collatz-bases)
+(define-url-fn (shortcut-collatz-bases :is-unlisted t)
   "Find collatz sequence of a number using the powers of two shortcut"
   (let ((parameter-n (default-value 5
 			 (parse-integer (default-value "" (parameter "n")) :junk-allowed t))))
@@ -141,52 +107,15 @@ setInterval(getStuff, 500);
       (base-table
        (recur-until #'shortcut-collatz parameter-n 1)))))
 
-(define-url-fn (update-server)
-  "dies so the run script does a git pull and runs the server again"
-  (cl-user::exit) ;; todo why do I have to use cl-user?
-  "This should not be seen because the server was supposed to exit. Good job if you're reading this.")
 
-;; some parenscript fun
-(define-url-fn (parenscript-hello)
-    "from the parenscript tutorial"
-    (with-html-output-to-string (s)
-      (:html
-       (:head
-	(:title "Parenscript tutorial: 2nd example")
-	(:script :type "text/javascript"
-		 (str (ps
-			(defun greeting-callback ()
-			  (alert "Hello World"))))))
-       (:body
-	(:h2 "Parenscript tutorial: 2nd example")
-	(:a :href "" :onclick (ps (greeting-callback))
-	    "Hello World")))))
-
-
-(define-url-fn (website-dependency-graph)
-    "dependency graph of all lisp files of this website"
-  (standard-page (:title "Vis Dot Jay Ess" :include-vis t)
-		 (:style :type "text/css"
-			 "#mynetwork { width: auto; height: 400px; border: 1px solid lightgray; }")
-		 (:h1 "This website's dependency graph")
-		 (:p "All defun and defmacros are nodes, arrows indicate dependency.")
-		 (:div :id "mynetwork")
-		 (:script :type "text/javascript"
-			  (str (vis-js-graph (function-graph-nodes-edges
-					      '("max-website-code/max-website.lisp"
-						"max-website-code/blog.lisp"
-						"max-website-code/page-templates.lisp"
-						"max-website-code/utilities.lisp"
-						"max-website-code/pascals-triangle.lisp"
-						"max-website-code/url-funs.lisp")))))))
-
-(define-url-fn (collatz-graph)
-  "graph of how all numbers lead back to unity"
+(define-url-fn (collatz-graph :title "The Collatz Web")
+  "Graph of reverse Collatz, showing some of its structure."
   (standard-page (:title "Collatz Graph" :include-vis t)
 		 (:style :type "text/css"
 			 "#mynetwork { width: auto; height: 400px; border: 1px solid lightgray; }")
-		 (:h1 "Collatz Graph")
-		 (:p "Explanation goes here")
+		 (:h1 "The Collatz Web")
+		 (:p "Hit \"Explode Leaves\" to see the structure of the Collatz Web.")
+         (:p "If the Collatz Conjecture is correct, all natural numbers will appear eventually in the graph.")
 		 (:button :onclick "explodeLeaves()" "Explode Leaves")
 		 (:div :id "mynetwork")
 		 (:script :type "text/javascript"
@@ -200,8 +129,46 @@ setInterval(getStuff, 500);
 			      (lambda (params) (add-inverses-to-graph
 						(aref (@ params 'nodes) 0)))))))))
 
-(define-url-fn (minsky-register-machine-sim)
-    "probably a vunerability"
+
+(define-url-fn (update-server :is-unlisted t)
+  "dies so the run script does a git pull and runs the server again"
+  (cl-user::exit) ;; todo why do I have to use cl-user?
+  "This should not be seen because the server was supposed to exit. Good job if you're reading this.")
+
+(define-url-fn (website-dependency-graph :title "Website Dependency Graph")
+    "Function dependency graph of all lisp files of this website."
+  (standard-page (:title "Dependency Graph" :include-vis t)
+		 (:style :type "text/css"
+			 "#mynetwork { border: 1px solid lightgray; }")
+         (:h1 "Dependency Graph")
+		 (:p "This website's dependency graph, rendered using vis.js")
+		 (:p "All defun and defmacros (function and macro definitions) are nodes, arrows indicate dependency.")
+		 (:p "Loading may take a few seconds.")
+         (:button :id "closefullscreen" :class "float-top-left" :style "display: none;" :onclick
+                  "mynetwork.className = \"not-full-size\";
+          closefullscreen.style.display = \"none\";"
+                  (str "Click To Exit Fullscreen"))
+         (:button :onclick "mynetwork.className = \"full-size\";
+          closefullscreen.style.display = \"block\";"
+                  (str "Click For Full Screen"))
+		 (:div :class "not-full-size" :id "mynetwork")
+		 (:script :type "text/javascript"
+			  (str (vis-js-graph (function-graph-nodes-edges
+					      '("max-website-code/blog.lisp"
+                            "max-website-code/color-test.lisp"
+                            "max-website-code/globals.lisp"
+                            "max-website-code/max-website.lisp"
+                            "max-website-code/page-templates.lisp"
+                            "max-website-code/pascals-triangle.lisp"
+                            "max-website-code/tubes-game.lisp"
+                            "max-website-code/undecide.lisp"
+                            "max-website-code/url-funs.lisp"
+                            "max-website-code/utilities.lisp"
+                            "max-website-code/visjs-helpers.lisp"
+						)))))))
+
+(define-url-fn (minsky-register-machine-sim :title "Minsky Register Machine Simulator")
+    "Run code on the simplest virtual machine ever made."
     (let* ((codestring (str:trim (default-value "inc 0" (parameter "code"))))
            (datastring (str:trim (default-value "0 0 0 0" (parameter "data"))))
 	   (foo (format t "~%~%CODE FROM USER WATCH OUT ~%~a ~%~%" codestring)) ;;debug print
@@ -256,8 +223,8 @@ result: `#(2 1 0 1 0)`
 	       (:br)
 	       (:textarea :cols 50 :rows 100 :name "code" (str codestring))))))
 
-(define-url-fn (banana-gram-solver)
-  "Shows you how to arrange letters to win scrabble-style game, \"bananagrams\""
+(define-url-fn (banana-gram-solver :title "Banagram Solver")
+  "Shows you how to arrange letters to win scrabble-style game, \"Bananagrams\"."
   (let ((parameter-letters (default-value nil (parameter "letters"))))
     (standard-page (:title "Banana Gram Solver")
       (:h1 "Enter all the letters you have, not spaces, case doesn't matter.")
@@ -274,14 +241,14 @@ result: `#(2 1 0 1 0)`
 	   (htm (:h1 "no letters supplied")))))))
 
 (define-url-fn (tubes-game :title "Tubes Game")
-  "Alchemy game"
+  "Drag-and-drop alchemy game with developer art."
   (standard-page (:title "Tubes Game"
                          :extra-style-sheets (list "/css/tubes.css")
                          :draggable-viewport nil)
     (:h1 "Drag things into tube to get more things. Win by getting all 19 objects.")
     (:script :type "text/javascript" (str (tubes-js)))))
 
-(define-url-fn (color-test)
+(define-url-fn (color-test :is-unlisted t)
   "Test your color perception!"
   (standard-page (:title "Color Test"
                          :draggable-viewport nil)
