@@ -1,79 +1,72 @@
 
-Hi! I'm Max Williams. I program computers, sometimes they even do things. I think the most
+Hi! I'm Max Williams. I program computers, sometimes they even do things of value. I think the most
 beneficial thing to do with my life is contribute to AI safety/AI alignment research. The most 
 interesting (and most harmful) thing I could do is to research AI technology with no regard to
 safety. It sure is fun, though, and everyone is paying for it. 
 
 # Current Stuff
 
-## Master's degree in Computer Science & Engineering at UofL
+## Indefinitely Scalable Computing
 
-I've finished my CSE undergrad with a math minor and now I'm getting my master's. My courses are
-very project heavy, which is exactly the kind of work I enjoy. I'm doing my thesis on AI failures
-in the conext of AI safety. Keeping on track with my thesis is difficult but my
-advisor has been very helpful, as he is passionate about the topic. As I've been formulating the
-thesis, I vary between feeling hopeless as the open and unknowable maw of the future waiting to
-consume everything of value that could ever exist, and feeling like maybe there's a winning situation
-and humans are capable of getting there as long as we do some good thinking.
+Pioneered by David Ackley, indefinitely scalable computing is a drastically different approach to
+software which makes it possible to design programs that can run on actual unbounded amounts of
+hardware.  When doing ISC, you design programs that run on thousands of tiny interlinked computers
+(in a simulator or with actual ISC hardware). The style of programming most beneficial to this is
+very organic and borrows ideas frequently from biology. It's a long way from being of practical
+value, but putting in the work to understand it has greatly opened my mind to the boundary between
+software and living things. 
 
-## Current Projects
+Making better simulators and languages is a goal for me this next three months, as well as using
+those tools to design interesting programs.
 
-I'm working on a small project called "Undeletable," where you can write small posts like twitter, 
-except you cannot delete them and you can't even hit backspace while typing. It'll be ready for 
-user pretty soon, it'll be the next big thing once it's done.
+## Analog Synth
 
-I've also learned a lot about "Indefinitely Scalable Computing," pioneered by David Ackley. When
-doing ISC, you design programs that run on thousands of tiny internlinked computers (in a simulator 
-or with actual ISC hardware). The style of programming most benificial to this is very organic and
-borrows ideas frequently from biology. It's a long way from being of practical value, but putting in
-the work to understand it has greatly opened my mind to the boundary between software and living things.
+I have had a dream of building a hardware music synth, with like op-amps and feedback loops. This
+project is just a vague dream right now, I'll be buying stuff to build the first iteration this
+month
 
-## Lisp
+## Job Search
 
-I made this website using lisp, which was a lot of fun. The [fun](/fun) pages are all lisp functions
-that do things, but the website architecture was the trickiest part. I'm not really sure what I did, 
-but it sure is neat. 
-
-I'm also working on some DSP stuff, [here](https://www.youtube.com/watch?v=CjsbYHC7b1g) is a sample
-of my first attempt. Maybe I'll make more, with some percussion and more interesting virtual
-instruments.
-
-## Career Hunting
-
-Like many people my age, I have grand ideas about what I want to do with my life but I have trouble
-visualizing exactly what they would look like. I really enjoyed programming robots in high school, 
-I also like doing math stuff for fun and exploring math things using programming. The corporate
-software development world looks soulless and unproductive, like a big hamster wheel that consumes
-person hours and keeps alive the collective conciousness of the business. Maybe I'm wrong, and making
-software for Microsoft would actually be really enjoyable. 
-
-My summer internship working on MAST-ML made me think that making software for researchers is a
-valuable thing to do, many researchers write software for their own use and don't adhere to
-coding standards or development paradigms; they get the job done but aren't left with something
-useful for others. A lot of work is wasted doing the same tasks over and over again. Almost
-all software I used in the bioinformatics world was hacky and under-documented.
-
-At PNNL, I also got to write useful software in a self-directed way to solve some nebulous research
-task. This was difficult in a good way, and is something I could see myself doing as a career. Also,
-the work environment was very healthy, encouraging steady progress and goals, not the burnout cycle
-of some (__cough__ Google __cough cough__ Microsoft) software dev shops. Overall, being a
-non-academic researcher felt like a good fit for me, especially the practical focus of the work.
-
-My dream is to do actual good for the AI safety community, but it's such a turbulent field and can
-be hard to tell what skills will be useful. Will being a better programmer make me more useful, or
-is general programming skill too general to be genuinely useful? Worse still, my experience with
-lisp has made me think that "general programming skill" means "learning to work within a weak and
-idiosyncratic model of thinking that's been practically unchanged for decades". Regardless of the
-state of software engineering, I am committed to doing what I can to contribute to what I see as the
-most slippery, impossible, and important issue humanity will ever face.
+While this summer has been fun, I am more than ready to start working. My resume is polished but my
+interview skills are probably sub-par. I also need to make an optimized video chat setup, since I
+want to be fully remote. The interview now is not only about normal interview stuff, but how good
+your video chat tech is, since the video chat replaces all face-to-face interaction.
 
 # Past Stuff
+
+## Master's degree in Computer Science & Engineering at UofL
+
+I just finished my graduate degree in Computer Science and Engineering. The last semester was spent
+mostly on my thesis, with a few project-based classes to break up the days. I was able to maintain a
+high quality work from home schedule and got an incredible amount of work done in a self-directed
+way, encouraging me to undertake projects in the future with the same amount of dedication.
+
+The more I study AI safety, the more I vary between feeling hopeless as the open and unknowable maw
+of the future waiting to consume everything of value that could ever exist, and feeling like maybe
+there's a winning situation and humans are capable of getting there as long as we do some good
+thinking. Universal rejection of modern living and most of our technology would also be a solution
+to existential risk, but then other dangers loom farther in the future, like the end of the sun's
+lifespan and natural extinction events.
+
+## SpashCall
+
+My friend Luke and his brother, Charlie, all got together one month and built
+[splashcall.com](www.splashcall.com). It is a website where you can talk with one other person and
+play idle games together while you chat. It works great and a few of our friends and family use it.
+However, we couldn't get investor funding so it remains a trinket.
+
+## Undeletable
+
+I built a website called "Undeletable" ([undeletable.net](www.undeletable.net)) a while ago. It's a
+proof of concept for a twitter-like website where you can't hit backspace and you can't delete
+posts, and you can't lose your account. I have plans for making it even less deletable, but those
+will wait on my other projects.
 
 ## PNNL Summer internship
 
 Summer of 2019, I worked on few-shot image classification for Pacific Northwest National Lab. I
 enjoyed the work, and I worked with people skilled in all aspects of deep learning. There were other
-groups there that did statistical and principled computing, such as bayes inverse problem solving
+groups there that did statistical and principled computing, such as Bayes inverse problem solving
 and other scary stuff like that. It seems very practical, and solved problems in ways that seem
 impossible with deep learning. Maybe the whole "throw your principles out the window and compute"
 paradigm isn't always the best. Overall, I'm fluent in PyTorch now, which is so much better than
@@ -96,7 +89,7 @@ the program should work, but it was a necessary feature.
 
 During my Sophomore year, I assisted the bioinformatics lab with some data tasks, neural network
 programming in Keras, and typesetting their paper in Latex, word, and then Latex again. I made
-several figures programmatically using Latex's tikz package, which was fun. I also got very good at
+several figures programmatically using Latex's Tikz package, which was fun. I also got very good at
 typesetting formulas.
 The final version of the paper is
 [here](https://ir.library.louisville.edu/cgi/viewcontent.cgi?article=4082&context=etd).
@@ -116,5 +109,54 @@ I spent my senior year on a rotary exchange in Thailand. I stayed with three won
 a total of nine months, and went on a few rotary organized trips with the other exchange students.
 [Here](http://thaipie.blogspot.com/) is my blog from the trips and other side adventures.  I can
 also read/write/converse in Thai on a pretty good level, but since I've been away for so long I
-would need to reacclimate to have a non-ridiculous accent and ease of speaking.
+would need to re-acclimate to have a non-ridiculous accent and ease of speaking.
 
+
+# My Thoughts on Programming Languages and Text Editors
+
+## Python
+
+Python is pretty great, but the community and standard library and package manager make it by far
+the best language for basically anything these days
+
+## C/C++
+
+C is great, C++ has a bunch of confusing object oriented stuff I haven't really learned yet. But I
+love writing C programs, my operating systems class projects and digital music creations are some of
+my favorite programs I've written. Universally useful and a bare-metal feel without actually
+worrying about the annoying stuff that comes with the actual metal.
+
+## Lisp
+
+Common Lisp is my go-to language for personal projects, alongside python. To me, it's Python but
+100 time as fast and with an awesome macro system, albeit with a much worse standard library. Also
+it looks awesome and feels good on my brain to write.
+
+I made this website using Common Lisp. You can find the code
+[here](https://github.com/robertmaxwilliams/max-website). It ended up surprisingly complex, but I
+did a major refactor recently and the complexity was manageable. This website is definitely one of
+the most complex projects I've done by myself.
+
+I made some digital music, [here](https://www.youtube.com/watch?v=CjsbYHC7b1g) is a sample
+of my first attempt. Maybe I'll make more, with some percussion and more interesting virtual
+instruments.
+
+## JavaScript
+
+I actual don't mind writing plain JavaScript, and frameworks aren't bad once you've been
+indoctrinated into them, but the whole web ecosystem these days has something really fishy about it.
+For my own projects I don't do a lot of web front-end dev, even this website only has a few scraps
+of JS and those are encoded as parenscript (mini-language that more or less directly transpiles
+to JavaScript)
+
+## Vim
+
+Vim is my mainstay. I basically refuse to use IDEs, and very much prefer to keep all of the
+functionality of my computer in the shell.
+
+## Emacs
+
+Learning Emacs is hard, especially when I know my text editing commands so well already. But it has
+the only good interactive lisp mode, and Evil mode (vim mode) isn't really optimized for using with
+lisp. Also there are apparently some really good lisp editing modes. Should I learn it? Yes. Have I?
+No. Will I? Maybe.

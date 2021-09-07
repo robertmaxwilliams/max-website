@@ -17,7 +17,7 @@ languages without ever losing the main language.
 
 Lisp also allows you to turn your architecture ideas into programming constructs. This website uses
 a "define-url-fn" macro that I adapted from a similar one, which allows for functions defined
-in that way to be registered on the `/fun/` page and provides a url based on the name of the
+in that way to be registered on the `/demos/` page and provides a url based on the name of the
 function. And it's all done at compile time, so there's no performance difference than if you did it
 painstakingly by hand. By using this macro to define these functions, there's no way you could
 ever forget to register a function with the routing parts.

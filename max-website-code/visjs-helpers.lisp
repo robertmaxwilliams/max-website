@@ -58,7 +58,7 @@
      (mapcar #'car graphguy)
      (alist-to-edges graphguy))))
 
-(format t "yesss ~A~%" (function-graph-nodes-edges '("max-website-code/visjs-helpers.lisp")))
+;;(format t "yesss ~A~%" (function-graph-nodes-edges '("max-website-code/visjs-helpers.lisp")))
 
 ;; NOTE these alists are not dotted
 (defun vis-nodes (nodes)
